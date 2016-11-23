@@ -1,0 +1,10 @@
+---
+extends:
+  - standard
+  - plugin:import/warnings
+  - plugin:import/errors
+parserOptions:
+  ecmaVersion: 2017
+  sourceType: module
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
