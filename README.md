@@ -2,6 +2,8 @@
 
 A utility to transpile JavaScript to CocoaScript
 
+<img align="center" src="screencast.gif">
+
 ## Why?
 
 > Sketch Plugins are made possible by CocoaScript, a bridge that lets you use Objective-C/Cocoa code from an external script written in JavaScript. The bridge takes care of the translation between JavaScript and Cocoa.
