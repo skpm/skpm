@@ -25,6 +25,10 @@ if (typeof program.inputFolder === 'undefined' || typeof program.output === 'und
   program.help()
 }
 
+if (!fs.existsSync(program.output)) {
+  fs.mkdirSync(program.output)
+}
+
 function rollupConfig (file) {
   return {
     entry: path.join(program.inputFolder, file),
