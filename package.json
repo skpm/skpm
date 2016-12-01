@@ -1,8 +1,8 @@
 {
   "name": "sketch-builder",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A utility to transpile JavaScript to CocoaScript",
-  "bin": "index.js",
+  "bin": "lib/sketch-builder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,7 +31,9 @@
   },
   "dependencies": {
     "commander": "2.9.0",
+    "keytar": "3.0.2",
     "ora": "0.3.0",
+    "request": "2.79.0",
     "rollup": "0.36.4",
     "rollup-plugin-babel": "2.6.1",
     "rollup-plugin-cleanup": "0.1.4",
