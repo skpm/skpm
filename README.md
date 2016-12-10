@@ -1,6 +1,6 @@
-# Sketch Builder
+# Sketch Plugin Manager
 
-A utility to transpile JavaScript to CocoaScript
+A utility to build, publish and install sketch plugins.
 
 <img align="center" src="screencast.gif">
 
@@ -54,13 +54,16 @@ You project needs to look like this:
 Install `sketch-build`:
 
 ```
-npm i -D sketch-builder
+npm i -D skpm
 ```
 
-Add a script in your `package.json`:
+Add the following in your `package.json`:
 ```
+"main": "my-plugin.sketchplugin",
+"manifest": "src/manifest.json",
 "scripts": {
-  "build": "sketch-builder src/commands -o my-plugin.sketchplugin -m src/manifest.json"
+  "build": "skpm build",
+  "publish": "skpm publish"
 }
 ```
 

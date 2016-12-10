@@ -1,14 +1,14 @@
 {
-  "name": "sketch-builder",
-  "version": "0.2.0",
+  "name": "skpm",
+  "version": "0.2.1",
   "description": "A utility to transpile JavaScript to CocoaScript",
-  "bin": "lib/sketch-builder.js",
+  "bin": "lib/skpm.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mathieudutour/sketch-builder.git"
+    "url": "git+https://github.com/mathieudutour/skpm.git"
   },
   "keywords": [
     "sketch",
@@ -19,9 +19,9 @@
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mathieudutour/sketch-builder/issues"
+    "url": "https://github.com/mathieudutour/skpm/issues"
   },
-  "homepage": "https://github.com/mathieudutour/sketch-builder#readme",
+  "homepage": "https://github.com/mathieudutour/skpm#readme",
   "devDependencies": {
     "eslint": "3.10.2",
     "eslint-config-standard": "6.2.1",
