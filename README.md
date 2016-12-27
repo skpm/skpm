@@ -1,77 +1,91 @@
-# Sketch Plugin Manager
+# 💎📦 skpm - Sketch Plugin Manager
 
-A utility to build, publish and install sketch plugins.
+A utility to build, publish, install and manage [sketch](https://www.sketchapp.com/) plugins.
 
-<img align="center" src="screencast.gif">
+## Installation
 
-## Why?
-
-> Sketch Plugins are made possible by CocoaScript, a bridge that lets you use Objective-C/Cocoa code from an external script written in JavaScript. The bridge takes care of the translation between JavaScript and Cocoa.
-
-This is great.
-
-> You can use two different styles when writing your scripts: dot notation and bracket notation. Which means that you can use `var l = a.length()` as well as `var l = [a length]`.
-
-Ok, well I guess it could be useful for Objective-C devs (even though Swift look a lot more like JavaScript than good old Obj-c). Unfortunately, if you use the bracket notation, you won't be able to use any kind of javascript linter :sad:
-
-> To import functions defined in another file, you can use the syntax `@import 'my-shared-file.cocoascript'`
-
-Wait, what? Do I really need to give up on explicit dependency injection? Do I really need to give up on the npm ecosystem? Do I really need to use a non-JavaScript syntax for that and break all linters?
-
-> Oh, and you can't use `console.log`, you need to use `log`.
-
-## Solution
-
-Using a transpiler to build CocoaScript files from JavaScript files.
-
-It means that you can:
-  * write in in ES6+,
-  * require any npm modules,
-  * use your favorite linter (here is an [ESLint config for sketch](https://github.com/mathieudutour/eslint-config-sketch)),
-  * use `console.log` (you're welcome).
-
-Heck, you can even share sketch specific modules on npm ([here is one](https://github.com/mathieudutour/sketch-module-update) for example), no more copy/pasting from one project to another!
-
-## How
-
-You project needs to look like this:
-
-```
-/
-  my-plugin.sketchplugin/
-    Content/
-      Resources/
-        any-resource.png
-  src/
-    lib/
-      any-shared-code.js
-    commands/
-      any-command.js
-    manifest.json
-  package.json
+```bash
+npm install -g skpm
 ```
 
-Install `sketch-build`:
+_The `npm` command-line tool is bundled with Node.js. If you have it installed, then you already have npm too. If not, go download [Node.js](https://nodejs.org/en/download/)._
 
-```
-npm i -D skpm
-```
+## Usage
 
-Add the following in your `package.json`:
-```
-"main": "my-plugin.sketchplugin",
-"manifest": "src/manifest.json",
-"scripts": {
-  "build": "skpm build",
-  "publish": "skpm publish"
-}
+### I'm a sketch user
+
+#### Installing a plugin
+
+To install a sketch plugin:
+
+```bash
+skpm install name-of-the-plugin
 ```
 
-You probably want to add this line to your `.gitignore`:
-```
-my-plugin.sketchplugin/Contents/Sketch
+#### Uninstalling a plugin
+
+To uninstall a sketch plugin:
+
+```bash
+skpm uninstall name-of-the-plugin
 ```
 
-## Example
+### I'm a plugin developer
 
-See a real life example here: https://github.com/mathieudutour/git-sketch-plugin
+#### Scaffold the architecture of a new plugin
+
+To interactively create the architecture to start developing a new plugin (see the [sketch documentation](http://developer.sketchapp.com/introduction/plugin-bundles/) for more information):
+
+```bash
+skpm init
+```
+
+This will create:
+* a `package.json` file
+* a `src` folder with:
+  * a `manifest.json` file
+  * a `command.js` file for an example of command
+* a `.gitignore` file if non-existent
+
+The `package.json` must contain 3 specific fields:
+* `main`: pointing to your `.sketchplugin`
+* `manifest`: pointing to your `manifest.json` (`src/manifest.json` by default)
+* `repository`: pointing to your github repository
+
+#### Build the plugin
+
+To transpile the JavaScript to CocoaScript and copy the `manifest.json` to the `.sketchplugin`:
+```bash
+skpm build
+```
+
+Additionally, some fields from the `package.json` will be set in the `manifest.json` (if not present):
+* version
+* name
+* description
+* homepage
+
+#### Publish the plugin on the registry
+
+To publish a new version of the plugin to the registry:
+```bash
+skpm publish <newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease
+```
+
+The exact order of execution is as follows:
+* Run the `preversion` script
+* Bump `version` in package.json as requested (`patch`, `minor`, `major`, etc).
+* Run the `version` script
+* Commit and tag
+* Run the `postversion` script.
+* Run the `build` script
+* Zip the folder specified in the `main` field
+* Create a draft release on GitHub
+* Upload the zip to GitHub
+* Publish the release
+* Remove the zip
+* Notify the registry
+
+## License
+
+MIT
