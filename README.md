@@ -30,6 +30,14 @@ To uninstall a sketch plugin:
 skpm uninstall name-of-the-plugin
 ```
 
+#### Search for plugins
+
+To search for a sketch plugin:
+
+```bash
+skpm search query
+```
+
 ### I'm a plugin developer
 
 #### Scaffold the architecture of a new plugin
