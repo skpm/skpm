@@ -1,6 +1,6 @@
 {
   "name": "skpm",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A utility to transpile JavaScript to CocoaScript",
   "bin": {
     "skpm": "lib/skpm.js"
@@ -46,6 +46,6 @@
     "rollup-plugin-post-replace": "1.0.0",
     "rollup-watch": "2.5.0",
     "semver": "5.3.0",
-    "skpm-client": "0.1.0"
+    "skpm-client": "0.2.0"
   }
 }
