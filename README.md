@@ -73,6 +73,17 @@ Additionally, some fields from the `package.json` will be set in the `manifest.j
 * description
 * homepage
 
+#### Symlinking the local plugin to the sketch plugins folder
+
+```bash
+skpm link path-to-local-plugin
+```
+
+Don't forget to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/) and force Sketch to always reload a Plugin’s code from disk:
+```bash
+defaults write ~/Library/Preferences/com.bohemiancoding.sketch3.plist AlwaysReloadScript -bool YES
+```
+
 #### Publish the plugin on the registry
 
 To publish a new version of the plugin to the registry:
