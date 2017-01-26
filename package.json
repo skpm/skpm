@@ -1,6 +1,6 @@
 {
   "name": "skpm",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "A utility to transpile JavaScript to CocoaScript",
   "bin": {
     "skpm": "lib/skpm.js"
