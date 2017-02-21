@@ -79,10 +79,7 @@ Additionally, some fields from the `package.json` will be set in the `manifest.j
 skpm link path-to-local-plugin
 ```
 
-Don't forget to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/) and force Sketch to always reload a Plugin’s code from disk:
-```bash
-defaults write ~/Library/Preferences/com.bohemiancoding.sketch3.plist AlwaysReloadScript -bool YES
-```
+It will also ask you if you want to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/) and force Sketch to always reload a Plugin’s code from disk (recommended when developing).
 
 #### Publish the plugin on the registry
 
