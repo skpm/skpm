@@ -79,7 +79,7 @@ Additionally, some fields from the `package.json` will be set in the `manifest.j
 skpm link path-to-local-plugin
 ```
 
-It will also ask you if you want to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/) and force Sketch to always reload a Plugin’s code from disk (recommended when developing).
+It will also ask you if you want to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running) and force Sketch to always reload a Plugin’s code from disk (recommended when developing).
 
 #### Publish the plugin on the registry
 
