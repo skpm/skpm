@@ -81,6 +81,15 @@ skpm link path-to-local-plugin
 
 It will also ask you if you want to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running) and force Sketch to always reload a Plugin’s code from disk (recommended when developing).
 
+
+#### Watching for changes
+
+To automatically rebuild and link your plugin as you make changes:
+
+```bash
+skpm build --watch
+```
+
 #### Publish the plugin on the registry
 
 To publish a new version of the plugin to the registry:
