@@ -67,6 +67,12 @@ To transpile the JavaScript to CocoaScript and copy the `manifest.json` to the `
 skpm build
 ```
 
+To watch for changes:
+
+```bash
+skpm build --watch
+```
+
 Additionally, some fields from the `package.json` will be set in the `manifest.json` (if not present):
 * version
 * name
