@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
+    "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0-beta.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "chalk": "^1.1.3",
