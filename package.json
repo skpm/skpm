@@ -6,7 +6,7 @@
     "skpm": "lib/skpm.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -49,5 +49,10 @@
     "webpack": "^2.3.3",
     "webpack-shell-plugin": "^0.5.0",
     "yesno": "^0.0.1"
+  },
+  "standard": {
+    "ignore": [
+      "lib/utils/consolePolyfill.js"
+    ]
   }
 }
