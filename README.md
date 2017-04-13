@@ -1,6 +1,12 @@
-# 💎📦 skpm - Sketch Plugin Manager
+<h1 align="center">skpm - Sketch Plugin Manager</h1>
 
-A utility to build, publish, install and manage [sketch](https://www.sketchapp.com/) plugins.
+<div align="center">
+  <img src="https://avatars0.githubusercontent.com/u/24660874?v=3&s=200" />
+</div>
+<br />
+<div align="center">
+  <strong>A utility to build, publish, install and manage <a href="https://www.sketchapp.com/">sketch</a> plugins.</strong>
+</div>
 
 ## Installation
 
@@ -12,7 +18,18 @@ _The `npm` command-line tool is bundled with Node.js. If you have it installed, 
 
 ## Usage
 
-### I'm a sketch user
+**I'm a sketch user**
+* [Installing a plugin](#installing-a-plugin)
+* [Uninstalling a plugin](#uninstalling-a-plugin)
+* [Search for plugins](#search-for-plugins)
+
+**I'm a plugin developer**
+* [Scaffold the architecture of a new plugin](#scaffold-the-architecture-of-a-new-plugin)
+* [Build the plugin](#build-the-plugin)
+* [Symlinking the local plugin to the sketch plugins folder](#symlinking-the-local-plugin-to-the-sketch-plugins-folder)
+* [Publish the plugin on the registry](#publishing-th-plugin-on-the-registry)
+
+## Documentation
 
 #### Installing a plugin
 
@@ -37,8 +54,6 @@ To search for a sketch plugin:
 ```bash
 skpm search query
 ```
-
-### I'm a plugin developer
 
 #### Scaffold the architecture of a new plugin
 
