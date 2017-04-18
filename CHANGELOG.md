@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.8.1` - 2017-04-18](https://github.com/sketch-pm/skpm/compare/v0.8.0...v0.8.1)
+
+### Added
+* option to specify which repo to use with `skpm publish`
+* option to not bump the version with `skpm publish`
+
+### Fixed
+* fix uploading the zip asset when using `skpm publish`
+
 ## [`v0.8.0` - 2017-04-07](https://github.com/sketch-pm/skpm/compare/a49b67f0f2cf7f13c750660e8116a3609cb89f67...v0.8.0)
 
 ### Added
