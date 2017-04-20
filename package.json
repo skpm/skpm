@@ -1,6 +1,6 @@
 {
   "name": "skpm",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "A utility to build, publish and install sketch plugins",
   "bin": {
     "skpm": "lib/skpm.js"

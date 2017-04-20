@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.8.2` - 2017-04-20](https://github.com/sketch-pm/skpm/compare/v0.8.1...v0.8.2)
+
+### Fixed
+* fix a bug with the new .babelrc parsing - if a skpm project doesn't have a .babelrc and a parent directory does, babel-loader tries to use the parent .babelrc file.
+
 ## [`v0.8.1` - 2017-04-18](https://github.com/sketch-pm/skpm/compare/v0.8.0...v0.8.1)
 
 ### Added
