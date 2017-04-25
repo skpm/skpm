@@ -44,15 +44,12 @@
     "request": "^2.81.0",
     "semver": "^5.3.0",
     "simple-plist": "^0.2.1",
+    "sketch-module-console-polyfill": "0.1.0",
+    "sketch-module-fetch-polyfill": "0.1.4",
     "skpm-client": "0.2.2",
     "tar.gz": "^1.0.5",
     "webpack": "^2.3.3",
     "webpack-shell-plugin": "^0.5.0",
     "yesno": "^0.0.1"
-  },
-  "standard": {
-    "ignore": [
-      "lib/utils/consolePolyfill.js"
-    ]
   }
 }
