@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.8.0...master)
+## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.0...master)
 
 ### Added
 
 ### Changed
 
 ### Fixed
+
+## [`v0.9.0` - 2017-04-25](https://github.com/sketch-pm/skpm/compare/v0.8.2...v0.9.0)
+
+### Changed
+* `fetch` and `console` are now polyfilled on demand
 
 ## [`v0.8.2` - 2017-04-20](https://github.com/sketch-pm/skpm/compare/v0.8.1...v0.8.2)
 
