@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.1...master)
+## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.2...master)
 
 ### Added
 
@@ -12,7 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-## [`v0.9.0` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.0...v0.9.1)
+## [`v0.9.2` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.1...v0.9.2)
+
+### Fixed
+* Look for webpack loaders in skpm's node_modules as well as the file node_modules
+
+## [`v0.9.1` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.0...v0.9.1)
 
 ### Added
 * `log` command to show the Sketch.app logs
