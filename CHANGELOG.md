@@ -4,13 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.0...master)
+## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.1...master)
 
 ### Added
 
 ### Changed
 
 ### Fixed
+
+## [`v0.9.0` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.0...v0.9.1)
+
+### Added
+* `log` command to show the Sketch.app logs
+* fail safe when inuting a unknown command
 
 ## [`v0.9.0` - 2017-04-25](https://github.com/sketch-pm/skpm/compare/v0.8.2...v0.9.0)
 
