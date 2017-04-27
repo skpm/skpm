@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [`v0.9.3` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.2...v0.9.3)
 
 ### Fixed
-* Fix run option of the build command when the output path have a space
+* Fix -r option of the build command when the output path have a space
 
 ## [`v0.9.2` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.1...v0.9.2)
 
