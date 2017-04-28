@@ -12,10 +12,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.4` - 2017-04-28](https://github.com/sketch-pm/skpm/compare/v0.9.3...v0.9.4)
+
+### Added
+* basic error handling on -r build option: check for `Unknown command ‘run’` and `no such file or directory` and display some helper message
+
+### Fixed
+* Look for polyfills in skpm's node_modules as well as the file node_modules
+
 ## [`v0.9.3` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.2...v0.9.3)
 
 ### Fixed
-* Fix run option of the build command when the output path have a space
+* Fix -r option of the build command when the output path have a space
 
 ## [`v0.9.2` - 2017-04-26](https://github.com/sketch-pm/skpm/compare/v0.9.1...v0.9.2)
 
