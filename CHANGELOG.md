@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.5` - 2017-05-02](https://github.com/sketch-pm/skpm/compare/v0.9.4...v0.9.5)
+
+### Changed
+* Keep Sketch on the background with the -r build option
+* Use COScript instead of sketchtool for the -r build option
+
 ## [`v0.9.4` - 2017-04-28](https://github.com/sketch-pm/skpm/compare/v0.9.3...v0.9.4)
 
 ### Added
