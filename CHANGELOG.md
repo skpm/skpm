@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.7` - 2017-05-05](https://github.com/sketch-pm/skpm/compare/v0.9.6...v0.9.7)
+
+### Fixed
+* Replace ES6 deconstruring by manual deconstruring to support nodejs 4
+
 ## [`v0.9.6` - 2017-05-03](https://github.com/sketch-pm/skpm/compare/v0.9.5...v0.9.6)
 
 ### Changed
