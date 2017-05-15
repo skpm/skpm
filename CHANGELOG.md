@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.8` - 2017-05-15](https://github.com/sketch-pm/skpm/compare/v0.9.7...v0.9.8)
+
+### Added
+* `setTimeout` polyfill
+
+### Changed
+* clearer message for release assets
+
 ## [`v0.9.7` - 2017-05-05](https://github.com/sketch-pm/skpm/compare/v0.9.6...v0.9.7)
 
 ### Fixed
