@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.9` - 2017-05-16](https://github.com/sketch-pm/skpm/compare/v0.9.8...v0.9.9)
+
+### Added
+* `clearTimeout`, `setInterval`, `clearInterval` polyfills
+
 ## [`v0.9.8` - 2017-05-15](https://github.com/sketch-pm/skpm/compare/v0.9.7...v0.9.8)
 
 ### Added
