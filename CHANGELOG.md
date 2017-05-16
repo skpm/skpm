@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.10` - 2017-05-16](https://github.com/sketch-pm/skpm/compare/v0.9.9...v0.9.10)
+
+### Added
+* save plugins to config when installing/uninstalling plugins
+* publish and check for compatible sketch version
+
+### Changed
+* only save non-default config
+* add default sketch compatible version on init
+
 ## [`v0.9.9` - 2017-05-16](https://github.com/sketch-pm/skpm/compare/v0.9.8...v0.9.9)
 
 ### Added
