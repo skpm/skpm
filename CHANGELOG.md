@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.11` - 2017-05-25](https://github.com/sketch-pm/skpm/compare/v0.9.10...v0.9.11)
+
+### Added
+* Warning to restart Sketch 45+ when linking
+* Create and update appcast.xml when publishing (see http://sketchplugins.com/d/229-updating-plugins)
+
+### Changed
+* Proper permissions check when publishing
+
 ## [`v0.9.10` - 2017-05-16](https://github.com/sketch-pm/skpm/compare/v0.9.9...v0.9.10)
 
 ### Added
