@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.12` - 2017-05-26](https://github.com/sketch-pm/skpm/compare/v0.9.11...v0.9.12)
+
+### Fixed
+* The require call to the `config` util used the wrong path (Thanks @markdalgleish)
+
 ## [`v0.9.11` - 2017-05-25](https://github.com/sketch-pm/skpm/compare/v0.9.10...v0.9.11)
 
 ### Added
