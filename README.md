@@ -93,6 +93,7 @@ Additionally, some fields from the `package.json` will be set in the `manifest.j
 * name
 * description
 * homepage
+* appcast
 
 #### Symlinking the local plugin to the sketch plugins folder
 
@@ -121,7 +122,7 @@ The exact order of execution is as follows:
 * Upload the zip to GitHub
 * Publish the release
 * Remove the zip
-* Notify the registry
+* Check the [sketchplugins/plugin-directory](https://github.com/sketchplugins/plugin-directory) repo to see if the plugin is already there. If not, open a PR to add it.
 
 ## License
 
