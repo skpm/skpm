@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.14` - 2017-06-08](https://github.com/sketch-pm/skpm/compare/v0.9.13...v0.9.14)
+
+### Fixed
+* resolve `sketch-module-*` packages via require.resolve
+
 ## [`v0.9.13` - 2017-05-27](https://github.com/sketch-pm/skpm/compare/v0.9.12...v0.9.13)
 
 ## Changed
