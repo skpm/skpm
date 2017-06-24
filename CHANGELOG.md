@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.15` - 2017-06-24](https://github.com/sketch-pm/skpm/compare/v0.9.14...v0.9.15)
+
+### Added
+* Set `author` in manifest.json from package.json
+* Allow to set `appcast` to false to disable it
+
 ## [`v0.9.14` - 2017-06-08](https://github.com/sketch-pm/skpm/compare/v0.9.13...v0.9.14)
 
 ### Fixed
