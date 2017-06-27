@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [`v0.9.16` - 2017-06-27](https://github.com/sketch-pm/skpm/compare/v0.9.15...v0.9.16)
+
+### Fixed
+* Fix running the command after build on Sketch 44+
+
 ## [`v0.9.15` - 2017-06-24](https://github.com/sketch-pm/skpm/compare/v0.9.14...v0.9.15)
 
 ### Added
