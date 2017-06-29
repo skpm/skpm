@@ -4,13 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.2...master)
+## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.16...master)
 
 ### Added
+* allow to export multiple commands per file and to import images
+* add webpack plugin to write stuff at the bottom of a file
 
 ### Changed
 
 ### Fixed
+* Fix setting the developer mode
 
 ## [`v0.9.16` - 2017-06-27](https://github.com/sketch-pm/skpm/compare/v0.9.15...v0.9.16)
 
