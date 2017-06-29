@@ -39,7 +39,6 @@
     "cpr": "^2.0.2",
     "js-yaml": "^3.8.2",
     "lazy-require": "^2.2.0",
-    "lodash.uniqby": "^4.7.0",
     "object-assign": "^4.1.1",
     "open": "^0.0.5",
     "parse-author": "2.0.0",
