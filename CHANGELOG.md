@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * allow to export multiple commands per file and to import images
 * add webpack plugin to write stuff at the bottom of a file
+* set `context` as a global when calling the exported function
 
 ### Changed
 
