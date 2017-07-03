@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 * Fix setting the developer mode
+* Fix copy for the github asset when publishing
 
 ## [`v0.9.16` - 2017-06-27](https://github.com/sketch-pm/skpm/compare/v0.9.15...v0.9.16)
 
