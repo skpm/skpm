@@ -4,7 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.9.16...master)
+## [`Unreleased` - YYYY-MM-DD](https://github.com/sketch-pm/skpm/compare/v0.10.0...master)
+
+### Added
+*
+
+### Changed
+*
+
+### Fixed
+*
+
+## [`v0.10.0` - 2017-07-05](https://github.com/sketch-pm/skpm/compare/v0.9.16...v0.10.0)
 
 ### Added
 * allow to export multiple commands per file and to import images
@@ -12,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * set `context` as a global
 
 ### Changed
+* watch `manifest.json` and rebuild the plugin when changed
 
 ### Fixed
 * Fix setting the developer mode
