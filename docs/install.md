@@ -1,7 +1,5 @@
 # Installation
 
----
-
 ```
 npm install -g skpm
 ```
