@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "0.10.1": [
+      "[New] allow to namespace all the skpm configuration in the `package.json` by `skpm` (Thanks @chrislloyd) #44"
+    ],
     "0.10.0": [
       "[New] allow to export multiple commands per file and to import images",
       "[New] add webpack plugin to write stuff at the bottom of a file",
