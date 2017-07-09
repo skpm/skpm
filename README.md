@@ -71,8 +71,8 @@ This will create:
 * a `.gitignore` file if non-existent
 
 The `package.json` must contain 3 specific fields:
-* `main`: pointing to your `.sketchplugin`
-* `manifest`: pointing to your `manifest.json` (`src/manifest.json` by default)
+* `skpm.main`: pointing to your `.sketchplugin`
+* `skpm.manifest`: pointing to your `manifest.json` (`src/manifest.json` by default)
 * `repository`: pointing to your github repository
 
 #### Build the plugin
