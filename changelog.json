@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "0.10.2": [
+      "[Fixed] Fix capitalization of `webpackHeaderFooterPlugin` (Thanks @kannonboy) #52"
+    ],
     "0.10.1": [
       "[New] allow to namespace all the skpm configuration in the `package.json` by `skpm` (Thanks @chrislloyd) #44"
     ],
