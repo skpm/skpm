@@ -1,6 +1,13 @@
 {
   "unreleased": [],
   "releases": {
+    "0.10.3": [
+      "[New] Handle `command.handlers`",
+      "[Improved] More precise error message",
+      "[Fixed] Fix creating PR to registry",
+      "[Improved] More precide message when no GitHub token",
+      "[Fixed] Fix some typos when publishing a repo (Thanks @bomberstudios) #55"
+    ],
     "0.10.2": [
       "[Fixed] Fix capitalization of `webpackHeaderFooterPlugin` (Thanks @kannonboy) #52"
     ],
