@@ -27,7 +27,7 @@ _The `npm` command-line tool is bundled with Node.js. If you have it installed, 
 * [Scaffold the architecture of a new plugin](#scaffold-the-architecture-of-a-new-plugin)
 * [Build the plugin](#build-the-plugin)
 * [Symlinking the local plugin to the sketch plugins folder](#symlinking-the-local-plugin-to-the-sketch-plugins-folder)
-* [Publish the plugin on the registry](#publishing-th-plugin-on-the-registry)
+* [Publish the plugin on the registry](#publish-the-plugin-on-the-registry)
 
 ## Documentation
 
