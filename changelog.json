@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.10.4": [
+      "[Improved] Allow spaces in plugin name (Thanks @mcansh) #61",
+      "[Fixed] fix publishing to registry even with -n flag"
+    ],
     "0.10.3": [
       "[New] Handle `command.handlers`",
       "[Improved] More precise error message",
