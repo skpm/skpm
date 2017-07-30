@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.10.5": [
+      "[Improved] Trim empty new lines in sketchtool run output (Thanks @stwind) #63",
+      "[Fixed] prevent duplicate onRun and `undefined` identifiers (Thanks @stwind) #62"
+    ],
     "0.10.4": [
       "[Improved] Allow spaces in plugin name (Thanks @mcansh) #61",
       "[Fixed] fix publishing to registry even with -n flag"
