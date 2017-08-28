@@ -18,42 +18,12 @@ _The `npm` command-line tool is bundled with Node.js. If you have it installed, 
 
 ## Usage
 
-**I'm a sketch user**
-* [Installing a plugin](#installing-a-plugin)
-* [Uninstalling a plugin](#uninstalling-a-plugin)
-* [Search for plugins](#search-for-plugins)
-
-**I'm a plugin developer**
 * [Scaffold the architecture of a new plugin](#scaffold-the-architecture-of-a-new-plugin)
 * [Build the plugin](#build-the-plugin)
 * [Symlinking the local plugin to the sketch plugins folder](#symlinking-the-local-plugin-to-the-sketch-plugins-folder)
 * [Publish the plugin on the registry](#publish-the-plugin-on-the-registry)
 
 ## Documentation
-
-#### Installing a plugin
-
-To install a sketch plugin:
-
-```bash
-skpm install name-of-the-plugin
-```
-
-#### Uninstalling a plugin
-
-To uninstall a sketch plugin:
-
-```bash
-skpm uninstall name-of-the-plugin
-```
-
-#### Search for plugins
-
-To search for a sketch plugin:
-
-```bash
-skpm search query
-```
 
 #### Scaffold the architecture of a new plugin
 
