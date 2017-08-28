@@ -20,6 +20,7 @@ _The `npm` command-line tool is bundled with Node.js. If you have it installed, 
 
 * [Scaffold the architecture of a new plugin](#scaffold-the-architecture-of-a-new-plugin)
 * [Build the plugin](#build-the-plugin)
+* [View the plugin's log](#view-the-plugin-s-log)
 * [Symlinking the local plugin to the sketch plugins folder](#symlinking-the-local-plugin-to-the-sketch-plugins-folder)
 * [Publish the plugin on the registry](#publish-the-plugin-on-the-registry)
 
@@ -64,6 +65,21 @@ Additionally, some fields from the `package.json` will be set in the `manifest.j
 * description
 * homepage
 * appcast
+
+#### View the plugin's log
+
+To view the output of your `console.log`, you have a few different options:
+* Open `Console.app` and look for the sketch logs
+* Use Safari's web inspector to debug your plugin's javascript context
+* Look at the `~/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log` file
+
+Skpm provides a convinient way to do the latter:
+
+```bash
+skpm log
+```
+
+The `-f` option causes `skpm log` to not stop when the end of logs is reached, but rather to wait for additional data to be appended to the input
 
 #### Symlinking the local plugin to the sketch plugins folder
 
