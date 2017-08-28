@@ -73,7 +73,7 @@ To view the output of your `console.log`, you have a few different options:
 * Use Safari's web inspector to debug your plugin's javascript context
 * Look at the `~/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log` file
 
-Skpm provides a convinient way to do the latter:
+Skpm provides a convenient way to do the latter:
 
 ```bash
 skpm log
