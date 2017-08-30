@@ -28,7 +28,7 @@
     "standard": "^10.0.2"
   },
   "dependencies": {
-    "@skpm/file-loader": "^1.0.0-beta.3",
+    "@skpm/file-loader": "^1.0.0",
     "adm-zip": "^0.4.7",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.1.0",
