@@ -5,8 +5,14 @@
   "bin": {
     "skpm": "lib/skpm.js"
   },
+  "engines": {
+    "node": ">= 6.0.0"
+  },
   "scripts": {
-    "test": "standard"
+    "test": "eslint .",
+    "lint-staged": "lint-staged",
+    "prettier:base": "prettier --single-quote --trailing-comma es5 --no-semi --write",
+    "prettify": "npm run prettier:base \"./lib/**/*.js\""
   },
   "repository": {
     "type": "git",
@@ -16,7 +22,8 @@
     "sketch",
     "cocoascript",
     "javascript",
-    "babel"
+    "babel",
+    "skpm"
   ],
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
@@ -25,7 +32,15 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "devDependencies": {
-    "standard": "^10.0.2"
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb-base": "^12.0.1",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-no-not-accumulator-reassign": "^0.1.0",
+    "eslint-plugin-prettier": "^2.3.1",
+    "lint-staged": "^4.2.3",
+    "pre-commit": "^1.2.2",
+    "prettier": "^1.7.3"
   },
   "dependencies": {
     "@skpm/file-loader": "^1.0.0",
@@ -56,5 +71,15 @@
     "webpack-sources": "^1.0.1",
     "xml2js": "^0.4.17",
     "yesno": "^0.0.1"
+  },
+  "pre-commit": [
+    "lint-staged"
+  ],
+  "lint-staged": {
+    "*.js": [
+      "npm run prettier:base",
+      "eslint --quiet --rule 'prettier/prettier: [\"error\", {\"trailingComma\": \"es5\", \"singleQuote\": true}]'",
+      "git add"
+    ]
   }
 }
