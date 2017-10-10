@@ -1,6 +1,11 @@
 {
   "unreleased": [],
   "releases": {
+    "0.11.0": [
+      "[New] Support glob in resources",
+      "[New] allow to `require` html, and other static files",
+      "[Improved] add prettier, eslint and embrace es6"
+    ],
     "0.10.5": [
       "[Improved] Trim empty new lines in sketchtool run output (Thanks @stwind) #63",
       "[Fixed] prevent duplicate onRun and `undefined` identifiers (Thanks @stwind) #62"
@@ -30,9 +35,7 @@
       "[Fixed] Fix setting the developer mode",
       "[Fixed] Fix copy for the github asset when publishing"
     ],
-    "0.9.16": [
-      "[Fixed] Fix running the command after build on Sketch 44+"
-    ],
+    "0.9.16": ["[Fixed] Fix running the command after build on Sketch 44+"],
     "0.9.15": [
       "[New] Set `author` in manifest.json from package.json",
       "[New] Allow to set `appcast` to false to disable it"
@@ -58,9 +61,7 @@
       "[Improved] only save non-default config",
       "[Improved] add default sketch compatible version on init"
     ],
-    "0.9.9": [
-      "[New] `clearTimeout`, `setInterval`, `clearInterval` polyfills"
-    ],
+    "0.9.9": ["[New] `clearTimeout`, `setInterval`, `clearInterval` polyfills"],
     "0.9.8": [
       "[New] `setTimeout` polyfill",
       "[Improved] clearer message for release assets"
@@ -68,9 +69,7 @@
     "0.9.7": [
       "[Fixed] Replace ES6 deconstruring by manual deconstruring to support nodejs 4"
     ],
-    "0.9.6": [
-      "[Improved] Use production skpm registry"
-    ],
+    "0.9.6": ["[Improved] Use production skpm registry"],
     "0.9.5": [
       "[Improved] Keep Sketch on the background with the -r build option",
       "[Improved] Use COScript instead of sketchtool for the -r build option"
@@ -89,9 +88,7 @@
       "[New] `log` command to show the Sketch.app logs",
       "[Improved] fail safe when inputing a unknown command"
     ],
-    "0.9.0": [
-      "[Improved] `fetch` and `console` are now polyfilled on demand"
-    ],
+    "0.9.0": ["[Improved] `fetch` and `console` are now polyfilled on demand"],
     "0.8.2": [
       "[Fixed] fix a bug with the new .babelrc parsing - if a skpm project doesn't have a .babelrc and a parent directory does, babel-loader tries to use the parent .babelrc file."
     ],
