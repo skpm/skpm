@@ -1,34 +1,21 @@
-const path = require('path')
-const lazyRequire = require('lazy-require')
+import keytar from 'keytar'
+import { error } from './'
 
 const tokenName = 'Github.com API Token'
 
-function lazyRequireKeytar() {
-  const keytar = lazyRequire('keytar', {
-    cwd: path.dirname(path.dirname(__dirname)),
-  })
-  if (keytar instanceof Error) {
-    console.error('Cannot load keytar')
-    console.error(keytar)
-    process.exit(1)
-  }
-  return keytar
-}
-
-module.exports = {
+export default {
   // Get the Github API token from the keychain.
   getToken() {
     if (process.env.GITHUB_ACCESS_TOKEN) {
       return Promise.resolve(process.env.GITHUB_ACCESS_TOKEN)
     }
-    const keytar = lazyRequireKeytar()
     return keytar.findPassword(tokenName).then(token => {
       if (!token) {
-        console.error(
+        error(
           'No Github API token in keychain\n' +
-            'Run `skpm login <token>` or set the `GITHUB_ACCESS_TOKEN` environment variable.'
+            'Run `skpm login <token>` or set the `GITHUB_ACCESS_TOKEN` environment variable.',
+          1
         )
-        process.exit(1)
       }
 
       return token
@@ -38,12 +25,10 @@ module.exports = {
   //
   // token - A string token to save.
   saveToken(token) {
-    const keytar = lazyRequireKeytar()
     keytar.setPassword(tokenName, 'github.com', token)
   },
 
   deleteToken() {
-    const keytar = lazyRequireKeytar()
     keytar.deletePassword(tokenName, 'github.com')
   },
 }

@@ -1,5 +1,5 @@
 # build artefacts
-build
+lib
 
 # npm
 node_modules

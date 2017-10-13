@@ -1,4 +1,4 @@
-const extractRepository = require('./extractRepository')
+const extractRepository = require('./extract-repository')
 
 module.exports = function getSkpmConfig(packageJSON) {
   const skpmConfig = packageJSON.skpm || {}

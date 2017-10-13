@@ -1,6 +1,6 @@
-const path = require('path')
-const fs = require('fs')
-const requestWithCallback = require('request')
+import path from 'path'
+import fs from 'fs'
+import requestWithCallback from 'request'
 
 /* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
 function getErrorFromBody(body, opts) {
@@ -46,7 +46,7 @@ function options(token, url, method) {
   }
 }
 
-module.exports = {
+export default {
   getUser(token) {
     return request(options(token, 'https://api.github.com/user'))
   },

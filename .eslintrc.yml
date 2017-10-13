@@ -12,6 +12,10 @@ env:
 rules:
   no-param-reassign: 0
   import/no-dynamic-require: 0
+  no-unused-expressions: 0
+  no-restricted-syntax: 1
+  no-await-in-loop: 0
+  no-loop-func: 0
   global-require: 0
   no-console: 0
   no-not-accumulator-reassign/no-not-accumulator-reassign: [2, ['reduce'], {props: true}]

@@ -1,28 +1,37 @@
 #!/usr/bin/env node
-const fs = require('fs')
-const path = require('path')
-const webpack = require('webpack')
-const program = require('commander')
-const parseAuthor = require('parse-author')
-const chalk = require('chalk')
-const objectAssign = require('object-assign')
-const glob = require('glob')
-const generateWebpackConfig = require('./utils/webpackConfig')
-const getSkpmConfigFromPackageJSON = require('./utils/getSkpmConfigFromPackageJSON')
-const getSketchVersion = require('./utils/getSketchVersion')
+import fs from 'fs'
+import path from 'path'
+import webpack from 'webpack'
+import yargs from 'yargs'
+import parseAuthor from 'parse-author'
+import chalk from 'chalk'
+import glob from 'glob'
+import getSkpmConfigFromPackageJSON from 'skpm-utils/skpm-config'
+import generateWebpackConfig from './utils/webpackConfig'
 
 const buildEmojis = ['🔧', '🔨', '⚒', '🛠', '⛏', '🔩']
 function randomBuildEmoji() {
   return buildEmojis[Math.floor(Math.random() * buildEmojis.length)]
 }
 
-program
-  .description('Compile the javascript files into cocoascript')
-  .usage('[options]')
-  .option('-w, --watch', 'Watch and rebuild automatically')
-  .option('-q, --quiet', 'Hide compilation warnings')
-  .option('-r, --run', 'Run plugin after compiling')
-  .parse(process.argv)
+const { argv } = yargs
+  .option('watch', {
+    alias: 'w',
+    describe: 'Watch and rebuild automatically',
+    type: 'boolean',
+  })
+  .option('quiet', {
+    alias: 'q',
+    describe: 'Hide compilation warnings',
+    type: 'boolean',
+  })
+  .option('run', {
+    alias: 'r',
+    describe: 'Run plugin after compiling',
+    type: 'boolean',
+  })
+  .help()
+  .strict()
 
 let packageJSON
 try {
@@ -71,18 +80,11 @@ if (!fs.existsSync(path.join(output, 'Contents', 'Sketch'))) {
 
 const manifestFolder = path.dirname(manifest)
 
-const webpackConfig = generateWebpackConfig(
-  program,
-  output,
-  manifestFolder,
-  skpmConfig
-)
-
 const defaultAppcastURL = `https://raw.githubusercontent.com/${skpmConfig.repository}/master/.appcast.xml`
 
-function copyManifest(manifestJSON) {
+async function copyManifest(manifestJSON) {
   return new Promise((resolve, reject) => {
-    const copy = objectAssign({}, manifestJSON)
+    const copy = { ...manifestJSON }
     copy.version = manifestJSON.version || skpmConfig.version
     copy.description = manifestJSON.description || skpmConfig.description
     copy.homepage = manifestJSON.homepage || skpmConfig.homepage
@@ -112,7 +114,7 @@ function copyManifest(manifestJSON) {
 
     copy.commands = manifestJSON.commands.map(command => {
       const basename = path.basename(command.script)
-      return objectAssign({}, command, { script: basename })
+      return { ...command, script: basename }
     })
 
     fs.writeFile(
@@ -227,7 +229,7 @@ function buildCallback(file, watching) {
         process.exit(1)
       }
     } else {
-      if (stats.hasWarnings() && !program.quiet) {
+      if (stats.hasWarnings() && !argv.quiet) {
         ;(info.warnings || []).forEach(warning => {
           console.warn(warning)
         })
@@ -248,36 +250,27 @@ function buildCallback(file, watching) {
   }
 }
 
-function buildCommandsAndResources(commands, resources, watch) {
-  return getSketchVersion()
-    .then(sketchVersion => {
-      commands.concat(resources).forEach(command => {
-        const file = command.script || command
-        const compiler = webpack(
-          webpackConfig(
-            file,
-            command.identifiers,
-            command.handlers,
-            sketchVersion
-          )
-        )
-        if (watch) {
-          compiler.watch({}, buildCallback(file, watch))
-        } else {
-          compiler.run(buildCallback(file))
-        }
-      })
-    })
-    .catch(err => {
-      console.error(`${chalk.red('error')} Error while building`)
-      console.error(err)
-      if (!program.watch) {
-        process.exit(1)
-      }
-    })
+async function buildCommandsAndResources(commands, resources, watch) {
+  const webpackConfig = await generateWebpackConfig(
+    argv,
+    output,
+    manifestFolder,
+    skpmConfig
+  )
+  commands.concat(resources).forEach(async command => {
+    const file = command.script || command
+    const compiler = webpack(
+      await webpackConfig(file, command.identifiers, command.handlers)
+    )
+    if (watch) {
+      compiler.watch({}, buildCallback(file, watch))
+    } else {
+      compiler.run(buildCallback(file))
+    }
+  })
 }
 
-function buildPlugin() {
+async function buildPlugin() {
   let manifestJSON
   try {
     // delete the require cache so that we can require it anew (when watching)
@@ -295,74 +288,69 @@ function buildPlugin() {
   const now = Date.now()
 
   // start by copying the manifest
-  return copyManifest(manifestJSON)
-    .then(() => {
-      if (!program.watch) {
-        console.log(
-          `${chalk.dim(`[${counter + 1}/${steps}]`)} 🖨  Copied ${chalk.blue(
-            skpmConfig.manifest
-          )} in ${chalk.grey(Date.now() - now)}ms`
-        )
-        checkEnd()
-      } else {
-        console.log(
-          `🖨  Copied ${chalk.blue(skpmConfig.manifest)} in ${chalk.grey(
-            Date.now() - now
-          )}ms`
-        )
-      }
-    })
-    .then(() =>
-      // and then, build the commands
-      buildCommandsAndResources(commands, resources, program.watch)
+  try {
+    await copyManifest(manifestJSON)
+  } catch (err) {
+    console.error(
+      `${chalk.red('error')} Error while copying ${skpmConfig.manifest}`
     )
-    .catch(err => {
-      console.error(
-        `${chalk.red('error')} Error while copying ${skpmConfig.manifest}`
-      )
-      console.error(err)
-      if (!program.watch) {
-        process.exit(1)
-      }
-    })
+    console.error(err)
+    if (!argv.watch) {
+      process.exit(1)
+    }
+  }
+
+  if (!argv.watch) {
+    console.log(
+      `${chalk.dim(`[${counter + 1}/${steps}]`)} 🖨  Copied ${chalk.blue(
+        skpmConfig.manifest
+      )} in ${chalk.grey(Date.now() - now)}ms`
+    )
+    checkEnd()
+  } else {
+    console.log(
+      `🖨  Copied ${chalk.blue(skpmConfig.manifest)} in ${chalk.grey(
+        Date.now() - now
+      )}ms`
+    )
+  }
+
+  // and then, build the commands
+  return buildCommandsAndResources(commands, resources, argv.watch)
 }
 
-function buildAndWatchPlugin() {
-  let compilers
-  buildPlugin().then(_compilers => {
-    compilers = _compilers
-  })
+async function buildAndWatchPlugin() {
+  let compilers = await buildPlugin()
 
-  if (program.watch) {
-    fs.watch(manifest, () =>
+  if (argv.watch) {
+    fs.watch(manifest, async () => {
       // manifest has changed, we need to rebuild the plugin entirely
 
-      Promise.resolve()
-        .then(() => {
-          if (!compilers) {
-            return []
-          }
-          // if we are watching the commands, close the watchers first
-          return Promise.all(
-            compilers.map(
-              c =>
-                new Promise(resolve => {
-                  if (c) {
-                    c.close(resolve)
-                  } else {
-                    resolve()
-                  }
-                })
-            )
+      if (compilers) {
+        // if we are watching the commands, close the watchers first
+        await Promise.all(
+          compilers.map(
+            c =>
+              new Promise(resolve => {
+                if (c) {
+                  c.close(resolve)
+                } else {
+                  resolve()
+                }
+              })
           )
-        })
-        .then(() =>
-          buildPlugin().then(_compilers => {
-            compilers = _compilers
-          })
         )
-    )
+      }
+
+      compilers = buildPlugin()
+    })
   }
 }
 
-buildAndWatchPlugin()
+try {
+  buildAndWatchPlugin()
+} catch (err) {
+  console.error(`${chalk.red('error')} Error while building the plugin`)
+  console.error(err)
+  process.exit(1)
+}
