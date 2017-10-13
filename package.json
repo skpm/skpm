@@ -14,11 +14,11 @@
     "prebuild": "rimraf lib",
     "build": "babel src -d lib -D",
     "prepublish": "npm run -s build",
-    "test": "eslint .",
+    "test": "eslint src && eslint skpm-utils && eslint skpm-build/src",
     "lint-staged": "lint-staged",
     "prettier:base":
       "prettier --single-quote --trailing-comma es5 --no-semi --write",
-    "prettify": "npm run prettier:base \"./lib/**/*.js\""
+    "prettify": "npm run prettier:base \"./src/**/*.js\""
   },
   "repository": {
     "type": "git",
