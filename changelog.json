@@ -1,6 +1,12 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.0": [
+      "[New] Support custom webpack config: create a webpack.skpm.config.js on the root of your project and export a function taking the default webpack config as an argument",
+      "[New] Replace `skpm init` by `skpm create my-plugin`. It takes a github repository as the `template` option in order to bootstrap the plugin with a specific template",
+      "[Improved] Split out the `build` and `link` command to a separate package (skpm-builder). This ensure that the installed dependencies are minimal",
+      "[Fixed] Lazy requiring `keytar` would sometime fail #75"
+    ],
     "0.11.0": [
       "[New] Support glob in resources",
       "[New] allow to `require` html, and other static files",
