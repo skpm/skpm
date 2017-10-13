@@ -22,6 +22,22 @@ const EMPTY_APPCAST = {
   },
 }
 
+let CACHED_TOKEN
+async function getToken(repo) {
+  if (CACHED_TOKEN) {
+    return CACHED_TOKEN
+  }
+  try {
+    const token = auth.getToken()
+    await github.getRepo(token, repo)
+    CACHED_TOKEN = token
+    return token
+  } catch (e) {
+    error(`The repository doesn't exist or the GitHub token is invalid`)
+    throw e
+  }
+}
+
 export default asyncCommand({
   command: 'publish <bump>',
 
@@ -76,21 +92,18 @@ export default asyncCommand({
       throw new Error('Missing "repository" field in the package.json.')
     }
 
+    let token
+
+    if (argv.createRelease || argv.addToRegistry) {
+      token = getToken()
+    }
+
     let tag = skpmConfig.version
 
     const spinner = ora({
       text: `Checking if \`${repo}\` is accessible`,
       color: 'magenta',
     }).start()
-
-    let token
-    try {
-      token = auth.getToken()
-      await github.getRepo(token, repo)
-    } catch (e) {
-      error(`The repository doesn't exist or the GitHub token is invalid`)
-      throw e
-    }
 
     if (argv.bump) {
       spinner.text = 'Bumping package.json version and creating git tag'
