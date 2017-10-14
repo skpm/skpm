@@ -1,7 +1,7 @@
-const chalk = require('chalk')
-const runPluginCommand = require('run-sketch-plugin')
+import chalk from 'chalk'
+import runPluginCommand from 'run-sketch-plugin'
 
-module.exports = function SketchCommandPlugin(options) {
+export default function SketchCommandPlugin(options) {
   return {
     apply(compiler) {
       const { bundleURL, commandIdentifier } = options

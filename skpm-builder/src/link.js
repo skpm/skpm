@@ -1,19 +1,19 @@
 #!/usr/bin/env node
-const fs = require('fs')
-const path = require('path')
-const program = require('commander')
-const chalk = require('chalk')
-const plist = require('simple-plist')
-const semver = require('semver')
-const getSketchVersion = require('./utils/getSketchVersion')
-const exec = require('./utils/exec')
-const config = require('./utils/config').get()
-const getSkpmConfigFromPackageJSON = require('./utils/getSkpmConfigFromPackageJSON')
+import fs from 'fs'
+import { join } from 'path'
+import yargs from 'yargs'
+import chalk from 'chalk'
+import plist from 'simple-plist'
+import semver from 'semver'
+import { get as getConfig } from 'skpm-utils/tool-config'
+import getSkpmConfigFromPackageJSON from 'skpm-utils/skpm-config'
+import exec from 'skpm-utils/exec'
+import getSketchVersion from './utils/getSketchVersion'
 
-const { pluginDirectory } = config
+const { pluginDirectory } = getConfig()
 
 function testDevMode(then) {
-  const prefPath = path.join(
+  const prefPath = join(
     require('os').homedir(),
     'Library/Preferences/com.bohemiancoding.sketch3.plist'
   )
@@ -40,20 +40,14 @@ function testDevMode(then) {
   }
 }
 
-program
-  .description('Symlink a local plugin for development')
-  .usage('[options] <path>')
-  .arguments('<path>')
-  .action(pathToPlugin => {
-    program.path = pathToPlugin
-  })
-  .parse(process.argv)
+yargs
+  .help()
+  .strict()
+  .usage('Usage: cd path/to/my/plugin && skpm-link').argv
 
-if (!program.path) {
-  program.path = '.'
-}
+const path = '.'
 
-if (program.path.indexOf(pluginDirectory) !== -1) {
+if (path.indexOf(pluginDirectory) !== -1) {
   console.error(
     `${chalk.red(
       'error'
@@ -63,9 +57,9 @@ if (program.path.indexOf(pluginDirectory) !== -1) {
 }
 
 function getPath(file) {
-  return program.path[0] === '/'
-    ? path.join(program.path, file) // absolute path
-    : path.join(process.cwd(), program.path, file) // relative path
+  return path === '/'
+    ? join(path, file) // absolute path
+    : join(process.cwd(), path, file) // relative path
 }
 
 let packageJSON
@@ -103,14 +97,12 @@ console.log(
 
 try {
   // Create the encompassing directory if it doesn't already exist
-  if (!fs.existsSync(path.join(pluginDirectory, skpmConfig.name))) {
-    fs.mkdirSync(path.join(pluginDirectory, skpmConfig.name))
+  if (!fs.existsSync(join(pluginDirectory, skpmConfig.name))) {
+    fs.mkdirSync(join(pluginDirectory, skpmConfig.name))
   }
 
   // Show an error if this symlink already exists
-  if (
-    fs.existsSync(path.join(pluginDirectory, skpmConfig.name, skpmConfig.main))
-  ) {
+  if (fs.existsSync(join(pluginDirectory, skpmConfig.name, skpmConfig.main))) {
     console.log(`${chalk.red('error')} This plugin has already been linked.`)
     process.exit(0)
   }
@@ -118,7 +110,7 @@ try {
   // Create the symlink within the encompassing directory
   fs.symlinkSync(
     getPath(skpmConfig.main),
-    path.join(pluginDirectory, skpmConfig.name, skpmConfig.main)
+    join(pluginDirectory, skpmConfig.name, skpmConfig.main)
   )
 
   testDevMode(() => {

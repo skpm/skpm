@@ -5,66 +5,75 @@
 </div>
 <br />
 <div align="center">
-  <strong>A utility to build, publish, install and manage <a href="https://www.sketchapp.com/">sketch</a> plugins.</strong>
+  <strong>A utility to create, build and publish <a href="https://www.sketchapp.com/">sketch</a> plugins.</strong>
 </div>
 
 ## Installation
+
+> Important: [Node.js](https://nodejs.org/en/download/) > V6.x is a minimum requirement.
 
 ```bash
 npm install -g skpm
 ```
 
-_The `npm` command-line tool is bundled with Node.js. If you have it installed, then you already have npm too. If not, go download [Node.js](https://nodejs.org/en/download/)._
-
 ## Usage
 
-* [Scaffold the architecture of a new plugin](#scaffold-the-architecture-of-a-new-plugin)
-* [Build the plugin](#build-the-plugin)
-* [View the plugin's log](#view-the-plugins-log)
-* [Symlinking the local plugin to the sketch plugins folder](#symlinking-the-local-plugin-to-the-sketch-plugins-folder)
-* [Publish the plugin on the registry](#publish-the-plugin-on-the-registry)
-
-## Documentation
-
-#### Scaffold the architecture of a new plugin
-
-To interactively create the architecture to start developing a new plugin (see the [sketch documentation](http://developer.sketchapp.com/introduction/plugin-bundles/) for more information):
-
 ```bash
-skpm init
+skpm create my-plugin
 ```
 
-This will create:
-* a `package.json` file
-* a `src` folder with:
-  * a `manifest.json` file
-  * a `command.js` file for an example of command
-* a `.gitignore` file if non-existent
+The above command pulls the template from [skpm/skpm](https://github.com/skpm/skpm/tree/master/template), prompts for some information, and generates the project at ./my-plugin/.
 
-The `package.json` must contain 3 specific fields:
-* `skpm.main`: pointing to your `.sketchplugin`
-* `skpm.manifest`: pointing to your `manifest.json` (`src/manifest.json` by default)
-* `repository`: pointing to your github repository
+* [Create a new plugin](#create-a-new-plugin)
+* [Build the plugin](#build-the-plugin)
+* [View the plugin's log](#view-the-plugins-log)
+* [Publish the plugin on the registry](#publish-the-plugin-on-the-registry)
+
+#### Create a new plugin
+
+```bash
+skpm create <plugin-name>
+
+--name        The plugin display name.
+--cwd         A directory to use instead of $PWD.
+--force       Force option to create the directory for the new app. [boolean] [default: false]
+--template    The repository hosting the template to start from.    [string]  [default: skpm/skpm]
+--git         Initialize version control using git.                 [boolean] [default: true]
+--install     Installs dependencies.                                [boolean] [default: true]
+```
+
+> ##### A note on templates
+>
+> The purpose of official skpm plugin templates are to provide opinionated development tooling setups so that users can get started with actual plugin code as fast as possible. However, these templates are un-opinionated in terms of how you structure your plugin code and what libraries you use in addition to skpm.
+>
+> Current available official templates include:
+>
+> * [`skpm/skpm`](https://github.com/skpm/skpm/tree/master/template) - The simplest possible plugin setup. (_default_)
+>
+> * [`skpm/with-prettier`](https://github.com/skpm/with-prettier) - A plugin setup featuring linting with ESLint and code formatting with Prettier.
+>
+> > 💁 Tip: Any Github repo with a 'template' folder can be used as a custom template:
+> > `skpm create <project-name> --template=<username>/<repository>`
 
 #### Build the plugin
 
-To transpile the JavaScript to CocoaScript and copy the `manifest.json` to the `.sketchplugin`:
+Once the installation is done, you can run some commands inside the project folder:
+
 ```bash
-skpm build
+npm run build
 ```
 
 To watch for changes:
 
 ```bash
-skpm build --watch
+npm run watch
 ```
 
-Additionally, some fields from the `package.json` will be set in the `manifest.json` (if not present):
-* version
-* name
-* description
-* homepage
-* appcast
+Additionally, if you wish to run the plugin every time it is built:
+
+```bash
+npm run watch -- --run
+```
 
 #### View the plugin's log
 
@@ -77,32 +86,37 @@ Skpm provides a convenient way to do the latter:
 
 ```bash
 skpm log
+
+  -f, -F        The `-f` option causes tail to not stop when end of file is
+                reached, but rather to wait for additional data to be appended
+                to the input.                       [boolean] [default: "false"]
+  --number, -n  Shows `number` lines of the logs.                       [number]
 ```
-
-The `-f` option causes `skpm log` to not stop when the end of logs is reached, but rather to wait for additional data to be appended to the input
-
-#### Symlinking the local plugin to the sketch plugins folder
-
-```bash
-skpm link path-to-local-plugin
-```
-
-It will also ask you if you want to [disable the caching mechanism](http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running) and force Sketch to always reload a Plugin’s code from disk (recommended when developing).
 
 #### Publish the plugin on the registry
 
 To publish a new version of the plugin to the registry:
+
 ```bash
-skpm publish <newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease
+skpm publish <new-version> | major | minor | patch | premajor | preminor | prepatch | prerelease
+
+  --repo-url          Specify the repository URL (default to the one specified
+                      in package.json).                                 [string]
+  --skip-release      Do not create a release on GitHub.com.           [boolean]
+  --open-release, -o  Open the newly created release on GitHub.com.    [boolean]
+  --skip-registry     Do not publish to the plugins registry if not already
+                      present.                                         [boolean]
+  --download-url      Specify the new version's download URL (default to the
+                      asset of the release created on GitHub.com).      [string]
 ```
 
-The exact order of execution is as follows:
+The exact order of execution (without options) is as follows:
 * Run the `preversion` script
 * Bump `version` in package.json as requested (`patch`, `minor`, `major`, etc).
 * Run the `version` script
 * Commit and tag
 * Run the `postversion` script.
-* Run the `build` script
+* Run the `prepublish` or `build` script
 * Zip the folder specified in the `main` field
 * Create a draft release on GitHub
 * Upload the zip to GitHub

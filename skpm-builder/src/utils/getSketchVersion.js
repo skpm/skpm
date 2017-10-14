@@ -1,13 +1,17 @@
-const config = require('./config').get()
-const { execFile } = require('./exec')
-const path = require('path')
+import { get as getConfig } from 'skpm-utils/tool-config'
+import { execFile } from 'skpm-utils/exec'
+import path from 'path'
+
+const config = getConfig()
 
 const regex = /sketchtool Version ((\d|\.)+) \(\d+\)/
 function extractVersion(string) {
   return regex.exec(string)[1]
 }
 
-module.exports = function getSketchVersion() {
+let CACHED_VERSION
+
+function getSketchVersion() {
   return execFile(
     path.join(
       config.sketchPath,
@@ -26,4 +30,13 @@ module.exports = function getSketchVersion() {
       return version
     })
     .catch(() => undefined)
+}
+
+export default async function getSketchVersionWithCache() {
+  if (CACHED_VERSION) {
+    return CACHED_VERSION
+  }
+  const version = await getSketchVersion()
+  CACHED_VERSION = version
+  return version
 }
