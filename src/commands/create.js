@@ -6,7 +6,7 @@ import { green } from 'chalk'
 import { resolve } from 'path'
 import { prompt } from 'inquirer'
 import asyncCommand from '../utils/async-command'
-import { info, isDir, error, trim, warn } from '../utils'
+import { info, isDir, error, warn } from '../utils'
 import { install, initGit, isMissing } from '../utils/setup'
 
 const TEMPLATE = 'skpm/skpm'
@@ -203,18 +203,18 @@ export default asyncCommand({
       await initGit(target)
     }
 
-    return `${trim(`
-			To get started, cd into the new directory:
-			  ${green(`cd ${argv.dest}`)}
+    return `${`
+To get started, cd into the new directory:
+  ${green(`cd ${argv.dest}`)}
 
-			To start a development live-reload build:
-        ${green(`npm run start`)}
+To start a development live-reload build:
+  ${green(`npm run start`)}
 
-      To build the plugin:
-			  ${green(`npm run build`)}
+To build the plugin:
+  ${green(`npm run build`)}
 
-			To publish the plugin:
-			  ${green('skpm publish')}
-		`)}\n`
+To publish the plugin:
+  ${green('skpm publish')}
+`}\n`
   },
 })
