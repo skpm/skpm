@@ -10,9 +10,9 @@ os:
 
 install:
   - npm prune
+  - npm install
   - cd skpm-builder && npm prune && npm install && cd ..
   - cd skpm-utils && npm prune && npm install && cd ..
-  - npm install
 
 cache:
   directories:
