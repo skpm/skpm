@@ -9,6 +9,7 @@ import logout from './commands/logout'
 import publish from './commands/publish'
 import pkg from '../package.json'
 import checkVersion from '../check'
+import logo from './utils/logo'
 
 global.Promise = require('bluebird')
 
@@ -23,7 +24,8 @@ yargs
   .command(login)
   .command(logout)
   .usage(
-    `skpm ${pkg.version}
+    `${logo(`skpm ${pkg.version}`)}
+
 For help with a specific command, enter:
   skpm help [command]
 `
