@@ -14,7 +14,7 @@
     "prebuild": "rimraf lib",
     "build": "babel src -d lib -D",
     "prepublish": "npm run -s build",
-    "test": "eslint src && eslint skpm-utils && eslint skpm-build/src",
+    "test": "eslint . --ignore-path .gitignore",
     "lint-staged": "lint-staged",
     "prettier:base":
       "prettier --single-quote --trailing-comma es5 --no-semi --write",
