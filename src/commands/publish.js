@@ -49,10 +49,9 @@ export default asyncCommand({
         'Specify the repository URL (default to the one specified in package.json).',
       type: 'string',
     },
-    'create-release': {
-      description: 'Create a release on GitHub.com.',
+    'skip-release': {
+      description: 'Do not create a release on GitHub.com.',
       type: 'boolean',
-      default: 'true',
       conflicts: 'open-release',
       implies: 'download-url',
     },
@@ -60,12 +59,11 @@ export default asyncCommand({
       description: 'Open the newly created release on GitHub.com.',
       type: 'boolean',
       alias: 'o',
-      default: 'false',
     },
-    'add-to-registry': {
-      description: 'Publish to the plugins registry if not already present.',
+    'skip-registry': {
+      description:
+        'Do not publish to the plugins registry if not already present.',
       type: 'boolean',
-      default: 'true',
     },
     'download-url': {
       description:
@@ -94,7 +92,7 @@ export default asyncCommand({
 
     let token
 
-    if (argv.createRelease || argv.addToRegistry) {
+    if (!argv.skipRelease || !argv.skipRegistry) {
       token = getToken()
     }
 
@@ -160,7 +158,7 @@ export default asyncCommand({
       await exec(`git push -f origin HEAD ${tag}`)
     }
 
-    if (argv.createRelease) {
+    if (!argv.skipRelease) {
       let script = (packageJSON.scripts || {}).prepublish && 'prepublish'
       if (!script) {
         script = (packageJSON.scripts || {}).build && 'build'
@@ -198,7 +196,7 @@ export default asyncCommand({
       await exec(`rm -f ${tempZip}`)
     }
 
-    if (argv.addToRegistry) {
+    if (!argv.skipRegistry) {
       spinner.text = 'Publishing the plugin on the official plugin directory'
       await github.addPluginToPluginsRegistryRepo(token, packageJSON, repo)
     }

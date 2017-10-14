@@ -61,6 +61,10 @@ export default asyncCommand({
       Object.assign(argv, response)
     }
 
+    if (!argv.name) {
+      argv.name = argv.dest // eslint-disable-line
+    }
+
     const cwd = resolve(argv.cwd)
     const target = argv.dest && resolve(cwd, argv.dest)
     const exists = target && isDir(target)

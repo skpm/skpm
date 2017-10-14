@@ -4,7 +4,7 @@
   "description": "A utility to build, publish and install sketch plugins",
   "main": "lib/index.js",
   "bin": {
-    "skpm": "lib/skpm.js"
+    "skpm": "lib/index.js"
   },
   "engines": {
     "node": ">= 6"
