@@ -1,5 +1,5 @@
-import { get as getConfig } from 'skpm-utils/tool-config'
-import { exec } from 'skpm-utils/exec'
+import { get as getConfig } from '@skpm/utils/tool-config'
+import { exec } from '@skpm/utils/exec'
 import chalk from 'chalk'
 
 const config = getConfig()

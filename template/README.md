@@ -32,8 +32,9 @@ To customize webpack create `webpack.skpm.config.js` file which exports function
  * Supports asynchronous changes when promise is returned.
  *
  * @param {object} config - original webpack config.
+ * @param {boolean} isPluginCommand - wether the config is for a plugin command or a resource
  **/
-export default function (config) {
+module.exports = function (config, isPluginCommand) {
   /** you can change config here **/
 }
 ```

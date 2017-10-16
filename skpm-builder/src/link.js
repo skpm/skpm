@@ -5,9 +5,9 @@ import yargs from 'yargs'
 import chalk from 'chalk'
 import plist from 'simple-plist'
 import semver from 'semver'
-import { get as getConfig } from 'skpm-utils/tool-config'
-import getSkpmConfigFromPackageJSON from 'skpm-utils/skpm-config'
-import exec from 'skpm-utils/exec'
+import { get as getConfig } from '@skpm/utils/tool-config'
+import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
+import exec from '@skpm/utils/exec'
 import getSketchVersion from './utils/getSketchVersion'
 
 const { pluginDirectory } = getConfig()

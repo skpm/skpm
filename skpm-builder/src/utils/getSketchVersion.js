@@ -1,5 +1,5 @@
-import { get as getConfig } from 'skpm-utils/tool-config'
-import { execFile } from 'skpm-utils/exec'
+import { get as getConfig } from '@skpm/utils/tool-config'
+import { execFile } from '@skpm/utils/exec'
 import path from 'path'
 
 const config = getConfig()

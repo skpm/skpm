@@ -1,5 +1,5 @@
 {
-  "name": "skpm-utils",
+  "name": "@skpm/utils",
   "version": "0.1.0",
   "description": "A set of functions used across skpm",
   "main": "index.js",

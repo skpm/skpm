@@ -174,7 +174,7 @@ export default function getWebpackConfig(
     }
 
     if (userDefinedWebpackConfig) {
-      await userDefinedWebpackConfig(webpackConfig)
+      await userDefinedWebpackConfig(webpackConfig, !!commandIdentifiers)
     }
 
     return webpackConfig

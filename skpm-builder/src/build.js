@@ -6,7 +6,7 @@ import yargs from 'yargs'
 import parseAuthor from 'parse-author'
 import chalk from 'chalk'
 import glob from 'glob'
-import getSkpmConfigFromPackageJSON from 'skpm-utils/skpm-config'
+import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
 import generateWebpackConfig from './utils/webpackConfig'
 
 const buildEmojis = ['🔧', '🔨', '⚒', '🛠', '⛏', '🔩']
@@ -257,7 +257,10 @@ async function buildCommandsAndResources(commands, resources, watch) {
     manifestFolder,
     skpmConfig
   )
-  commands.concat(resources).forEach(async command => {
+
+  const compilers = []
+
+  for (const command of commands.concat(resources)) {
     const file = command.script || command
     const compiler = webpack(
       await webpackConfig(file, command.identifiers, command.handlers)
@@ -267,7 +270,11 @@ async function buildCommandsAndResources(commands, resources, watch) {
     } else {
       compiler.run(buildCallback(file))
     }
-  })
+
+    compilers.push(compiler)
+  }
+
+  return compilers
 }
 
 async function buildPlugin() {

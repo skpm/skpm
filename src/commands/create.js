@@ -140,11 +140,9 @@ export default asyncCommand({
         }
       })
       // Update each file's contents
-      let buf
-      let entry
       const enc = 'utf8'
-      for (entry of keeps) {
-        buf = await fs.readFile(entry, enc)
+      for (const entry of keeps) {
+        let buf = await fs.readFile(entry, enc)
         dict.forEach((v, k) => {
           buf = buf.replace(k, v)
         })
