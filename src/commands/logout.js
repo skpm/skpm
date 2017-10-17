@@ -14,7 +14,7 @@ export default asyncCommand({
     }).start()
 
     try {
-      auth.deleteToken()
+      await auth.deleteToken()
     } catch (err) {
       spinner.fail(`Error while deleting token`)
       throw err

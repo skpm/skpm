@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.1": [
+      "[Fixed] Fix conflicting arguments in `publish` command (see https://github.com/yargs/yargs/issues/929)"
+    ],
     "1.0.0": [
       "[New] Support custom webpack config: create a webpack.skpm.config.js on the root of your project and export a function taking the default webpack config as an argument",
       "[New] Replace `skpm init` by `skpm create my-plugin`. It takes a github repository as the `template` option in order to bootstrap the plugin with a specific template",

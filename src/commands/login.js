@@ -23,7 +23,7 @@ export default asyncCommand({
     }
 
     spinner.text = 'Saving the token in the keychain'
-    auth.saveToken(argv.token)
+    await auth.saveToken(argv.token)
 
     spinner.succeed('Done!')
   },

@@ -28,7 +28,7 @@ async function getToken(repo) {
     return CACHED_TOKEN
   }
   try {
-    const token = auth.getToken()
+    const token = await auth.getToken()
     await github.getRepo(token, repo)
     CACHED_TOKEN = token
     return token
@@ -52,7 +52,7 @@ export default asyncCommand({
     'skip-release': {
       description: 'Do not create a release on GitHub.com.',
       type: 'boolean',
-      conflicts: 'open-release',
+      // conflicts: 'open-release', // TODO un-comment when https://github.com/yargs/yargs/issues/929 is fixed
       implies: 'download-url',
     },
     'open-release': {
@@ -93,7 +93,7 @@ export default asyncCommand({
     let token
 
     if (!argv.skipRelease || !argv.skipRegistry) {
-      token = getToken()
+      token = await getToken(repo)
     }
 
     let tag = skpmConfig.version
