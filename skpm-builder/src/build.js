@@ -266,12 +266,10 @@ async function buildCommandsAndResources(commands, resources, watch) {
       await webpackConfig(file, command.identifiers, command.handlers)
     )
     if (watch) {
-      compiler.watch({}, buildCallback(file, watch))
+      compilers.push(compiler.watch({}, buildCallback(file, watch)))
     } else {
       compiler.run(buildCallback(file))
     }
-
-    compilers.push(compiler)
   }
 
   return compilers
