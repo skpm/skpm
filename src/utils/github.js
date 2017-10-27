@@ -200,7 +200,7 @@ export default {
         .then(fork => JSON.parse(fork))
         .then(fork =>
           getOriginBranchSHA({ res, fork }).then(sha => ({
-            res,
+            pluginUpdate: res,
             fork,
             sha,
           }))
