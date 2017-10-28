@@ -9,22 +9,30 @@
   "engines": {
     "node": ">= 6"
   },
-  "files": ["lib", "check.js"],
+  "files": [
+    "lib",
+    "check.js"
+  ],
   "scripts": {
     "prebuild": "rimraf lib",
     "build": "babel src -d lib -D",
     "prepublish": "npm run -s build",
     "test": "eslint . --ignore-path .gitignore",
     "lint-staged": "lint-staged",
-    "prettier:base":
-      "prettier --single-quote --trailing-comma es5 --no-semi --write",
+    "prettier:base": "prettier --single-quote --trailing-comma es5 --no-semi --write",
     "prettify": "npm run prettier:base \"./src/**/*.js\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/skpm/skpm.git"
   },
-  "keywords": ["sketch", "cocoascript", "javascript", "babel", "skpm"],
+  "keywords": [
+    "sketch",
+    "cocoascript",
+    "javascript",
+    "babel",
+    "skpm"
+  ],
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
   "bugs": {
@@ -67,7 +75,9 @@
     "xml2js": "^0.4.17",
     "yargs": "^9.0.1"
   },
-  "pre-commit": ["lint-staged"],
+  "pre-commit": [
+    "lint-staged"
+  ],
   "lint-staged": {
     "*.js": [
       "npm run prettier:base",
