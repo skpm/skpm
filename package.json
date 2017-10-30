@@ -13,7 +13,7 @@
   "scripts": {
     "prebuild": "rimraf lib",
     "build": "babel src -d lib -D",
-    "prepublish": "npm run -s build",
+    "prepare": "npm run -s build",
     "test": "eslint . --ignore-path .gitignore",
     "lint-staged": "lint-staged",
     "prettier:base":
