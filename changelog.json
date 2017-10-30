@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.3": [
+      "[Improved] Look for `prepare` script when publishing (`prepublish` is deprecated in npm@5)"
+    ],
+    "1.0.2": ["[Fixed] Typo when publishing a plugin"],
     "1.0.1": [
       "[Fixed] Fix conflicting arguments in `publish` command (see https://github.com/yargs/yargs/issues/929)"
     ],
