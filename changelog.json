@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.4": ["[Improved] Cleaner logs"],
     "1.0.3": [
       "[Improved] Look for `prepare` script when publishing (`prepublish` is deprecated in npm@5)"
     ],

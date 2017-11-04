@@ -38,12 +38,21 @@ export default asyncCommand({
 
     const child = childProcess.spawn('tail', args, {
       cwd: process.cwd(),
-      stdio: 'inherit',
     })
 
     if (child.stdout) {
       child.stdout.on('data', data => {
-        console.log(data)
+        console.log(
+          String(data)
+            .replace(/ «Plugin Output»/g, '')
+            .replace(/\n$/g, '')
+        )
+      })
+    }
+
+    if (child.stderr) {
+      child.stderr.on('data', data => {
+        console.error(String(data))
       })
     }
 
