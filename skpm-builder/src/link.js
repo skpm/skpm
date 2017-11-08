@@ -3,41 +3,43 @@ import fs from 'fs'
 import { join } from 'path'
 import yargs from 'yargs'
 import chalk from 'chalk'
-import plist from 'simple-plist'
 import semver from 'semver'
 import { get as getConfig } from '@skpm/utils/tool-config'
 import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
-import exec from '@skpm/utils/exec'
+import { exec } from '@skpm/utils/exec'
 import getSketchVersion from './utils/getSketchVersion'
 
 const { pluginDirectory } = getConfig()
 
-function testDevMode(then) {
-  const prefPath = join(
-    require('os').homedir(),
-    'Library/Preferences/com.bohemiancoding.sketch3.plist'
-  )
-  const data = plist.readFileSync(prefPath)
+function testDevMode() {
+  const command = (action, value) =>
+    `/usr/bin/defaults ${action} ~/Library/Preferences/com.bohemiancoding.sketch3.plist AlwaysReloadScript ${value}`
 
-  if (!data.AlwaysReloadScript) {
-    const yesno = require('yesno')
-    console.log(
-      `The sketch developer mode is not enabled ${chalk.dim(
-        '(http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running)'
-      )}.`
-    )
-    yesno.ask('Do you want to enable it? (y/N)', false, ok => {
-      if (ok) {
-        exec
-          .exec(`defaults write ${prefPath} AlwaysReloadScript -bool YES`)
-          .then(then, then)
-      } else {
-        then()
-      }
-    })
-  } else {
-    then()
-  }
+  return exec(command('read', ''), { encoding: 'utf8' }).then(output => {
+    const enabled = output.trim() === '1'
+
+    if (!enabled) {
+      const yesno = require('yesno')
+      console.log(
+        `The Sketch developer mode is not enabled ${chalk.dim(
+          '(http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running)'
+        )}.`
+      )
+      return new Promise((resolve, reject) => {
+        yesno.ask('Do you want to enable it? (y/N)', false, ok => {
+          if (ok) {
+            exec(command('write', '-bool YES'))
+              .then(resolve)
+              .catch(reject)
+          } else {
+            resolve()
+          }
+        })
+      })
+    }
+
+    return 'Already enabled'
+  })
 }
 
 yargs
@@ -113,8 +115,14 @@ try {
     join(pluginDirectory, skpmConfig.name, skpmConfig.main)
   )
 
-  testDevMode(() => {
-    getSketchVersion().then(sketchVersion => {
+  console.log(`${chalk.green('success')} Plugin ${skpmConfig.name} symlinked`)
+  console.log(
+    `${chalk.blue(skpmConfig.name)} - ${chalk.grey(skpmConfig.version)}`
+  )
+
+  testDevMode()
+    .then(getSketchVersion)
+    .then(sketchVersion => {
       if (sketchVersion && semver.gte(sketchVersion, '45.0.0')) {
         console.log()
         console.log(
@@ -124,13 +132,16 @@ try {
         )
         console.log()
       }
+      process.exit(0)
     })
-    console.log(`${chalk.green('success')} Plugin ${skpmConfig.name} symlinked`)
-    console.log(
-      `${chalk.blue(skpmConfig.name)} - ${chalk.grey(skpmConfig.version)}`
-    )
-    process.exit(0)
-  })
+    .catch(err => {
+      console.log(
+        `${chalk.red('error')} Error while enabling the Sketch developer mode.`
+      )
+      console.log((err || {}).body || err)
+      console.log(`${chalk.blue('info')} Continuing...`)
+      process.exit(0)
+    })
 } catch (err) {
   console.log(
     `${chalk.red('error')} Error while symlinking the plugin ${skpmConfig.name}`

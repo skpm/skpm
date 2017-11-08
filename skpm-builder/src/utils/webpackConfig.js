@@ -4,60 +4,8 @@ import chalk from 'chalk'
 import webpack from 'webpack'
 import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
-
-const header = `var that = this;
-function run (key, context) {
-  that.context = context;
-`
-// exports is defined here by webpack
-const footer = definedKeys => `  if (key === 'default' && typeof exports === 'function') {
-    exports(context);
-  } else {
-    exports[key](context);
-  }
-}
-${definedKeys
-  .map(k => {
-    if (k === 'onRun') {
-      return `that['${k}'] = run.bind(this, 'default')`
-    }
-    return `that['${k}'] = run.bind(this, '${k}')`
-  })
-  .join(';\n')}
-`
-
-function babelLoader(userDefinedBabelConfig) {
-  return {
-    test: /\.jsx?$/,
-    exclude: /node_modules/,
-    use: {
-      loader: 'babel-loader',
-      options: {
-        babelrc: false,
-        presets: [require('babel-preset-airbnb')],
-        ...(userDefinedBabelConfig || {}),
-      },
-    },
-  }
-}
-
-const staticResourceLoader = {
-  test: /\.(jpg|png|gif|css|html|svg|sh|py)$/,
-  use: {
-    loader: '@skpm/file-loader',
-    query: {
-      raw: true,
-      outputPath(url) {
-        return path.join('..', 'Resources', '_webpack_resources', url)
-      },
-      publicPath(url) {
-        return `"file://" + context.plugin.urlForResourceNamed("${url.split(
-          '../Resources/'
-        )[1]}").path()`
-      },
-    },
-  },
-}
+import BabelLoader from './babelLoader'
+import resourceLoader from './resourceLoader'
 
 async function getCommands(output, commandIdentifiers) {
   return Promise.all(
@@ -89,19 +37,7 @@ export default function getWebpackConfig(
     process.exit(1)
   }
 
-  const babelrcPath = path.join(process.cwd(), '.babelrc')
-  let userDefinedBabelConfig = null
-  try {
-    if (fs.existsSync(babelrcPath)) {
-      userDefinedBabelConfig = JSON.parse(fs.readFileSync(babelrcPath, 'utf8'))
-    } else if (skpmConfig.babel) {
-      userDefinedBabelConfig = skpmConfig.babel
-    }
-  } catch (err) {
-    console.error(`${chalk.red('error')} Error while reading babelrc`)
-    console.error(err)
-    process.exit(1)
-  }
+  const babelLoader = BabelLoader(skpmConfig)
 
   return async function webpackConfigGenerator(
     file,
@@ -111,6 +47,7 @@ export default function getWebpackConfig(
     const basename = path.basename(file)
 
     let plugins = []
+    const rules = [babelLoader]
 
     if (commandIdentifiers) {
       plugins.push(
@@ -134,8 +71,10 @@ export default function getWebpackConfig(
             'clearInterval',
           ],
         }),
-        new WebpackHeaderFooterPlugin(header, footer(commandHandlers))
+        new WebpackHeaderFooterPlugin(commandHandlers)
       )
+
+      rules.push(resourceLoader)
     }
 
     if (argv.run && commandIdentifiers) {
@@ -144,7 +83,7 @@ export default function getWebpackConfig(
 
     const webpackConfig = {
       module: {
-        rules: [staticResourceLoader, babelLoader(userDefinedBabelConfig)],
+        rules,
       },
       resolve: {
         extensions: ['.sketch.js', '.js'],
