@@ -50,6 +50,15 @@ export default function getWebpackConfig(
     const rules = [babelLoader]
 
     if (commandIdentifiers) {
+      if (commandHandlers.find(k => k === '__skpm_run')) {
+        console.error(
+          `${chalk.red(
+            'error'
+          )} __skpm_run is a reserved keyword for handlers. Please use something else.`
+        )
+        process.exit(1)
+      }
+
       plugins.push(
         new webpack.ProvidePlugin({
           console: require.resolve('sketch-polyfill-console'),
