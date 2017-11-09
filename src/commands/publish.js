@@ -169,7 +169,7 @@ export default asyncCommand({
 
       if (script) {
         spinner.text = 'Building the plugin'
-        await exec(`npm run ${script}`)
+        await exec(`NODE_ENV=production npm run ${script}`)
       }
 
       spinner.text = 'Zipping the plugin'

@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import webpack from 'webpack'
+import UglifyJSPlugin from 'uglifyjs-webpack-plugin'
 import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
 import BabelLoader from './babelLoader'
@@ -14,6 +15,9 @@ async function getCommands(output, commandIdentifiers) {
     )
   )
 }
+
+// avoid looking it up every time
+const isProd = process.env.NODE_ENV === 'production'
 
 export default function getWebpackConfig(
   argv,
@@ -46,7 +50,11 @@ export default function getWebpackConfig(
   ) {
     const basename = path.basename(file)
 
-    let plugins = []
+    let plugins = [
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
+      }),
+    ]
     const rules = [babelLoader]
 
     if (commandIdentifiers) {
@@ -88,6 +96,10 @@ export default function getWebpackConfig(
 
     if (argv.run && commandIdentifiers) {
       plugins = plugins.concat(await getCommands(output, commandIdentifiers))
+    }
+
+    if (isProd) {
+      plugins.push(new UglifyJSPlugin())
     }
 
     const webpackConfig = {
