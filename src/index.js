@@ -15,7 +15,10 @@ global.Promise = require('bluebird')
 
 checkVersion()
 
-updateNotifier({ pkg }).notify()
+updateNotifier({
+  pkg,
+  isGlobal: true,
+}).notify()
 
 yargs
   .command(create)
