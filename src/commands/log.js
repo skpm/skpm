@@ -1,5 +1,6 @@
 import childProcess from 'child_process'
 import { get as getConfig } from '@skpm/utils/tool-config'
+import { exec } from '@skpm/utils/exec'
 import asyncCommand from '../utils/async-command'
 import { error } from '../utils'
 
@@ -36,6 +37,8 @@ export default asyncCommand({
 
     args.push(config.logsLocation)
 
+    let restarted = false
+
     const child = childProcess.spawn('tail', args, {
       cwd: process.cwd(),
     })
@@ -52,12 +55,26 @@ export default asyncCommand({
 
     if (child.stderr) {
       child.stderr.on('data', data => {
-        console.error(String(data))
+        const dataString = String(data)
+        if (dataString.indexOf('No such file or directory')) {
+          restarted = true
+          return exec(`touch "${config.logsLocation}"`)
+            .then(() => {
+              this.handler(argv, done)
+            })
+            .catch(err => {
+              error('while reading the logs')
+              done(err)
+            })
+        }
+        return console.error(String(data))
       })
     }
 
     child.on('exit', () => {
-      done()
+      if (!restarted) {
+        done()
+      }
     })
 
     child.on('error', err => {
