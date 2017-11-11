@@ -15,8 +15,8 @@ function testDevMode() {
   const command = (action, value) =>
     `/usr/bin/defaults ${action} ~/Library/Preferences/com.bohemiancoding.sketch3.plist AlwaysReloadScript ${value}`
 
-  return exec(command('read', ''), { encoding: 'utf8' }).then(output => {
-    const enabled = output.trim() === '1'
+  return exec(command('read', ''), { encoding: 'utf8' }).then(({ stdout }) => {
+    const enabled = (stdout || '').trim() === '1'
 
     if (!enabled) {
       const yesno = require('yesno')
