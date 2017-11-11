@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.8": ["[Improved] Warn when installing `skpm` locally"],
+    "1.0.7": ["[Improved] `skpm log` now create the log file if not found"],
+    "1.0.6": ["[Improved] Minimize output on publish"],
+    "1.0.5": [],
     "1.0.4": ["[Improved] Cleaner logs"],
     "1.0.3": [
       "[Improved] Look for `prepare` script when publishing (`prepublish` is deprecated in npm@5)"
