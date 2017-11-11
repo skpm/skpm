@@ -78,8 +78,9 @@ npm run watch -- --run
 #### View the plugin's log
 
 To view the output of your `console.log`, you have a few different options:
+
+* Use the [`sketch-dev-tools`](https://github.com/skpm/sketch-dev-tools)
 * Open `Console.app` and look for the sketch logs
-* Use Safari's web inspector to debug your plugin's javascript context
 * Look at the `~/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log` file
 
 Skpm provides a convenient way to do the latter:
