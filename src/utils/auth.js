@@ -12,7 +12,8 @@ export default {
     return keytar.findPassword(tokenName).then(token => {
       if (!token) {
         error(
-          'No Github API token in keychain\n' +
+          'No Github API token found in keychain\n' +
+            'skpm needs a GitHub token to be able to publish releases.\nThe token needs the `repo` permissions in order to create releases.\n\n' +
             'Run `skpm login <token>` or set the `GITHUB_ACCESS_TOKEN` environment variable.',
           1
         )

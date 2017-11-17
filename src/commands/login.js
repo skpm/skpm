@@ -7,7 +7,7 @@ export default asyncCommand({
   command: 'login [token]',
 
   desc:
-    'Enter your GitHub access token and save it in the keychain.\n This token will be used to publish new releases on the repo.\n\n You can create a new token here: https://github.com/settings/tokens/new',
+    'Enter your GitHub access token and save it in the keychain.\n This token will be used to publish new releases on the repo.\nThe token needs the `repo` permissions in order to create releases. It will not be used for anything else.\n\nYou can create a new token here: https://github.com/settings/tokens/new',
 
   async handler(argv) {
     const spinner = ora({
