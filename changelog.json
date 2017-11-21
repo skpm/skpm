@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.10": ["[Fixed] Typo when checking for 'prepare' script on publish"],
     "1.0.9": [
       "[Improved] More information about the token needed to publish releases"
     ],

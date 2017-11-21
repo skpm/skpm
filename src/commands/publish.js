@@ -161,7 +161,7 @@ export default asyncCommand({
     if (!argv.skipRelease) {
       let script = (packageJSON.scripts || {}).prepublish && 'prepublish'
       if (!script) {
-        script = (packageJSON.scripts || {}).build && 'prepare'
+        script = (packageJSON.scripts || {}).prepare && 'prepare'
       }
       if (!script) {
         script = (packageJSON.scripts || {}).build && 'build'

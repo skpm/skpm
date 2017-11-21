@@ -52,7 +52,7 @@ export default function getWebpackConfig(
 
     let plugins = [
       new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
+        NODE_ENV: 'development', // default to 'development'
       }),
     ]
     const rules = [babelLoader]
