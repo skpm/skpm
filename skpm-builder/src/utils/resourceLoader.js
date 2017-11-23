@@ -1,6 +1,6 @@
 import path from 'path'
 
-const fileRegex = /^(?!.*\.(jsx?|tsx?)$).*/ // match everything except .jsx? and .tsx?
+const fileRegex = /^(?!.*\.(jsx?|tsx?|json)$).*/ // match everything except .jsx? and .tsx? and json
 
 const commandResourceLoader = {
   test: fileRegex,
@@ -12,9 +12,9 @@ const commandResourceLoader = {
         return path.join('..', 'Resources', '_webpack_resources', url)
       },
       publicPath(url) {
-        return `"file://" + context.plugin.urlForResourceNamed("${url.split(
-          '../Resources/'
-        )[1]}").path()`
+        return `"file://" + context.plugin.urlForResourceNamed("${
+          url.split('../Resources/')[1]
+        }").path()`
       },
     },
   },
