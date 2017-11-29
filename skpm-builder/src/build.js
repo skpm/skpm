@@ -145,22 +145,19 @@ function getCommands(manifestJSON) {
     if (c.handler) {
       prev[c.script].handlers.push(c.handler)
     } else if (c.handlers) {
-      if (Array.isArray(c.handlers)) {
-        c.handlers.forEach(h => {
-          prev[c.script].handlers.push(h)
-        })
-      } else if (c.handlers.actions) {
-        Object.keys(c.handlers.actions).forEach(k => {
-          prev[c.script].handlers.push(c.handlers.actions[k])
-        })
-      } else {
-        console.log(
-          `${chalk.red(
-            'error'
-          )} Not sure what to do with the ${c.identifier} handlers`
-        )
-        process.exit(1)
+      // eslint-disable-next-line no-inner-declarations
+      function getHandlers(handlers) {
+        if (typeof handlers === 'string') {
+          prev[c.script].handlers.push(handlers)
+        } else if (Array.isArray(c.handlers)) {
+          c.handlers.forEach(h => {
+            prev[c.script].handlers.push(h)
+          })
+        } else {
+          Object.keys(handlers).forEach(k => getHandlers(handlers[k]))
+        }
       }
+      getHandlers(c.handlers)
     }
 
     // always expose the default
