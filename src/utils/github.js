@@ -217,7 +217,7 @@ export default {
       const plugin = {
         title: skpmConfig.title || skpmConfig.name,
         description: skpmConfig.description,
-        name: skpmConfig.name,
+        name,
         owner,
         appcast: `https://raw.githubusercontent.com/${repo}/master/.appcast.xml`,
         homepage: `https://github.com/${repo}`,

@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.12": ["[Fixed] `name` should actually be the name of the repo"],
     "1.0.11": ["[Fixed] Make sure that a `description` is set when publishing"],
     "1.0.10": ["[Fixed] Typo when checking for 'prepare' script on publish"],
     "1.0.9": [
