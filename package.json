@@ -1,6 +1,6 @@
 {
   "name": "skpm",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "A utility to build, publish and install sketch plugins",
   "preferGlobal": true,
   "main": "lib/index.js",
@@ -50,7 +50,7 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
-    "@skpm/utils": "^0.1.0",
+    "@skpm/utils": "^0.1.2",
     "bluebird": "^3.5.1",
     "chalk": "^1.1.3",
     "cross-spawn-promise": "^0.10.1",

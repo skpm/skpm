@@ -42,12 +42,12 @@ function testDevMode() {
   })
 }
 
-yargs
+const { argv } = yargs
   .help()
   .strict()
-  .usage('Usage: cd path/to/my/plugin && skpm-link').argv
+  .usage('Usage: cd path/to/my/plugin && skpm-link')
 
-const path = '.'
+const path = argv.$1 || '.'
 
 if (path.indexOf(pluginDirectory) !== -1) {
   console.error(
@@ -59,7 +59,7 @@ if (path.indexOf(pluginDirectory) !== -1) {
 }
 
 function getPath(file) {
-  return path === '/'
+  return path[0] === '/'
     ? join(path, file) // absolute path
     : join(process.cwd(), path, file) // relative path
 }
@@ -105,7 +105,9 @@ try {
 
   // Show an error if this symlink already exists
   if (fs.existsSync(join(pluginDirectory, skpmConfig.name, skpmConfig.main))) {
-    console.log(`${chalk.red('error')} This plugin has already been linked.`)
+    console.log(
+      `${chalk.yellow('warning')} This plugin has already been linked.`
+    )
     process.exit(0)
   }
 

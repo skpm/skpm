@@ -90,6 +90,10 @@ export default asyncCommand({
       throw new Error('Missing "repository" field in the package.json.')
     }
 
+    if (!argv.skipRegistry && !skpmConfig.description) {
+      throw new Error('Missing "description" field in the package.json.')
+    }
+
     let token
 
     if (!argv.skipRelease || !argv.skipRegistry) {

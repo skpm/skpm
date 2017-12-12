@@ -215,8 +215,9 @@ export default {
       )
 
       const plugin = {
-        title: skpmConfig.name,
-        name,
+        title: skpmConfig.title || skpmConfig.name,
+        description: skpmConfig.description,
+        name: skpmConfig.name,
         owner,
         appcast: `https://raw.githubusercontent.com/${repo}/master/.appcast.xml`,
         homepage: `https://github.com/${repo}`,
@@ -224,9 +225,6 @@ export default {
 
       if (skpmConfig.author) {
         plugin.author = skpmConfig.author
-      }
-      if (skpmConfig.description) {
-        plugin.description = skpmConfig.description
       }
 
       const newPlugins = JSON.stringify(
