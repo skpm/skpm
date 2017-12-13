@@ -1,6 +1,6 @@
-import path from 'path'
-import { get as getConfig } from './tool-config'
-import { execFile } from './exec'
+const path = require('path')
+const getConfig = require('./tool-config').get
+const execFile = require('./exec')
 
 const config = getConfig()
 
@@ -32,11 +32,12 @@ function getSketchVersion() {
     .catch(() => undefined)
 }
 
-export default async function getSketchVersionWithCache() {
+module.exports = function getSketchVersionWithCache() {
   if (CACHED_VERSION) {
     return CACHED_VERSION
   }
-  const version = await getSketchVersion()
-  CACHED_VERSION = version
-  return version
+  return getSketchVersion().then(version => {
+    CACHED_VERSION = version
+    return version
+  })
 }
