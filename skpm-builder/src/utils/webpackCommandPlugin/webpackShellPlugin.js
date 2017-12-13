@@ -7,12 +7,19 @@ const config = getConfig()
 export function sketchtoolRunCommand(
   output,
   commandIdentifier,
-  withoutActivating
+  withoutActivating,
+  rest
 ) {
-  let command = `"${config.sketchPath}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
+  let command = `"${process.env.SKETCH_PATH ||
+    config.sketchPath}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
 
   if (withoutActivating) {
     command += ' --without-activating'
+  }
+
+  if (rest) {
+    command += ' '
+    command += rest
   }
 
   const handleError =
