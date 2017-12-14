@@ -13,12 +13,14 @@ install:
   - npm install
   - cd skpm-builder && npm prune && npm install && cd ..
   - cd skpm-utils && npm prune && npm install && cd ..
+  - cd skpm-test-runner && npm prune && npm install && cd ..
 
 cache:
   directories:
     - node_modules
     - skpm-builder/node_modules
     - skpm-utils/node_modules
+    - skpm-test-runner/node_modules
 
 before_install:
   - npm set progress=false
