@@ -1,5 +1,5 @@
 export default function({ types: t }) {
-  let alreadyInjected = false
+  const alreadyInjected = {}
   return {
     visitor: {
       ExpressionStatement(path) {
@@ -10,8 +10,9 @@ export default function({ types: t }) {
             t.isIdentifier(callee, { name: 'test' }) &&
             !path.scope.hasBinding('test')
           ) {
-            if (!alreadyInjected) {
-              alreadyInjected = true
+            const { filename } = path.hub.file.opts
+            if (!alreadyInjected[filename]) {
+              alreadyInjected[filename] = true
               path.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(

@@ -2,20 +2,14 @@
 import { Document } from 'sketch-api'
 import prepareStackTrace from './parse-stack-trace'
 
-/* {{IMPORTS}} */
-
-/* eslint-disable */
-const importedSuites = {
-  /* {{SUITES}} */
-}
-/* eslint-enable */
-
 module.exports = function runTests(context) {
   const testResults = []
 
   const testSuites = {
-    suites: importedSuites,
+    suites: {},
   }
+
+  /* {{IMPORTS}} */
 
   /**
    * Run a collection of tests.

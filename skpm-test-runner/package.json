@@ -9,7 +9,10 @@
   "engines": {
     "node": ">= 6"
   },
-  "files": ["lib", "test-runner.sketchplugin"],
+  "files": [
+    "lib",
+    "test-runner.sketchplugin"
+  ],
   "scripts": {
     "prebuild": "../node_modules/.bin/rimraf lib",
     "build": "../node_modules/.bin/babel src -d lib -D",
@@ -19,7 +22,14 @@
     "type": "git",
     "url": "git+https://github.com/skpm/skpm.git"
   },
-  "keywords": ["sketch", "cocoascript", "javascript", "babel", "skpm", "test"],
+  "keywords": [
+    "sketch",
+    "cocoascript",
+    "javascript",
+    "babel",
+    "skpm",
+    "test"
+  ],
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
   "bugs": {
@@ -30,7 +40,7 @@
     "@skpm/builder": "^0.2.5",
     "@skpm/utils": "^0.1.4",
     "chalk": "^1.1.3",
-    "sketch-api": "^1.1.0",
+    "sketch-api": "^2.0.0",
     "source-map": "^0.6.1",
     "webpack": "^3.10.0",
     "yargs": "^9.0.1"

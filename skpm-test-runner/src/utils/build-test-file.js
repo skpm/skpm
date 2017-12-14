@@ -38,22 +38,27 @@ export function buildTestFile(inputDir, outputFile, options) {
     .readFileSync(path.join(pluginPath, 'tests-template.js'), 'utf8')
     .replace(
       '/* {{IMPORTS}} */',
-      testFiles.reduce(
-        (prev, file, i) =>
-          `${prev}import * as suite${i} from '${path.relative(
-            pluginPath,
-            file
-          )}'\n`,
-        '\n'
-      )
-    )
-    .replace(
-      '/* {{SUITES}} */',
-      testFiles.reduce((prev, file, i) => {
+      testFiles.reduce((prev, file) => {
         let name = file.split('/')
         name = name[name.length - 1]
         name = name.replace('.js', '').replace('.test', '')
-        return `${prev}    ${JSON.stringify(name)}: suite${i},\n`
+        return `${prev}    try {
+          testSuites.suites[${JSON.stringify(name)}] = require('${path.relative(
+          pluginPath,
+          file
+        )}')
+        } catch (err) {
+          testResults.push({
+            name: 'loading the test suite',
+            type: 'failed',
+            suite: ${JSON.stringify(name)},
+            reason: {
+              message: err.message,
+              name: err.name,
+              stack: prepareStackTrace(err.stack),
+            },
+          })
+        }\n`
       }, '\n')
     )
 
