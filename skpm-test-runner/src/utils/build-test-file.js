@@ -1,26 +1,17 @@
 const fs = require('fs')
 const path = require('path')
 
-let gitignore
-try {
-  gitignore = fs.readFileSync(path.join(process.cwd(), './.gitignore'), 'utf8')
-} catch (err) {
-  gitignore = ''
-}
-gitignore = gitignore.split('\n').filter(l => l)
-
 export function findAllTestFiles(inputDir, dir, options) {
   const files = fs.readdirSync(dir)
-  const testRegex = new RegExp(options.testRegex)
   return files.reduce((prev, file) => {
     const fullPath = path.join(dir, file)
     const relativePath = fullPath.split(inputDir)[1]
-    if (gitignore.some(ignoredPath => fullPath.match(ignoredPath))) {
+    if (options.ignore.some(ignoredPath => fullPath.match(ignoredPath))) {
       return prev
     }
     if (fs.statSync(fullPath).isDirectory()) {
       return prev.concat(findAllTestFiles(inputDir, fullPath, options))
-    } else if (testRegex.test(relativePath)) {
+    } else if (options.testRegex.test(relativePath)) {
       let name = file.split('/')
       name = name[name.length - 1]
       name = name.replace('.js', '').replace('.test', '')

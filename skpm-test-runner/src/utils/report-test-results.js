@@ -11,18 +11,25 @@ const stdin = process.openStdin()
 let data = ''
 
 // clear the screen
-let numberOfTestFiles =
-  process.argv.find(arg => arg.indexOf('--testFiles=') === 0) || 0
-if (numberOfTestFiles) {
-  numberOfTestFiles = parseInt(
-    numberOfTestFiles.replace('--testFiles=', ''),
-    10
-  )
-}
+const watching = process.argv.find(arg => arg.indexOf('--watch') === 0)
 
-for (let i = 0; i < numberOfTestFiles; i += 1) {
-  readline.moveCursor(process.stdout, 0, -1)
-  readline.clearLine(process.stdout, 0)
+if (watching) {
+  readline.cursorTo(process.stdout, 0, 0)
+  readline.clearScreenDown(process.stdout)
+} else {
+  let numberOfTestFiles =
+    process.argv.find(arg => arg.indexOf('--testFiles=') === 0) || 0
+  if (numberOfTestFiles) {
+    numberOfTestFiles = parseInt(
+      numberOfTestFiles.replace('--testFiles=', ''),
+      10
+    )
+  }
+
+  for (let i = 0; i < numberOfTestFiles; i += 1) {
+    readline.moveCursor(process.stdout, 0, -1)
+    readline.clearLine(process.stdout, 0)
+  }
 }
 
 const JSON_RESULT_REGEX = /^json results: (.*)$/g

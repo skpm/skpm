@@ -1,5 +1,4 @@
 export default function({ types: t }) {
-  const alreadyInjected = {}
   return {
     visitor: {
       ExpressionStatement(path) {
@@ -10,9 +9,9 @@ export default function({ types: t }) {
             t.isIdentifier(callee, { name: 'test' }) &&
             !path.scope.hasBinding('test')
           ) {
-            const { filename } = path.hub.file.opts
-            if (!alreadyInjected[filename]) {
-              alreadyInjected[filename] = true
+            const { injected } = path.hub.file.opts
+            if (!injected) {
+              path.hub.file.opts.injected = true // eslint-disable-line
               path.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
