@@ -1,6 +1,6 @@
 const path = require('path')
 const getConfig = require('./tool-config').get
-const execFile = require('./exec')
+const execFile = require('./exec').execFile
 
 const config = getConfig()
 
