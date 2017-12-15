@@ -2,6 +2,7 @@
 
 /* eslint-disable prefer-template, no-console */
 process.env.FORCE_COLOR = true // forces chalk to output colors
+const readline = require('readline')
 const chalk = require('chalk')
 const printErrorStack = require('./print-error')
 
@@ -9,13 +10,28 @@ const printErrorStack = require('./print-error')
 const stdin = process.openStdin()
 let data = ''
 
+// clear the screen
+let numberOfTestFiles =
+  process.argv.find(arg => arg.indexOf('--testFiles=') === 0) || 0
+if (numberOfTestFiles) {
+  numberOfTestFiles = parseInt(
+    numberOfTestFiles.replace('--testFiles=', ''),
+    10
+  )
+}
+
+for (let i = 0; i < numberOfTestFiles; i += 1) {
+  readline.moveCursor(process.stdout, 0, -1)
+  readline.clearLine(process.stdout, 0)
+}
+
 const JSON_RESULT_REGEX = /^json results: (.*)$/g
 function reportData() {
   const lines = data.split('\n')
 
   const raw = lines.find(l => JSON_RESULT_REGEX.test(l))
   if (!raw) {
-    console.log("Error: couldn't find the test results")
+    console.log(chalk.bgRed.white("Error: couldn't find the test results"))
     return
   }
   const json = JSON.parse(raw.replace('json results: ', ''))

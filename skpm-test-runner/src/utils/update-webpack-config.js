@@ -5,7 +5,7 @@ import WebpackShellPlugin, {
   sketchtoolRunCommand,
 } from '@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin'
 
-export default skpmConfig => config => {
+export default (skpmConfig, testFiles) => config => {
   config.output.filename = 'compiled-tests.js'
   config.output.path = path.resolve(
     __dirname,
@@ -26,7 +26,10 @@ export default skpmConfig => config => {
         path.resolve(__dirname, '../../test-runner.sketchplugin'),
         'plugin-tests',
         true,
-        `| node "${path.join(__dirname, './report-test-results.js')}"`
+        `| node "${path.join(
+          __dirname,
+          './report-test-results.js'
+        )}" --testFiles=${testFiles.length}`
       ),
     })
   )

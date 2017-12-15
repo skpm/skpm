@@ -21,7 +21,13 @@ export function findAllTestFiles(inputDir, dir, options) {
     if (fs.statSync(fullPath).isDirectory()) {
       return prev.concat(findAllTestFiles(inputDir, fullPath, options))
     } else if (testRegex.test(relativePath)) {
-      prev.push(fullPath)
+      let name = file.split('/')
+      name = name[name.length - 1]
+      name = name.replace('.js', '').replace('.test', '')
+      prev.push({
+        name,
+        path: fullPath,
+      })
     }
     return prev
   }, [])
@@ -38,28 +44,28 @@ export function buildTestFile(inputDir, outputFile, options) {
     .readFileSync(path.join(pluginPath, 'tests-template.js'), 'utf8')
     .replace(
       '/* {{IMPORTS}} */',
-      testFiles.reduce((prev, file) => {
-        let name = file.split('/')
-        name = name[name.length - 1]
-        name = name.replace('.js', '').replace('.test', '')
-        return `${prev}    try {
-          testSuites.suites[${JSON.stringify(name)}] = require('${path.relative(
+      testFiles.reduce(
+        (prev, file) => `${prev}
+  try {
+    testSuites.suites[${JSON.stringify(file.name)}] = require('${path.relative(
           pluginPath,
-          file
+          file.path
         )}')
-        } catch (err) {
-          testResults.push({
-            name: 'loading the test suite',
-            type: 'failed',
-            suite: ${JSON.stringify(name)},
-            reason: {
-              message: err.message,
-              name: err.name,
-              stack: prepareStackTrace(err.stack),
-            },
-          })
-        }\n`
-      }, '\n')
+  } catch (err) {
+    testResults.push({
+      name: 'loading the test suite',
+      type: 'failed',
+      suite: ${JSON.stringify(file.name)},
+      reason: {
+        message: err.message,
+        name: err.name,
+        stack: prepareStackTrace(err.stack),
+      },
+    })
+  }
+`,
+        ''
+      )
     )
 
   fs.writeFileSync(
@@ -67,4 +73,6 @@ export function buildTestFile(inputDir, outputFile, options) {
     `/* ⛔⚠️ THIS IS A GENERATED FILE. DO NOT MODIFY THIS ⛔⚠️ */\n\n${indexJS}`,
     'utf8'
   )
+
+  return testFiles
 }

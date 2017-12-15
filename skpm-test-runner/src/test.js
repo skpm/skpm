@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import path from 'path'
+import readline from 'readline'
 import yargs from 'yargs'
 import chalk from 'chalk'
 import webpack from 'webpack'
@@ -44,10 +45,19 @@ const testFile = path.join(
   '../test-runner.sketchplugin/Contents/Sketch/generated-tests.js'
 )
 
-buildTestFile(process.cwd(), testFile, skpmConfig.test)
+console.log(chalk.dim('Building the test plugin...'))
+
+const testFiles = buildTestFile(process.cwd(), testFile, skpmConfig.test)
+
+readline.moveCursor(process.stdout, 0, -1)
+readline.clearLine(process.stdout, 0)
+
+testFiles.forEach(f =>
+  console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
+)
 
 generateWebpackConfig({}, '', '', skpmConfig)(testFile, [], ['onRun'])
-  .then(updateWebpackConfig(skpmConfig))
+  .then(updateWebpackConfig(skpmConfig, testFiles))
   .then(webpackConfig => {
     const compiler = webpack(webpackConfig)
 
