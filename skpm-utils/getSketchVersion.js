@@ -1,6 +1,6 @@
 const path = require('path')
 const getConfig = require('./tool-config').get
-const execFile = require('./exec').execFile
+const exec = require('./exec')
 
 const config = getConfig()
 
@@ -12,13 +12,14 @@ function extractVersion(string) {
 let CACHED_VERSION
 
 function getSketchVersion() {
-  return execFile(
-    path.join(
-      config.sketchPath,
-      '/Contents/Resources/sketchtool/bin/sketchtool'
-    ),
-    ['-v']
-  )
+  return exec
+    .execFile(
+      path.join(
+        config.sketchPath,
+        '/Contents/Resources/sketchtool/bin/sketchtool'
+      ),
+      ['-v']
+    )
     .then(({ stdout }) => {
       let version = extractVersion(stdout)
       const pointNumbers = version.split('.').length
