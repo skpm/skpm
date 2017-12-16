@@ -2,6 +2,7 @@ import { getState, setState, getMatchers, setMatchers } from './matchers_object'
 import stringify from './stringify'
 import * as utils from './utils'
 import matchers from './matchers'
+import sketchMatchers from './sketch_matchers'
 
 utils.stringify = stringify // eslint-disable-line
 
@@ -105,6 +106,7 @@ expect.extend = _matchers => setMatchers(_matchers)
 
 // add default jest matchers
 expect.extend(matchers)
+expect.extend(sketchMatchers)
 
 expect.assertions = expected => {
   getState().expectedAssertionsNumber = expected
