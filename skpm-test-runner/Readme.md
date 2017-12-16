@@ -51,10 +51,10 @@ PASS  ./sum.test.js
 
 **You just successfully wrote your first test that ran in Sketch using `skpm-test`!**
 
-This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://facebook.github.io/jest/docs/en/using-matchers.html).
+This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that `skpm-test` can test, see [Using Matchers](https://facebook.github.io/jest/docs/en/using-matchers.html).
 
 ## Contributing
 
 Send issues and pull requests with your ideas.
 
-[Good First Task](https://github.com/skpm/skpm/labels/Good%20First%20Task) is a great starting point for PRs.
+[Good First Issue](https://github.com/skpm/skpm/issues?q=is%3Aopen+label%3A%22good+first+issue%22+label%3Atester) is a great starting point for PRs.
