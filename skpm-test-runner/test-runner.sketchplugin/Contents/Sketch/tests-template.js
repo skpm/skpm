@@ -27,15 +27,37 @@ module.exports = function runTests(context) {
    * @return {dictionary} Returns a dictionary indicating how many tests ran, and a list of the passed, failed, and crashed tests.
    */
   function runUnitTests(specification = {}, suiteName = '') {
-    const { suites = {}, tests = {} } = specification
+    const { suites = {}, tests = {}, skipped, only } = specification
 
     Object.keys(suites).forEach(suite => {
+      if (skipped) {
+        suites[suite].skipped = true
+      }
+      if (only) {
+        suites[suite].only = true
+      }
       runUnitTests(suites[suite], suiteName ? `${suiteName} > ${suite}` : suite)
     })
 
     Object.keys(tests).forEach(name => {
       const test = tests[name]
-      /** @type {array} List of failures in the currently running test. */
+      if (skipped) {
+        test.skipped = true
+      }
+      if (only) {
+        test.only = true
+      }
+
+      if (test.skipped) {
+        testResults.push({
+          name,
+          type: 'skipped',
+          suite: suiteName,
+          only: test.only,
+        })
+        return
+      }
+
       let testFailure
       try {
         test(context, Document.fromNative(MSDocumentData.new()))
@@ -46,6 +68,11 @@ module.exports = function runTests(context) {
             name: err.name,
             stack: prepareStackTrace(err.stack),
           }
+          if (err.actual) {
+            testFailure.actual = err.actual
+            testFailure.expected = err.expected
+            testFailure.operator = err.operator
+          }
         } else {
           testFailure = err
         }
@@ -54,19 +81,28 @@ module.exports = function runTests(context) {
       if (testFailure) {
         testResults.push({
           name,
+          only: test.only,
           type: 'failed',
           suite: suiteName,
           reason: testFailure,
         })
       } else {
-        testResults.push({ name, type: 'passed', suite: suiteName })
+        testResults.push({
+          name,
+          type: 'passed',
+          suite: suiteName,
+          only: test.only,
+        })
       }
     })
 
     return testResults
   }
 
-  const results = runUnitTests(testSuites)
+  let results = runUnitTests(testSuites)
+  if (results.some(t => t.only)) {
+    results = results.filter(t => t.only)
+  }
   log(`${results.length} tests ran.`)
   log(`${results.filter(t => t.type === 'passed').length} tests succeeded.`)
   log(`${results.filter(t => t.type === 'failed').length} tests failed.`)
