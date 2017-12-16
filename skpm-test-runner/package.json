@@ -38,9 +38,11 @@
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
     "@skpm/builder": "^0.2.5",
-    "@skpm/utils": "^0.1.4",
+    "@skpm/utils": "^0.1.5",
     "chalk": "^1.1.3",
     "chokidar": "^1.7.0",
+    "jest-get-type": "^21.2.0",
+    "jest-regex-util": "^21.2.0",
     "sketch-api": "^2.0.0",
     "source-map": "^0.6.1",
     "webpack": "^3.10.0",

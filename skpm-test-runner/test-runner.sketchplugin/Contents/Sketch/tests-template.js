@@ -27,7 +27,13 @@ module.exports = function runTests(context) {
    * @return {dictionary} Returns a dictionary indicating how many tests ran, and a list of the passed, failed, and crashed tests.
    */
   function runUnitTests(specification = {}, suiteName = '') {
-    const { suites = {}, tests = {}, skipped, only } = specification
+    const {
+      suites = {},
+      tests = {},
+      skipped,
+      only,
+      ancestorSuites = [],
+    } = specification
 
     Object.keys(suites).forEach(suite => {
       if (skipped) {
@@ -36,7 +42,10 @@ module.exports = function runTests(context) {
       if (only) {
         suites[suite].only = true
       }
-      runUnitTests(suites[suite], suiteName ? `${suiteName} > ${suite}` : suite)
+      if (suiteName) {
+        suites.ancestorSuites = ancestorSuites.concat([suiteName])
+      }
+      runUnitTests(suites[suite], suite)
     })
 
     Object.keys(tests).forEach(name => {
@@ -47,13 +56,16 @@ module.exports = function runTests(context) {
       if (only) {
         test.only = true
       }
+      if (suiteName) {
+        test.ancestorSuites = ancestorSuites.concat([suiteName])
+      }
 
       if (test.skipped) {
         testResults.push({
           name,
           type: 'skipped',
-          suite: suiteName,
           only: test.only,
+          ancestorSuites: test.ancestorSuites,
         })
         return
       }
@@ -83,15 +95,15 @@ module.exports = function runTests(context) {
           name,
           only: test.only,
           type: 'failed',
-          suite: suiteName,
           reason: testFailure,
+          ancestorSuites: test.ancestorSuites,
         })
       } else {
         testResults.push({
           name,
           type: 'passed',
-          suite: suiteName,
           only: test.only,
+          ancestorSuites: test.ancestorSuites,
         })
       }
     })

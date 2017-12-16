@@ -4,7 +4,7 @@
 process.env.FORCE_COLOR = true // forces chalk to output colors
 const readline = require('readline')
 const chalk = require('chalk')
-const printErrorStack = require('./print-error')
+const { formatExecError, formatTestError } = require('./print-error')
 
 // get the stdin
 const stdin = process.openStdin()
@@ -53,7 +53,7 @@ function reportData() {
 
   json.forEach(test => {
     if (!test.suite) {
-      test.suite = test.name // eslint-disable-line
+      test.suite = (test.ancestorSuites && test.ancestorSuites[0]) || test.name // eslint-disable-line
     }
     const existingSuite = suites.find(s => s.name === test.suite)
     if (existingSuite) {
@@ -90,12 +90,11 @@ function reportData() {
 
     suite.failed.forEach(failure => {
       console.log('')
-      console.log(chalk.red('  ● ' + suite.name + ' › ' + failure.name))
-      console.log('')
-      if (failure.reason.stack) {
-        console.log(failure.reason.name + ': ' + failure.reason.message)
-        printErrorStack(failure.reason.stack)
-      }
+      console.log(
+        failure.exec
+          ? formatExecError(failure, {})
+          : formatTestError(failure, {})
+      )
       console.log('')
     })
 

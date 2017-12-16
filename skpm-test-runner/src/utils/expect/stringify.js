@@ -299,7 +299,7 @@ function formatValue(ctx, value, recurseTimes) {
 }
 
 /**
- * Echos the value of a value. Trys to print the value out
+ * Echos the value of a value. Tries to print the value out
  * in the best way possible given the different types.
  *
  * @param {Object} obj The object to print out.

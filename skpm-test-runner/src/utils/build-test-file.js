@@ -44,9 +44,9 @@ export function buildTestFile(inputDir, outputFile, options) {
         )}')
   } catch (err) {
     testResults.push({
-      name: 'loading the test suite',
+      name: ${JSON.stringify(file.name)},
       type: 'failed',
-      suite: ${JSON.stringify(file.name)},
+      exec: true,
       reason: {
         message: err.message,
         name: err.name,
