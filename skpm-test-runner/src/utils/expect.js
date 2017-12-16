@@ -188,6 +188,37 @@ class Matcher {
     this.actual = actual
   }
 
+  /* Sketch specific matchers */
+  toBeNative(expected, msg) {
+    try {
+      if (String(this.actual.class()) !== expected) {
+        fail(this.actual, expected, msg, 'toBeNative')
+      }
+    } catch (err) {
+      fail(this.actual, expected, err.message, 'toBeNative')
+    }
+  }
+
+  toWrap(expected, msg) {
+    try {
+      if (this.actual.sketchObject !== expected) {
+        fail(this.actual, expected, msg, 'toBe')
+      }
+    } catch (err) {
+      fail(this.actual, expected, err.message, 'toBe')
+    }
+  }
+
+  toWrapSameAs(expected, msg) {
+    try {
+      if (this.actual.sketchObject !== expected) {
+        fail(this.actual, expected, msg, 'toBe')
+      }
+    } catch (err) {
+      fail(this.actual, expected, err.message, 'toBe')
+    }
+  }
+
   /**
    * If you know how to test something, `.not` lets you test its opposite. For example, this code tests that the best La Croix flavor is not coconut:
    *
