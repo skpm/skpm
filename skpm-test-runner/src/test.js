@@ -9,7 +9,7 @@ import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
 import generateWebpackConfig from '@skpm/builder/lib/utils/webpackConfig'
 import { buildTestFile } from './utils/build-test-file'
 import updateWebpackConfig from './utils/update-webpack-config'
-import { CLEAR } from './utils/constants'
+import { CLEAR, KEYS } from './utils/constants'
 
 const isInteractive = require('./utils/is-interactive')
 
@@ -138,27 +138,31 @@ function build() {
     })
 }
 
+function rebuild() {
+  if (closing) {
+    return
+  }
+  if (webpackWatcher) {
+    closing = true
+    // close the watcher and trigger a new build
+    webpackWatcher.close(() => {
+      closing = false
+      build()
+    })
+    return
+  }
+  if (building) {
+    // queue a new build to bail early
+    runAfterBuild = build
+    return
+  }
+  // we probably can't get in there but better safe than sorry
+  build()
+}
+
 function reBuildIfNeeded(filePath) {
   if (skpmConfig.test.testRegex.test(filePath)) {
-    if (closing) {
-      return
-    }
-    if (webpackWatcher) {
-      closing = true
-      // close the watcher and trigger a new build
-      webpackWatcher.close(() => {
-        closing = false
-        build()
-      })
-      return
-    }
-    if (building) {
-      // queue a new build to bail early
-      runAfterBuild = build
-      return
-    }
-    // we probably can't get in there but better safe than sorry
-    build()
+    rebuild()
   }
 }
 
@@ -169,6 +173,51 @@ if (argv.watch) {
     })
     .on('add', reBuildIfNeeded)
     .on('unlink', reBuildIfNeeded)
+
+  if (isInteractive && typeof process.stdin.setRawMode === 'function') {
+    const onKeypress = key => {
+      if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
+        process.exit(0)
+        return
+      }
+
+      // Abort test run
+      if (
+        building &&
+        !runAfterBuild &&
+        [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.F].indexOf(
+          key
+        ) !== -1
+      ) {
+        runAfterBuild = () => {}
+        return
+      }
+
+      switch (key) {
+        case KEYS.Q:
+          process.exit(0)
+          return
+        case KEYS.ENTER:
+          rebuild()
+          break
+        case KEYS.A:
+          rebuild()
+          break
+        case KEYS.O:
+          rebuild()
+          break
+        case KEYS.QUESTION_MARK:
+          break
+        default:
+          break
+      }
+    }
+
+    process.stdin.setRawMode(true)
+    process.stdin.resume()
+    process.stdin.setEncoding('hex')
+    process.stdin.on('data', onKeypress)
+  }
 }
 
 build()
