@@ -1,8 +1,21 @@
 /* globals MSDocumentData, log */
-import { Document } from 'sketch-api'
 import prepareStackTrace from './parse-stack-trace'
 
 module.exports = function runTests(context) {
+  let Document
+  try {
+    Document = require('sketch-api')
+  } catch (err) {
+    // we are on the old API, try to provide a Document anyway
+    const application = context.api()
+    const DocumentFromOldAPI = application.Document
+    Document = {
+      fromNative(msDocumentData) {
+        return new DocumentFromOldAPI(msDocumentData, application)
+      },
+    }
+  }
+
   const testResults = []
 
   const testSuites = {

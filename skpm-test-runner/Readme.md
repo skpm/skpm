@@ -1,7 +1,5 @@
 # skpm Test Runner 🏃🏽
 
-_⚠️ This is an alpha version that only works with the new [Sketch API](https://github.com/BohemianCoding/SketchAPI) (not released yet)_
-
 Introducing Sketch Plugin Testing
 
 - **👩🏻‍💻 Easy Setup**: `skpm-test` is a complete and easy to set up Sketch Plugin testing solution. In fact, `skpm-test` works out of the box for any `skpm` project.
