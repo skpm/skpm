@@ -4,6 +4,7 @@ import webpack from 'webpack'
 import WebpackShellPlugin, {
   sketchtoolRunCommand,
 } from '@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin'
+import { CLEAR } from './constants'
 
 export default (skpmConfig, testFiles, argv) => config => {
   config.output.filename = 'compiled-tests.js'
@@ -25,11 +26,17 @@ export default (skpmConfig, testFiles, argv) => config => {
       script: sketchtoolRunCommand(
         path.resolve(__dirname, '../../test-runner.sketchplugin'),
         'plugin-tests',
-        true,
-        `| node "${path.join(
-          __dirname,
-          './report-test-results.js'
-        )}" --testFiles=${testFiles.length}${argv.watch ? ' --watch' : ''}`
+        {
+          withoutActivating: true,
+          pre:
+            argv.watch && require('./is-interactive')
+              ? `printf "${CLEAR}" &&`
+              : '',
+          post: `| node "${path.join(
+            __dirname,
+            './report-test-results.js'
+          )}" --testFiles=${testFiles.length}${argv.watch ? ' --watch' : ''}`,
+        }
       ),
     })
   )

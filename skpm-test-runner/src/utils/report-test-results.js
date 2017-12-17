@@ -13,10 +13,7 @@ let data = ''
 // clear the screen
 const watching = process.argv.find(arg => arg.indexOf('--watch') === 0)
 
-if (watching) {
-  readline.cursorTo(process.stdout, 0, 0)
-  readline.clearScreenDown(process.stdout)
-} else {
+if (!watching || !require('./is-interactive')) {
   let numberOfTestFiles =
     process.argv.find(arg => arg.indexOf('--testFiles=') === 0) || 0
   if (numberOfTestFiles) {
@@ -33,9 +30,9 @@ if (watching) {
 }
 
 const indicators = {
-  skipped: chalk.yellow('  •'),
-  failed: chalk.red('  ✖︎'),
-  passed: chalk.green('  ✓'),
+  skipped: chalk.yellow('  \u25CB'),
+  failed: chalk.red('  \u2715'),
+  passed: chalk.green('  \u2713'),
 }
 
 const JSON_RESULT_REGEX = /^json results: (.*)$/g

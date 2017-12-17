@@ -9,6 +9,9 @@ import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
 import generateWebpackConfig from '@skpm/builder/lib/utils/webpackConfig'
 import { buildTestFile } from './utils/build-test-file'
 import updateWebpackConfig from './utils/update-webpack-config'
+import { CLEAR } from './utils/constants'
+
+const isInteractive = require('./utils/is-interactive')
 
 const { argv } = yargs
   .option('watch', {
@@ -90,20 +93,20 @@ let webpackWatcher = null
 
 function build() {
   building = true
-  if (argv.watch) {
-    // clear the screen
-    readline.cursorTo(process.stdout, 0, 0)
-    readline.clearScreenDown(process.stdout)
+  if (argv.watch && isInteractive) {
+    isInteractive && process.stdout.write(CLEAR)
   }
 
   console.log(chalk.dim('Building the test plugin...'))
 
   const testFiles = buildTestFile(process.cwd(), testFile, skpmConfig.test)
 
-  readline.moveCursor(process.stdout, 0, -1)
-  readline.clearLine(process.stdout, 0)
-  readline.moveCursor(process.stdout, 0, -1)
-  readline.clearLine(process.stdout, 0)
+  if (isInteractive) {
+    readline.moveCursor(process.stdout, 0, -1)
+    readline.clearLine(process.stdout, 0)
+    readline.moveCursor(process.stdout, 0, -1)
+    readline.clearLine(process.stdout, 0)
+  }
 
   testFiles.forEach(f =>
     console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
