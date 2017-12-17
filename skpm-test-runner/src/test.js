@@ -138,7 +138,7 @@ function build() {
     })
 }
 
-function reBuildIfNeeded(event, filePath) {
+function reBuildIfNeeded(filePath) {
   if (skpmConfig.test.testRegex.test(filePath)) {
     if (closing) {
       return
@@ -146,7 +146,10 @@ function reBuildIfNeeded(event, filePath) {
     if (webpackWatcher) {
       closing = true
       // close the watcher and trigger a new build
-      webpackWatcher.close(build)
+      webpackWatcher.close(() => {
+        closing = false
+        build()
+      })
       return
     }
     if (building) {
