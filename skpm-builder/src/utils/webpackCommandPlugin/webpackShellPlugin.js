@@ -4,22 +4,24 @@ import chalk from 'chalk'
 
 const config = getConfig()
 
-export function sketchtoolRunCommand(
-  output,
-  commandIdentifier,
-  withoutActivating,
-  rest
-) {
-  let command = `"${process.env.SKETCH_PATH ||
+export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
+  let command = ''
+
+  if (options.pre) {
+    command += options.pre
+    command += ' '
+  }
+
+  command += `"${process.env.SKETCH_PATH ||
     config.sketchPath}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
 
-  if (withoutActivating) {
+  if (options.withoutActivating) {
     command += ' --without-activating'
   }
 
-  if (rest) {
+  if (options.post) {
     command += ' '
-    command += rest
+    command += options.post
   }
 
   const handleError =

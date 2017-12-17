@@ -23,7 +23,9 @@ export default async function(output, commandIdentifier) {
 
   if (sketchVersion && semver.satisfies(sketchVersion, '>= 45.0.0')) {
     command = new WebpackShellPlugin({
-      script: sketchtoolRunCommand(output, commandIdentifier, true),
+      script: sketchtoolRunCommand(output, commandIdentifier, {
+        withoutActivating: true,
+      }),
     })
   }
 

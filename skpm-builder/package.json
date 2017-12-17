@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "bin": {
@@ -10,7 +10,9 @@
   "engines": {
     "node": ">= 6"
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "prebuild": "../node_modules/.bin/rimraf lib",
     "build": "../node_modules/.bin/babel src -d lib -D",
@@ -20,7 +22,13 @@
     "type": "git",
     "url": "git+https://github.com/skpm/skpm.git"
   },
-  "keywords": ["sketch", "cocoascript", "javascript", "babel", "skpm"],
+  "keywords": [
+    "sketch",
+    "cocoascript",
+    "javascript",
+    "babel",
+    "skpm"
+  ],
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
   "bugs": {
