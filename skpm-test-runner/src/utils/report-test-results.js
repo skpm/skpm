@@ -42,6 +42,7 @@ function reportData() {
   const raw = lines.find(l => JSON_RESULT_REGEX.test(l))
   if (!raw) {
     console.log(chalk.bgRed.white("Error: couldn't find the test results"))
+    console.log(data)
     return
   }
   const json = JSON.parse(raw.replace('json results: ', ''))
