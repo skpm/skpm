@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs'
+import mkdirp from 'mkdirp'
 import { join } from 'path'
 import yargs from 'yargs'
 import chalk from 'chalk'
@@ -100,7 +101,7 @@ console.log(
 try {
   // Create the encompassing directory if it doesn't already exist
   if (!fs.existsSync(join(pluginDirectory, skpmConfig.name))) {
-    fs.mkdirSync(join(pluginDirectory, skpmConfig.name))
+    mkdirp.sync(join(pluginDirectory, skpmConfig.name))
   }
 
   // Show an error if this symlink already exists

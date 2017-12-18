@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs'
+import mkdirp from 'mkdirp'
 import path from 'path'
 import webpack from 'webpack'
 import yargs from 'yargs'
@@ -66,16 +67,8 @@ if (!skpmConfig.manifest) {
 const output = path.join(process.cwd(), skpmConfig.main)
 const manifest = path.join(process.cwd(), skpmConfig.manifest)
 
-if (!fs.existsSync(output)) {
-  fs.mkdirSync(output)
-}
-
-if (!fs.existsSync(path.join(output, 'Contents'))) {
-  fs.mkdirSync(path.join(output, 'Contents'))
-}
-
 if (!fs.existsSync(path.join(output, 'Contents', 'Sketch'))) {
-  fs.mkdirSync(path.join(output, 'Contents', 'Sketch'))
+  mkdirp.sync(path.join(output, 'Contents', 'Sketch'))
 }
 
 const manifestFolder = path.dirname(manifest)
