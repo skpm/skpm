@@ -6,9 +6,8 @@ module.exports = function prepareStackTrace(stackTrace) {
     let line = null
     let column = null
     let file = null
-    const split = entry.split('@')
-    let fn = split[0]
-    let filePath = split[1]
+    let [fn, ...filePath] = entry.split('@')
+    filePath = filePath.join('@')
 
     if (filePath) {
       ;[filePath, line, column] = filePath.split(':')
