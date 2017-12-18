@@ -1,6 +1,5 @@
 /* eslint-disable prefer-template, no-restricted-properties, no-void, eqeqeq, no-nested-ternary */
 import getType from 'jest-get-type'
-import { escapeStrForRegex } from 'jest-regex-util'
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -13,6 +12,9 @@ import {
   printWithType,
 } from './utils'
 import { equals, iterableEquality, subsetEquality } from './equal'
+
+const escapeStrForRegex = string =>
+  string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&')
 
 const getPath = (object, propertyPath) => {
   if (!Array.isArray(propertyPath)) {
