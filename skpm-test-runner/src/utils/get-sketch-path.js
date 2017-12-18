@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import childProcess from 'child_process'
+import { get as getConfig } from '@skpm/utils/tool-config'
 
 function appInfoForKey(app, key) {
   const plistPath = path.join(app, 'Contents', 'Info.plist')
@@ -66,15 +67,19 @@ export function getSketchPath(app) {
   if (!appPath || useLatest) {
     appPath = pathToLatestApp()
     if (useLatest && !appPath) {
-      if (useXCode && !appPath) {
-        console.error('Latest build not found.')
-        process.exit(1)
-      }
+      console.error('Latest build not found.')
+      process.exit(1)
     }
   }
 
+  if (!appPath) {
+    appPath = getConfig().sketchApp
+  }
+
   if (!fs.existsSync(appPath)) {
-    console.error('No Sketch application found.')
+    console.error(
+      `No Sketch application found${appPath ? ` at ${appPath}` : ''}.`
+    )
     process.exit(1)
   }
 
