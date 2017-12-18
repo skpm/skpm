@@ -12,16 +12,29 @@ export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
     command += ' '
   }
 
-  command += `"${process.env.SKETCH_PATH ||
+  command += `"${options.app ||
+    process.env.SKETCH_PATH ||
     config.sketchPath}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
 
   if (options.withoutActivating) {
     command += ' --without-activating'
   }
 
+  if (options.waitForExit) {
+    command += ' --wait-for-exit'
+  }
+
+  if (options.context) {
+    command += ` --context="${JSON.stringify(options.context)}"`
+  }
+
   if (options.post) {
     command += ' '
     command += options.post
+  }
+
+  if (options.handleError === false) {
+    return command
   }
 
   const handleError =
@@ -48,11 +61,6 @@ export default function WebpackShellPlugin(options) {
           exec(options.script, { shell: '/bin/bash' })
             .then(res => {
               if (res.stderr) {
-                console.error(
-                  `${chalk.red(
-                    'error'
-                  )} Error while running the command after build`
-                )
                 console.error(res.stderr)
               }
               if (res.stdout.trim().length > 0) {

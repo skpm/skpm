@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "bin": {
