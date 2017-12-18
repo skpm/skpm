@@ -9,7 +9,7 @@ function appInfoForKey(app, key) {
     { encoding: 'utf8' }
   )
 
-  return result.strip()
+  return result.trim()
 }
 
 function pathToAppsWithId(id) {
@@ -32,6 +32,10 @@ export function pathToLatestApp() {
   }
   const apps = output.split('\n')
   apps.forEach(app => {
+    if (!app) {
+      // empty line so bail out
+      return
+    }
     const version = appInfoForKey(app, 'CFBundleVersion')
     if (version > latest.version) {
       latest = {
@@ -51,7 +55,7 @@ export function getSketchPath(app) {
   const useXCode = app === 'xcode'
   const useLatest = app === 'latest'
 
-  if (!appPath || useXCode) {
+  if ((!appPath && !useLatest) || useXCode) {
     appPath = pathToLatestXCodeBuild()
     if (useXCode && !appPath) {
       console.error('Xcode build not found.')
