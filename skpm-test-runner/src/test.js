@@ -94,6 +94,10 @@ function didTheLogFailed() {
     return result.indexOf('failed') !== -1
   }
 
+  if (lines.some(l => l === "Error: couldn't find the test results")) {
+    return true
+  }
+
   // couldn't find the result /shrug
   return false
 }
