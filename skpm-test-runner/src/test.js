@@ -5,15 +5,22 @@ import yargs from 'yargs'
 import chalk from 'chalk'
 import webpack from 'webpack'
 import chokidar from 'chokidar'
+import stripAnsi from 'strip-ansi'
 import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
 import generateWebpackConfig from '@skpm/builder/lib/utils/webpackConfig'
 import { buildTestFile } from './utils/build-test-file'
 import updateWebpackConfig from './utils/update-webpack-config'
 import { CLEAR, KEYS } from './utils/constants'
+import { getSketchPath } from './utils/get-sketch-path'
 
 const isInteractive = require('./utils/is-interactive')
 
 const { argv } = yargs
+  .option('app', {
+    describe:
+      "The path to the copy of Sketch to run the tests with. If this isn't supplied, we try to run the latest Xcode build. If there is none, we try to find a normal Sketch.",
+    type: 'string',
+  })
   .option('watch', {
     alias: 'w',
     describe: 'Watch and test automatically',
@@ -32,6 +39,8 @@ try {
   console.error(err)
   process.exit(1)
 }
+
+argv.app = getSketchPath(argv.app)
 
 const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
 
@@ -66,7 +75,28 @@ const testFile = path.join(
   '../test-runner.sketchplugin/Contents/Sketch/generated-tests.js'
 )
 
-console.log(chalk.dim('Building the test plugin...'))
+let latestLog = ''
+const RESULT_REGEX = /^Tests: ([0-9]+ passed, )?([0-9]+ skipped, )?([0-9]+ failed, )?[0-9]+ total/gm
+
+// hook into process.stdout
+process.stdout.write = (stub => (...args) => {
+  stub.apply(process.stdout, args)
+  latestLog += stripAnsi(args[0])
+})(process.stdout.write)
+
+function didTheLogFailed() {
+  const lines = latestLog.split('\n')
+  latestLog = ''
+
+  const result = lines.find(l => RESULT_REGEX.test(l))
+
+  if (result) {
+    return result.indexOf('failed') !== -1
+  }
+
+  // couldn't find the result /shrug
+  return false
+}
 
 function handleEndOfBuild(err, res) {
   if (err) {
@@ -79,7 +109,11 @@ function handleEndOfBuild(err, res) {
     })
     if (!argv.watch) process.exit(1)
   }
-  if (!argv.watch) process.exit(0)
+
+  if (!argv.watch) {
+    // checking if the tests have failed
+    process.exit(didTheLogFailed() ? 1 : 0)
+  }
 }
 
 // building the test plugin, eg webpack is not started yet

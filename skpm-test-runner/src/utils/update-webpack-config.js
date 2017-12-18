@@ -27,7 +27,9 @@ export default (skpmConfig, testFiles, argv) => config => {
         path.resolve(__dirname, '../../test-runner.sketchplugin'),
         'plugin-tests',
         {
+          app: argv.app,
           withoutActivating: true,
+          handleError: false,
           pre:
             argv.watch && require('./is-interactive')
               ? `printf "${CLEAR}" &&`
