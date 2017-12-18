@@ -51,6 +51,40 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that `skpm-test` can test, see [Using Matchers](https://facebook.github.io/jest/docs/en/using-matchers.html).
 
+## Running the tests on TravisCI
+
+- Go to [Travis](https://travis-ci.org/profile)
+- Add your repo
+- In the settings, add an environment variable called `SKETCH_LICENSE` with your sketch license
+- Copy paste the following code in a new file named `.travis.yml`
+    ```yaml
+    os: osx
+
+    language: node_js
+
+    node_js:
+      - "node"
+
+    before_install:
+      - brew update
+      - brew cask install sketch # install Sketch
+      - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3" # create support folder
+      - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3/Plugins" # create plugins folder
+      - echo $SKETCH_LICENSE > "~/Library/Application Support/com.bohemiancoding.sketch3/.deployment" # add the Sketch license
+
+    cache:
+      directories:
+        - "node_modules"
+        - $HOME/Library/Caches/Homebrew
+
+    script:
+      - npm run test
+
+    after_script:
+      - rm "~/Library/App Support/com.bohemiancoding.sketch3/.deployment" # remove the Sketch license
+    ```
+- Commit, Push, done!
+
 ## Contributing
 
 Send issues and pull requests with your ideas.
