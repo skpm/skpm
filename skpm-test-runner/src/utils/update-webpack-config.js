@@ -43,9 +43,22 @@ export default (skpmConfig, testFiles, argv) => config => {
     })
   )
 
-  config.module.rules[0].use.options.plugins = (config.module.rules[0].use
-    .options.plugins || []
-  ).concat([[require('./globals-babel-plugin'), skpmConfig.test]])
+  const babelIndex = config.module.rules.findIndex(
+    r => r.use.loader === 'babel-loader'
+  )
+
+  if (typeof babelIndex !== 'undefined') {
+    config.module.rules[babelIndex].use.options.plugins = (config.module
+      .rules[0].use.options.plugins || []
+    ).concat([[require('./globals-babel-plugin'), skpmConfig.test]])
+    config.module.rules[
+      babelIndex
+    ].exclude = /node_modules\/(?!(@skpm\/test-runner)\/).*/
+  } else {
+    throw new Error(
+      'Not sure how to handle your loader. Please open an issue on https://github.com/skpm/skpm'
+    )
+  }
 
   config.devtool = 'source-map'
 
