@@ -9,6 +9,12 @@ module.exports = function prepareStackTrace(stackTrace) {
     let [fn, ...filePath] = entry.split('@')
     filePath = filePath.join('@')
 
+    if (fn.indexOf('/Users/') === 0) {
+      // actually we didn't have a fn so just put it back in the filePath
+      filePath = `${fn}@${filePath}`
+      fn = null
+    }
+
     if (filePath) {
       ;[filePath, line, column] = filePath.split(':')
       file = filePath.split('/')
