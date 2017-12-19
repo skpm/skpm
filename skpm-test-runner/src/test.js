@@ -23,7 +23,11 @@ const { argv } = yargs
   })
   .option('watch', {
     alias: 'w',
-    describe: 'Watch and test automatically',
+    describe: 'Watch and test automatically.',
+    type: 'boolean',
+  })
+  .option('build-only', {
+    describe: 'Only build the test plugin without running the tests.',
     type: 'boolean',
   })
   .help()
@@ -139,16 +143,18 @@ function build() {
 
   const testFiles = buildTestFile(process.cwd(), testFile, skpmConfig.test)
 
-  if (isInteractive) {
-    readline.moveCursor(process.stdout, 0, -1)
-    readline.clearLine(process.stdout, 0)
-    readline.moveCursor(process.stdout, 0, -1)
-    readline.clearLine(process.stdout, 0)
-  }
+  if (!argv.buildOnly) {
+    if (isInteractive) {
+      readline.moveCursor(process.stdout, 0, -1)
+      readline.clearLine(process.stdout, 0)
+      readline.moveCursor(process.stdout, 0, -1)
+      readline.clearLine(process.stdout, 0)
+    }
 
-  testFiles.forEach(f =>
-    console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
-  )
+    testFiles.forEach(f =>
+      console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
+    )
+  }
 
   generateWebpackConfig({}, '', '', skpmConfig)(testFile, [], ['onRun'])
     .then(updateWebpackConfig(skpmConfig, testFiles, argv))
