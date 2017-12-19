@@ -1,5 +1,5 @@
 /* globals MSDocumentData, log */
-import prepareStackTrace from './parse-stack-trace'
+const prepareStackTrace = require('./parse-stack-trace')
 
 module.exports = function runTests(context) {
   let Document
