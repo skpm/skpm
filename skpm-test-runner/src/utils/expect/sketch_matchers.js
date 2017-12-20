@@ -1,48 +1,55 @@
 /* eslint-disable prefer-template */
-import { matcherHint, printReceived, printExpected } from './utils'
+import { matcherHint, printReceived, printExpected, getType } from './utils'
 
 // /* Sketch specific matchers */
 export default {
-  toBeNative(received, className) {
-    if (!received || typeof received.class !== 'function') {
+  toBeInstanceOf(received, constructor) {
+    const constType = getType(constructor)
+
+    if (constType !== 'function' && constType !== 'sketch-native') {
       throw new Error(
-        matcherHint('[.not].toBeNative', 'received', 'className') +
-          '\n\n' +
-          `Expected value to have a 'class' method. ` +
-          `Received:\n` +
-          `  ${printReceived(received)}\n` +
-          (received
-            ? `received.class:\n  ${printReceived(received.class)}`
-            : '')
+        matcherHint('[.not].toBeInstanceOf', 'value', 'constructor') +
+          `\n\n` +
+          `Expected constructor to be a function. Instead got:\n` +
+          `  ${printExpected(constType)}`
       )
     }
+    let pass
+    let expectedString
+    let receivedString
+    if (constType === 'sketch-native') {
+      pass =
+        received &&
+        typeof received.class === 'function' &&
+        String(received.class()) === String(constructor.class())
+      expectedString = String(constructor.class())
+      receivedString =
+        received && typeof received.class === 'function'
+          ? String(received.class())
+          : received.constructor && received.constructor.name
+    } else {
+      pass = received instanceof constructor
+      expectedString = constructor.name || constructor
+      receivedString = received.constructor && received.constructor.name
+    }
 
-    // eslint-disable-next-line
-    className =
-      className && typeof className.class === 'function'
-        ? String(className.class())
-        : className
-
-    const pass = String(received.class()) === className
     const message = pass
       ? () =>
-          matcherHint('.not.toBeNative', 'received', 'className') +
+          matcherHint('.not.toBeInstanceOf', 'value', 'constructor') +
           '\n\n' +
-          `Expected value to be:\n` +
-          `  ${printExpected(className)}\n` +
+          `Expected value not to be an instance of:\n` +
+          `  ${printExpected(expectedString)}\n` +
           `Received:\n` +
-          `  ${printReceived(received)}\n` +
-          `received.class:\n` +
-          `  ${printReceived(String(received.class()))}`
+          `  ${printReceived(receivedString)}\n`
       : () =>
-          matcherHint('.toBeNative', 'received', 'className') +
+          matcherHint('.toBeInstanceOf', 'value', 'constructor') +
           '\n\n' +
-          `Expected value to have length:\n` +
-          `  ${printExpected(className)}\n` +
+          `Expected value to be an instance of:\n` +
+          `  ${printExpected(expectedString)}\n` +
           `Received:\n` +
           `  ${printReceived(received)}\n` +
-          `received.class:\n` +
-          `  ${printReceived(String(received.class()))}`
+          `Constructor:\n` +
+          `  ${printReceived(receivedString)}`
 
     return { message, pass }
   },
