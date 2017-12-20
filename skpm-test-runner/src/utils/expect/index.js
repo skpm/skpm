@@ -3,6 +3,10 @@ import stringify from './stringify'
 import * as utils from './utils'
 import matchers from './matchers'
 import sketchMatchers from './sketch_matchers'
+import {
+  extractExpectedAssertionsErrors,
+  resetAssertionsLocalState,
+} from './assertion-check'
 
 utils.stringify = stringify // eslint-disable-line
 
@@ -118,5 +122,8 @@ expect.hasAssertions = expected => {
 }
 expect.getState = getState
 expect.setState = setState
+
+expect.resetAssertionsLocalState = resetAssertionsLocalState
+expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors
 
 export default expect

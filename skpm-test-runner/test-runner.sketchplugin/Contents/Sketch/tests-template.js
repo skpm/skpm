@@ -1,4 +1,4 @@
-/* globals MSDocumentData, log */
+/* globals MSDocumentData, log, expect */
 const prepareStackTrace = require('./parse-stack-trace')
 
 module.exports = function runTests(context) {
@@ -42,6 +42,7 @@ module.exports = function runTests(context) {
   function runUnitTests(specification = {}, suiteName = '') {
     const {
       suites = {},
+      logs = [],
       tests = {},
       skipped,
       only,
@@ -56,12 +57,15 @@ module.exports = function runTests(context) {
         suites[suite].only = true
       }
       if (suiteName) {
-        suites.ancestorSuites = ancestorSuites.concat([suiteName])
+        suites[suite].ancestorSuites = ancestorSuites.concat([suiteName])
+      }
+      if (logs && !suites[suite].logs) {
+        suites[suite].logs = logs
       }
       runUnitTests(suites[suite], suite)
     })
 
-    Object.keys(tests).forEach(name => {
+    Object.keys(tests).forEach((name, i) => {
       const test = tests[name]
       if (skipped) {
         test.skipped = true
@@ -79,13 +83,22 @@ module.exports = function runTests(context) {
           type: 'skipped',
           only: test.only,
           ancestorSuites: test.ancestorSuites,
+          logs: i === 0 ? logs : [], // only push the logs once per suite
         })
         return
       }
 
       let testFailure
       try {
+        expect.resetAssertionsLocalState()
+
         test(context, Document.fromNative(MSDocumentData.new()))
+
+        const assertionError = expect.extractExpectedAssertionsErrors()
+
+        if (assertionError) {
+          throw assertionError.error
+        }
       } catch (err) {
         if (err instanceof Error) {
           testFailure = {
@@ -110,6 +123,7 @@ module.exports = function runTests(context) {
           type: 'failed',
           reason: testFailure,
           ancestorSuites: test.ancestorSuites,
+          logs: i === 0 ? logs : [],
         })
       } else {
         testResults.push({
@@ -117,6 +131,7 @@ module.exports = function runTests(context) {
           type: 'passed',
           only: test.only,
           ancestorSuites: test.ancestorSuites,
+          logs: i === 0 ? logs : [],
         })
       }
     })
