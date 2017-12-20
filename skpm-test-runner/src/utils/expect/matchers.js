@@ -1,5 +1,4 @@
 /* eslint-disable prefer-template, no-restricted-properties, no-void, eqeqeq, no-nested-ternary */
-import getType from 'jest-get-type'
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -10,6 +9,7 @@ import {
   printReceived,
   printExpected,
   printWithType,
+  getType,
 } from './utils'
 import { equals, iterableEquality, subsetEquality } from './equal'
 
@@ -70,7 +70,9 @@ const matchers = {
       : () => {
           const suggestToEqual =
             getType(received) === getType(expected) &&
-            (getType(received) === 'object' || getType(expected) === 'array') &&
+            (getType(received) === 'object' ||
+              getType(expected) === 'array' ||
+              getType(expected) === 'sketch-native') &&
             equals(received, expected, [iterableEquality])
 
           return (
@@ -189,42 +191,6 @@ const matchers = {
           `  ${printExpected(expected)}\n` +
           `Received:\n` +
           `  ${printReceived(actual)}`
-    return { message, pass }
-  },
-
-  toBeInstanceOf(received, constructor) {
-    const constType = getType(constructor)
-
-    if (constType !== 'function') {
-      throw new Error(
-        matcherHint('[.not].toBeInstanceOf', 'value', 'constructor') +
-          `\n\n` +
-          `Expected constructor to be a function. Instead got:\n` +
-          `  ${printExpected(constType)}`
-      )
-    }
-    const pass = received instanceof constructor
-
-    const message = pass
-      ? () =>
-          matcherHint('.not.toBeInstanceOf', 'value', 'constructor') +
-          '\n\n' +
-          `Expected value not to be an instance of:\n` +
-          `  ${printExpected(constructor.name || constructor)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}\n`
-      : () =>
-          matcherHint('.toBeInstanceOf', 'value', 'constructor') +
-          '\n\n' +
-          `Expected value to be an instance of:\n` +
-          `  ${printExpected(constructor.name || constructor)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}\n` +
-          `Constructor:\n` +
-          `  ${printReceived(
-            received.constructor && received.constructor.name
-          )}`
-
     return { message, pass }
   },
 
