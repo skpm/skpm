@@ -56,11 +56,15 @@ function reportData() {
     const existingSuite = suites.find(s => s.name === test.suite)
     if (existingSuite) {
       existingSuite.tests.push(test)
+      if (test.logs && test.logs.length) {
+        existingSuite.logs = test.logs
+      }
       return
     }
     suites.push({
       name: test.suite,
       tests: [test],
+      logs: test.logs || [],
     })
   })
 
@@ -75,16 +79,33 @@ function reportData() {
   suites.forEach(suite => {
     if (suite.skipped === suite.tests.length) {
       console.log(chalk.bgYellow.white(' SKIP ') + ' ' + chalk.dim(suite.name))
+
+      if (suite.logs.length) {
+        console.log('')
+        suite.logs.forEach(l => console.log(`  > ${l}`))
+        console.log('')
+      }
       return
     }
 
     if (!suite.failed.length) {
       console.log(chalk.bgGreen.white(' PASS ') + ' ' + chalk.dim(suite.name))
+
+      if (suite.logs.length) {
+        console.log('')
+        suite.logs.forEach(l => console.log(`  > ${l}`))
+        console.log('')
+      }
       return
     }
 
     console.log('')
     console.log(chalk.bgRed.white(' FAIL ') + ' ' + suite.name)
+
+    if (suite.logs.length) {
+      console.log('')
+      suite.logs.forEach(l => console.log(`  > ${l}`))
+    }
 
     suite.failed.forEach(failure => {
       console.log('')

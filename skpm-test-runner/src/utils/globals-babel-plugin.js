@@ -18,7 +18,70 @@ export default function({ types: t }) {
             if (!injected) {
               path.hub.file.opts.injected = true // eslint-disable-line
 
-              // var __skpm_tests__ = []
+              /**
+               * LOGS
+               */
+
+              // var __skpm_logs__ = []
+              path.insertBefore(
+                t.variableDeclaration('var', [
+                  t.variableDeclarator(
+                    t.identifier('__skpm_logs__'),
+                    t.arrayExpression([])
+                  ),
+                ])
+              )
+
+              // console.__log = console.log
+              path.insertBefore(
+                t.expressionStatement(
+                  t.assignmentExpression(
+                    '=',
+                    t.memberExpression(
+                      t.identifier('console'),
+                      t.identifier('__log')
+                    ),
+                    t.memberExpression(
+                      t.identifier('console'),
+                      t.identifier('log')
+                    )
+                  )
+                )
+              )
+
+              // function __hookedLogs (string) { __skpm_logs__.push(string); console.__log(string) }
+              path.insertBefore(
+                t.functionDeclaration(
+                  t.identifier('__hookedLogs'),
+                  [t.identifier('string')],
+                  t.blockStatement([
+                    t.expressionStatement(
+                      t.callExpression(
+                        t.memberExpression(
+                          t.identifier('__skpm_logs__'),
+                          t.identifier('push')
+                        ),
+                        [t.identifier('string')]
+                      )
+                    ),
+                    t.expressionStatement(
+                      t.callExpression(
+                        t.memberExpression(
+                          t.identifier('console'),
+                          t.identifier('__log')
+                        ),
+                        [t.identifier('string')]
+                      )
+                    ),
+                  ])
+                )
+              )
+
+              /**
+               * TEST
+               */
+
+              // var __skpm_tests__ = {}
               path.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
@@ -28,12 +91,43 @@ export default function({ types: t }) {
                 ])
               )
 
-              // function test (description, fn) { __skpm_tests__[description] = fn }
+              /**
+               *
+               * function test (description, fn) {
+               *   function withLogs(context, document) {
+               *     console.log = __hookedLogs
+               *     fn(context, document)
+               *   }
+               *   __skpm_tests__[description] = withLogs
+               * }
+               */
               path.insertBefore(
                 t.functionDeclaration(
                   t.identifier('test'),
                   [t.identifier('description'), t.identifier('fn')],
                   t.blockStatement([
+                    t.functionDeclaration(
+                      t.identifier('withLogs'),
+                      [t.identifier('context'), t.identifier('document')],
+                      t.blockStatement([
+                        t.expressionStatement(
+                          t.assignmentExpression(
+                            '=',
+                            t.memberExpression(
+                              t.identifier('console'),
+                              t.identifier('log')
+                            ),
+                            t.identifier('__hookedLogs')
+                          )
+                        ),
+                        t.expressionStatement(
+                          t.callExpression(t.identifier('fn'), [
+                            t.identifier('context'),
+                            t.identifier('document'),
+                          ])
+                        ),
+                      ])
+                    ),
                     t.expressionStatement(
                       t.assignmentExpression(
                         '=',
@@ -42,7 +136,7 @@ export default function({ types: t }) {
                           t.identifier('description'),
                           true
                         ),
-                        t.identifier('fn')
+                        t.identifier('withLogs')
                       )
                     ),
                   ])
@@ -119,6 +213,10 @@ export default function({ types: t }) {
                 )
               )
 
+              /**
+               * EXPORTS
+               */
+
               // module.exports.tests = __skpm_tests__
               path.insertBefore(
                 t.expressionStatement(
@@ -126,6 +224,16 @@ export default function({ types: t }) {
                     '=',
                     t.identifier('module.exports.tests'),
                     t.identifier('__skpm_tests__')
+                  )
+                )
+              )
+              // module.exports.logs = __skpm_logs__
+              path.insertBefore(
+                t.expressionStatement(
+                  t.assignmentExpression(
+                    '=',
+                    t.identifier('module.exports.logs'),
+                    t.identifier('__skpm_logs__')
                   )
                 )
               )
