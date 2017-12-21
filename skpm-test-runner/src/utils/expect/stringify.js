@@ -70,12 +70,12 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
   }
   if (desc.get) {
     if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special')
+      str = '[Getter/Setter]'
     } else {
-      str = ctx.stylize('[Getter]', 'special')
+      str = '[Getter]'
     }
   } else if (desc.set) {
-    str = ctx.stylize('[Setter]', 'special')
+    str = '[Setter]'
   }
   if (!hasOwn(visibleKeys, key)) {
     name = `[${key}]`
@@ -102,7 +102,7 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
         }
       }
     } else {
-      str = ctx.stylize('[Circular]', 'special')
+      str = '[Circular]'
     }
   }
   if (isUndefined(name)) {
@@ -112,13 +112,11 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
     name = JSON.stringify(String(key))
     if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
       name = name.substr(1, name.length - 2)
-      name = ctx.stylize(name, 'name')
     } else {
       name = name
         .replace(/'/g, "\\'")
         .replace(/\\"/g, '"')
         .replace(/(^"|"$)/g, "'")
-      name = ctx.stylize(name, 'string')
     }
   }
 
@@ -126,18 +124,18 @@ function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
 }
 
 function formatPrimitive(ctx, value) {
-  if (isUndefined(value)) return ctx.stylize('undefined', 'undefined')
+  if (isUndefined(value)) return 'undefined'
   if (isString(value)) {
     const simple = `'${JSON.stringify(value)
       .replace(/^"|"$/g, '')
       .replace(/'/g, "\\'")
       .replace(/\\"/g, '"')}'`
-    return ctx.stylize(simple, 'string')
+    return simple
   }
-  if (isNumber(value)) return ctx.stylize(String(value), 'number')
-  if (isBoolean(value)) return ctx.stylize(String(value), 'boolean')
+  if (isNumber(value)) return String(value)
+  if (isBoolean(value)) return String(value)
   // For some reason typeof null is "object", so special case here.
-  if (isNull(value)) return ctx.stylize('null', 'null')
+  if (isNull(value)) return 'null'
   return undefined
 }
 
@@ -185,7 +183,6 @@ function formatValue(ctx, value, recurseTimes) {
   // Provide a hook for user-specified inspect functions.
   // Check that value is an object with an inspect function on it
   if (
-    ctx.customInspect &&
     value &&
     isFunction(value.inspect) &&
     // Filter out the util module, it's inspect function is special
@@ -200,6 +197,16 @@ function formatValue(ctx, value, recurseTimes) {
     return ret
   }
 
+  /* eslint-disable */
+  if (
+    value &&
+    value._isWrappedObject === true &&
+    typeof value.toJSON === 'function'
+  ) {
+    value = value.toJSON()
+  }
+  /* eslint-enable */
+
   // Primitive types cannot have properties
   const primitive = formatPrimitive(ctx, value)
   if (primitive) {
@@ -207,12 +214,8 @@ function formatValue(ctx, value, recurseTimes) {
   }
 
   // Look up the keys of the object.
-  let keys = Object.keys(value)
+  const keys = Object.keys(value)
   const visibleKeys = arrayToHash(keys)
-
-  if (ctx.showHidden && Object.getOwnPropertyNames) {
-    keys = Object.getOwnPropertyNames(value)
-  }
 
   // IE doesn't make error fields non-enumerable
   // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
@@ -227,13 +230,13 @@ function formatValue(ctx, value, recurseTimes) {
   if (keys.length === 0) {
     if (isFunction(value)) {
       const name = value.name ? `: ${value.name}` : ''
-      return ctx.stylize(`[Function${name}]`, 'special')
+      return `[Function${name}]`
     }
     if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp')
+      return RegExp.prototype.toString.call(value)
     }
     if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date')
+      return Date.prototype.toString.call(value)
     }
     if (isError(value)) {
       return formatError(value)
@@ -277,9 +280,9 @@ function formatValue(ctx, value, recurseTimes) {
 
   if (recurseTimes < 0) {
     if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp')
+      return RegExp.prototype.toString.call(value)
     }
-    return ctx.stylize('[Object]', 'special')
+    return '[Object]'
   }
 
   ctx.seen.push(value)
@@ -307,18 +310,11 @@ function formatValue(ctx, value, recurseTimes) {
  * @license MIT (© Joyent)
  */
 
-export default function inspect(obj, opts) {
+export default function inspect(obj) {
   // default options
-  const ctx = Object.assign(
-    {
-      seen: [],
-      stylize: x => x,
-      showHidden: false,
-      depth: 2,
-      customInspect: true,
-    },
-    opts
-  )
+  const ctx = {
+    seen: [],
+  }
 
-  return formatValue(ctx, obj, ctx.depth)
+  return formatValue(ctx, obj, 2)
 }
