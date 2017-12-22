@@ -1,6 +1,6 @@
 {
   "name": "@skpm/test-runner",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "A test runner for sketch plugins",
   "main": "lib/index.js",
   "bin": {
@@ -9,7 +9,10 @@
   "engines": {
     "node": ">= 6"
   },
-  "files": ["lib", "test-runner.sketchplugin"],
+  "files": [
+    "lib",
+    "test-runner.sketchplugin"
+  ],
   "scripts": {
     "prebuild": "../node_modules/.bin/rimraf lib",
     "build": "../node_modules/.bin/babel src -d lib -D",
@@ -19,7 +22,14 @@
     "type": "git",
     "url": "git+https://github.com/skpm/skpm.git"
   },
-  "keywords": ["sketch", "cocoascript", "javascript", "babel", "skpm", "test"],
+  "keywords": [
+    "sketch",
+    "cocoascript",
+    "javascript",
+    "babel",
+    "skpm",
+    "test"
+  ],
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
   "bugs": {
