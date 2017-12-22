@@ -75,6 +75,21 @@ export const iterableEquality = (a, b) => {
     }
   }
 
+  if (Object.keys(a).length !== Object.keys(a).length) {
+    return false
+  }
+
+  const aKeys = Object.keys(a).sort()
+  const bKeys = Object.keys(b).sort()
+
+  for (let i = 0; i < aKeys.length; i += 1) {
+    const aKey = aKeys[i]
+    const bKey = bKeys[i]
+    if (aKey !== bKey || !equals(a[aKey], b[bKey], [iterableEquality])) {
+      return false
+    }
+  }
+
   return true
 }
 
