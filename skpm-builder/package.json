@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "bin": {
@@ -47,7 +47,7 @@
     "parse-author": "2.0.0",
     "run-sketch-plugin": "^1.0.0",
     "semver": "^5.3.0",
-    "sketch-polyfill-console": "^0.5.0",
+    "sketch-polyfill-console": "^0.5.2",
     "sketch-polyfill-fetch": "^0.1.4",
     "sketch-polyfill-setinterval": "^0.1.0",
     "sketch-polyfill-settimeout": "^0.2.0",
