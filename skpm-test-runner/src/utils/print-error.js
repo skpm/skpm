@@ -43,11 +43,11 @@ module.exports.formatExecError = (test, options) => {
   const { reason, name } = test
   let { message, stack } = reason
 
-  message = reverseChalk(chalk, message)
+  message = reverseChalk(chalk, message || '')
     .split(/\n/)
     .map(line => MESSAGE_INDENT + line)
     .join('\n')
-  stack = stack && !options.noStackTrace ? formatStackTrace(stack, options) : ''
+  stack = stack && !options.noStackTrace ? formatStackTrace(stack) : ''
 
   if (message.match(/^\s*$/) && !stack.match(/^\s*$/)) {
     // this can happen if an empty object is thrown.
@@ -65,9 +65,9 @@ module.exports.formatTestError = (test, options) => {
   const { reason, ancestorSuites, name } = test
   let { message, stack } = reason
 
-  stack = options.noStackTrace ? '' : formatStackTrace(stack, options)
+  stack = stack && !options.noStackTrace ? formatStackTrace(stack) : ''
 
-  message = reverseChalk(chalk, message)
+  message = reverseChalk(chalk, message || '')
     .split(/\n/)
     .map(line => MESSAGE_INDENT + line)
     .join('\n')

@@ -33,15 +33,9 @@ export const iterableEquality = (a, b) => {
   ) {
     return undefined
   }
-  if (a.constructor !== b.constructor) {
+  if (a && b && a.constructor !== b.constructor) {
     // check if the object are natives and then shallow equal them
-    return (
-      a &&
-      b &&
-      a.sketchObject &&
-      b.sketchObject &&
-      a.sketchObject == b.sketchObject
-    )
+    return a.sketchObject && b.sketchObject && a.sketchObject == b.sketchObject
   }
 
   if (a.size !== undefined) {

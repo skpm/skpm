@@ -152,7 +152,7 @@ function mapSourcePosition(position) {
 }
 
 module.exports = stack =>
-  stack.reduce((prev, frame) => {
+  (stack || []).reduce((prev, frame) => {
     if (
       typeof frame.line !== 'undefined' &&
       typeof frame.column !== 'undefined' &&
