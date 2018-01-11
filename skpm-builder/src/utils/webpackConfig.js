@@ -99,7 +99,15 @@ export default function getWebpackConfig(
     }
 
     if (isProd) {
-      plugins.push(new UglifyJSPlugin())
+      plugins.push(new UglifyJSPlugin({
+        uglifyOptions: {
+          mangle: {
+            // @see https://bugs.webkit.org/show_bug.cgi?id=171041
+            // @see https://github.com/mishoo/UglifyJS2/issues/1753#issuecomment-324814782
+            safari10: true
+          }
+        }
+      }))
     }
 
     const webpackConfig = {
