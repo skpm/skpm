@@ -11,10 +11,10 @@ os:
 install:
   - npm prune
   - npm install
-  - cd packages/skpm && npm prune && npm install && cd ..
-  - cd packages/builder && npm prune && npm install && cd ..
-  - cd packages/utils && npm prune && npm install && cd ..
-  - cd packages/test-runner && npm prune && npm install && cd ..
+  - cd packages/skpm && npm prune && npm install && cd ../..
+  - cd packages/builder && npm prune && npm install && cd ../..
+  - cd packages/utils && npm prune && npm install && cd ../..
+  - cd packages/test-runner && npm prune && npm install && cd ../..
 
 cache:
   directories:
