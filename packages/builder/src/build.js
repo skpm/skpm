@@ -321,7 +321,7 @@ async function buildAndWatchPlugin() {
     fs.watch(manifest, async () => {
       // manifest has changed, we need to rebuild the plugin entirely
 
-      if (compilers) {
+      if (compilers && compilers.length) {
         // if we are watching the commands, close the watchers first
         await Promise.all(
           compilers.map(
@@ -337,7 +337,7 @@ async function buildAndWatchPlugin() {
         )
       }
 
-      compilers = buildPlugin()
+      compilers = await buildPlugin()
     })
   }
 }
