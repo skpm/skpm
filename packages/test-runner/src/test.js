@@ -30,6 +30,10 @@ const { argv } = yargs
     describe: 'Only build the test plugin without running the tests.',
     type: 'boolean',
   })
+  .option('enable-async', {
+    describe: '!!EXPERIMENTAL: use promises and fibers to support async tests.',
+    type: 'boolean',
+  })
   .help()
   .strict()
 
@@ -141,7 +145,12 @@ function build() {
 
   console.log(chalk.dim('Building the test plugin...'))
 
-  const testFiles = buildTestFile(process.cwd(), testFile, skpmConfig.test)
+  const testFiles = buildTestFile(
+    process.cwd(),
+    testFile,
+    skpmConfig.test,
+    argv
+  )
 
   if (!argv.buildOnly) {
     if (isInteractive) {

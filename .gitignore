@@ -14,3 +14,9 @@ npm-debug.log*
 .npm
 
 .vscode/
+
+/test
+
+packages/test-runner/test-runner.sketchplugin/Contents/Sketch/compiled-tests.js
+packages/test-runner/test-runner.sketchplugin/Contents/Sketch/compiled-tests.js.map
+packages/test-runner/test-runner.sketchplugin/Contents/Sketch/generated-tests.js

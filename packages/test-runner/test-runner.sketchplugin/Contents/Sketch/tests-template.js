@@ -1,4 +1,5 @@
 /* globals MSDocumentData, log, expect */
+/* eslint-disable array-callback-return */
 const prepareStackTrace = require('./parse-stack-trace')
 
 module.exports = function runTests(context) {
@@ -49,26 +50,38 @@ module.exports = function runTests(context) {
       ancestorSuites = [],
     } = specification
 
-    Object.keys(suites).forEach(suite => {
-      if (skipped) {
-        suites[suite].skipped = true
-      }
-      if (only) {
-        suites[suite].only = true
-      }
+    // if there are suites with `only`
+    const suiteContainsOnly = Object.keys(suites).some(
+      name => suites[name].only
+    )
+
+    Object.keys(suites).map(suite => {
       if (suiteName) {
         suites[suite].ancestorSuites = ancestorSuites.concat([suiteName])
       }
       if (logs && !suites[suite].logs) {
         suites[suite].logs = logs
       }
+      if (skipped) {
+        suites[suite].skipped = true
+        return
+      }
+      if (suiteContainsOnly && !suites[suite].only) {
+        return
+      }
+      if (only) {
+        suites[suite].only = true
+      }
       runUnitTests(suites[suite], suite)
     })
+    // if there are tests with `only`
+    const containsOnly = Object.keys(tests).some(name => tests[name].only)
 
-    Object.keys(tests).forEach((name, i) => {
+    Object.keys(tests).map((name, i) => {
       const test = tests[name]
-      if (skipped) {
-        test.skipped = true
+      if (containsOnly && !test.only) {
+        // there are tests with `only` and it's not this one so skip
+        return
       }
       if (only) {
         test.only = true
@@ -77,7 +90,7 @@ module.exports = function runTests(context) {
         test.ancestorSuites = ancestorSuites.concat([suiteName])
       }
 
-      if (test.skipped) {
+      if (skipped || test.skipped) {
         testResults.push({
           name,
           type: 'skipped',
@@ -88,18 +101,26 @@ module.exports = function runTests(context) {
         return
       }
 
-      let testFailure
       try {
         expect.resetAssertionsLocalState()
 
         test(context, Document.fromNative(MSDocumentData.new()))
 
+        // check if the number of assertion is ok
         const assertionError = expect.extractExpectedAssertionsErrors()
-
         if (assertionError) {
           throw assertionError.error
         }
+
+        testResults.push({
+          name,
+          type: 'passed',
+          only: test.only,
+          ancestorSuites: test.ancestorSuites,
+          logs: i === 0 ? logs : [],
+        })
       } catch (err) {
+        let testFailure
         if (err instanceof Error) {
           testFailure = {
             message: err.message,
@@ -114,9 +135,6 @@ module.exports = function runTests(context) {
         } else {
           testFailure = err
         }
-      }
-
-      if (testFailure) {
         testResults.push({
           name,
           only: test.only,
@@ -125,17 +143,8 @@ module.exports = function runTests(context) {
           ancestorSuites: test.ancestorSuites,
           logs: i === 0 ? logs : [],
         })
-      } else {
-        testResults.push({
-          name,
-          type: 'passed',
-          only: test.only,
-          ancestorSuites: test.ancestorSuites,
-          logs: i === 0 ? logs : [],
-        })
       }
     })
-
     return testResults
   }
 

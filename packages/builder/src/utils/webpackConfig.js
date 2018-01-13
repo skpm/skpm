@@ -79,6 +79,14 @@ export default function getWebpackConfig(
             require.resolve('sketch-polyfill-settimeout'),
             'clearTimeout',
           ],
+          setImmediate: [
+            require.resolve('sketch-polyfill-settimeout'),
+            'setImmediate',
+          ],
+          clearImmediate: [
+            require.resolve('sketch-polyfill-settimeout'),
+            'clearImmediate',
+          ],
           setInterval: [
             require.resolve('sketch-polyfill-setinterval'),
             'setInterval',
@@ -87,6 +95,7 @@ export default function getWebpackConfig(
             require.resolve('sketch-polyfill-setinterval'),
             'clearInterval',
           ],
+          Promise: require.resolve('promise-polyfill'),
         }),
         new WebpackHeaderFooterPlugin(commandHandlers)
       )
@@ -99,15 +108,17 @@ export default function getWebpackConfig(
     }
 
     if (isProd) {
-      plugins.push(new UglifyJSPlugin({
-        uglifyOptions: {
-          mangle: {
-            // @see https://bugs.webkit.org/show_bug.cgi?id=171041
-            // @see https://github.com/mishoo/UglifyJS2/issues/1753#issuecomment-324814782
-            safari10: true
-          }
-        }
-      }))
+      plugins.push(
+        new UglifyJSPlugin({
+          uglifyOptions: {
+            mangle: {
+              // @see https://bugs.webkit.org/show_bug.cgi?id=171041
+              // @see https://github.com/mishoo/UglifyJS2/issues/1753#issuecomment-324814782
+              safari10: true,
+            },
+          },
+        })
+      )
     }
 
     const webpackConfig = {
