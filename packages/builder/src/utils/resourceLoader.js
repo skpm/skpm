@@ -9,7 +9,7 @@ const commandResourceLoader = {
     query: {
       raw: true,
       outputPath(url) {
-        return path.join('..', 'Resources', '_webpack_resources', url)
+        return path.posix.join('..', 'Resources', '_webpack_resources', url)
       },
       publicPath(url) {
         return `"file://" + context.plugin.urlForResourceNamed("${url.split(
