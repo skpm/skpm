@@ -71,28 +71,25 @@ export default function getWebpackConfig(
         new webpack.ProvidePlugin({
           console: require.resolve('sketch-polyfill-console'),
           fetch: require.resolve('sketch-polyfill-fetch'),
-          setTimeout: [
-            require.resolve('sketch-polyfill-settimeout'),
-            'setTimeout',
-          ],
+          setTimeout: [require.resolve('@skpm/timers/timeout'), 'setTimeout'],
           clearTimeout: [
-            require.resolve('sketch-polyfill-settimeout'),
+            require.resolve('@skpm/timers/timeout'),
             'clearTimeout',
           ],
           setImmediate: [
-            require.resolve('sketch-polyfill-settimeout'),
+            require.resolve('@skpm/timers/immediate'),
             'setImmediate',
           ],
           clearImmediate: [
-            require.resolve('sketch-polyfill-settimeout'),
+            require.resolve('@skpm/timers/immediate'),
             'clearImmediate',
           ],
           setInterval: [
-            require.resolve('sketch-polyfill-setinterval'),
+            require.resolve('@skpm/timers/interval'),
             'setInterval',
           ],
           clearInterval: [
-            require.resolve('sketch-polyfill-setinterval'),
+            require.resolve('@skpm/timers/interval'),
             'clearInterval',
           ],
           Promise: require.resolve('promise-polyfill'),
@@ -142,6 +139,14 @@ export default function getWebpackConfig(
         commandIdentifiers ? manifestFolder : process.cwd(),
         file
       ),
+      externals: {
+        '__legacy-sketch-api': {
+          commonjs: '__legacy-sketch-api',
+        },
+        'sketch-api': {
+          commonjs: 'sketch-api',
+        },
+      },
       output: {
         filename: basename,
         library: commandIdentifiers ? 'exports' : undefined,
