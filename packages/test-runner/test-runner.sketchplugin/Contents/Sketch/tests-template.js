@@ -1,11 +1,11 @@
 /* globals MSDocumentData, log, expect */
 /* eslint-disable array-callback-return */
-const prepareStackTrace = require('./parse-stack-trace')
+const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
 
 module.exports = function runTests(context) {
   let Document
   try {
-    Document = require('sketch-api')
+    Document = require('sketch-api') // eslint-disable-line
   } catch (err) {
     // we are on the old API, try to provide a Document anyway
     const application = context.api()

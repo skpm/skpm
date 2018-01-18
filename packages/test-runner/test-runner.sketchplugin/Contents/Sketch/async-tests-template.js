@@ -1,6 +1,11 @@
-/* globals MSDocumentData, log, expect */
-const prepareStackTrace = require('./parse-stack-trace')
-const sketch = require('sketch-api')
+/* globals MSDocumentData, log, expect, sketch */
+const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
+
+if (typeof sketch === 'undefined') {
+  sketch = require('sketch-api') // eslint-disable-line
+}
+
+// const sketch = require('sketch-api')
 
 function SerialPromise(promises) {
   return promises.reduce((prev, p) => prev.then(() => p()), Promise.resolve())
@@ -94,8 +99,6 @@ module.exports = function runTests(context) {
               })
               return () => Promise.resolve()
             }
-
-            log('test')
 
             return () =>
               Promise.resolve()
