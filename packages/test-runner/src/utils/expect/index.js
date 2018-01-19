@@ -113,12 +113,16 @@ expect.extend(matchers)
 expect.extend(sketchMatchers)
 
 expect.assertions = expected => {
-  getState().expectedAssertionsNumber = expected
+  setState({
+    expectedAssertionsNumber: expected,
+  })
 }
 
 expect.hasAssertions = expected => {
   utils.ensureNoExpected(expected, '.hasAssertions')
-  getState().isExpectingAssertions = true
+  setState({
+    isExpectingAssertions: true,
+  })
 }
 expect.getState = getState
 expect.setState = setState

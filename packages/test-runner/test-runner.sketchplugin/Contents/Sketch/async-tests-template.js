@@ -5,8 +5,6 @@ if (typeof sketch === 'undefined') {
   sketch = require('sketch-api') // eslint-disable-line
 }
 
-// const sketch = require('sketch-api')
-
 function SerialPromise(promises) {
   return promises.reduce((prev, p) => prev.then(() => p()), Promise.resolve())
 }
@@ -104,12 +102,10 @@ module.exports = function runTests(context) {
               Promise.resolve()
                 .then(() => {
                   expect.resetAssertionsLocalState()
-                  log('test2')
 
                   return test(context, sketch.fromNative(MSDocumentData.new()))
                 })
                 .then(() => {
-                  log('test3')
                   const assertionError = expect.extractExpectedAssertionsErrors()
 
                   if (assertionError) {

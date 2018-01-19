@@ -49,7 +49,7 @@ export default function({ types: t }) {
                 )
               )
 
-              // function __hookedLogs (string) { __skpm_logs__.push(string); console.__log(string) }
+              // function __hookedLogs (string) { __skpm_logs__.push(string); return console.__log(string) }
               path.insertBefore(
                 t.functionDeclaration(
                   t.identifier('__hookedLogs'),
@@ -64,7 +64,7 @@ export default function({ types: t }) {
                         [t.identifier('string')]
                       )
                     ),
-                    t.expressionStatement(
+                    t.returnStatement(
                       t.callExpression(
                         t.memberExpression(
                           t.identifier('console'),
@@ -96,7 +96,7 @@ export default function({ types: t }) {
                * function test (description, fn) {
                *   function withLogs(context, document) {
                *     console.log = __hookedLogs
-               *     fn(context, document)
+               *     return fn(context, document)
                *   }
                *   __skpm_tests__[description] = withLogs
                * }
@@ -120,7 +120,7 @@ export default function({ types: t }) {
                             t.identifier('__hookedLogs')
                           )
                         ),
-                        t.expressionStatement(
+                        t.returnStatement(
                           t.callExpression(t.identifier('fn'), [
                             t.identifier('context'),
                             t.identifier('document'),
@@ -143,7 +143,7 @@ export default function({ types: t }) {
                 )
               )
 
-              // test.only = function (description, fn) { fn.only = true; test(description, fn) }
+              // test.only = function (description, fn) { fn.only = true; return test(description, fn) }
               path.insertBefore(
                 t.expressionStatement(
                   t.assignmentExpression(
@@ -166,7 +166,7 @@ export default function({ types: t }) {
                             t.booleanLiteral(true)
                           )
                         ),
-                        t.expressionStatement(
+                        t.returnStatement(
                           t.callExpression(t.identifier('test'), [
                             t.identifier('description'),
                             t.identifier('fn'),
@@ -178,7 +178,7 @@ export default function({ types: t }) {
                 )
               )
 
-              // test.skip = function (description, fn) { fn.skipped = true; test(description, fn) }
+              // test.skip = function (description, fn) { fn.skipped = true; return test(description, fn) }
               path.insertBefore(
                 t.expressionStatement(
                   t.assignmentExpression(
@@ -201,7 +201,7 @@ export default function({ types: t }) {
                             t.booleanLiteral(true)
                           )
                         ),
-                        t.expressionStatement(
+                        t.returnStatement(
                           t.callExpression(t.identifier('test'), [
                             t.identifier('description'),
                             t.identifier('fn'),
