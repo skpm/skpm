@@ -64,19 +64,10 @@ if (!skpmConfig.test.testRegex) {
 skpmConfig.test.testRegex = new RegExp(skpmConfig.test.testRegex)
 
 if (!skpmConfig.test.ignore) {
-  let gitignore
-  try {
-    gitignore = require('fs').readFileSync(
-      path.join(process.cwd(), './.gitignore'),
-      'utf8'
-    )
-  } catch (err) {
-    gitignore = ''
-  }
-  gitignore = gitignore.split('\n').filter(l => l)
-  gitignore.push('.git')
-  skpmConfig.test.ignore = gitignore
+  skpmConfig.test.ignore = []
 }
+
+skpmConfig.test.ignore.push('/.git')
 
 const testFile = path.join(
   __dirname,

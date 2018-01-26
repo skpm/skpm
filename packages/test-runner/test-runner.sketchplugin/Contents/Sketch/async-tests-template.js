@@ -1,9 +1,6 @@
-/* globals MSDocumentData, log, expect, sketch */
+/* globals MSDocumentData, log, expect */
 const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
-
-if (typeof sketch === 'undefined') {
-  sketch = require('sketch-api') // eslint-disable-line
-}
+var sketch = require('sketch') // eslint-disable-line
 
 function SerialPromise(promises) {
   return promises.reduce((prev, p) => prev.then(() => p()), Promise.resolve())
@@ -152,7 +149,7 @@ module.exports = function runTests(context) {
       .then(() => testResults)
   }
 
-  const fiber = sketch.createFiber()
+  const fiber = sketch.Async.createFiber()
   runUnitTests(testSuites)
     .then(results => {
       if (results.some(t => t.only)) {

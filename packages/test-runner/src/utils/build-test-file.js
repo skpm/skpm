@@ -1,27 +1,51 @@
 const fs = require('fs')
 const path = require('path')
+const globby = require('globby')
+const { Minimatch } = require('minimatch')
 
-export function findAllTestFiles(inputDir, dir, options) {
-  const files = fs.readdirSync(dir)
-  return files.reduce((prev, file) => {
-    const fullPath = path.join(dir, file)
-    const relativePath = fullPath.split(inputDir)[1]
-    if (options.ignore.some(ignoredPath => fullPath.match(ignoredPath))) {
+const isIgnoredByPatterns = patterns => {
+  if (!patterns) {
+    return () => false
+  }
+  const matches = patterns.map(pattern => {
+    const minimatch = Minimatch(pattern, { dot: true })
+    return minimatch.match.bind(minimatch)
+  })
+  return filePath => matches.some(m => m(filePath))
+}
+
+export function findAllTestFiles(_inputDir, _dir, options) {
+  const ignoredByPatterns = isIgnoredByPatterns(options.ignore)
+  const ignoredByGitignore =
+    options.gitignore !== false ? globby.gitignore.sync() : () => false
+  const isIgnored = filePath =>
+    ignoredByPatterns(filePath) || ignoredByGitignore(filePath)
+
+  function recurse(inputDir, dir) {
+    const files = fs.readdirSync(dir)
+    return files.reduce((prev, file) => {
+      const fullPath = path.join(dir, file)
+      const relativePath = fullPath.split(inputDir)[1]
+
+      if (isIgnored(relativePath)) {
+        return prev
+      }
+      if (fs.statSync(fullPath).isDirectory()) {
+        return prev.concat(recurse(inputDir, fullPath, options))
+      } else if (options.testRegex.test(relativePath)) {
+        let name = file.split('/')
+        name = name[name.length - 1]
+        name = name.replace('.js', '').replace('.test', '')
+        prev.push({
+          name,
+          path: fullPath,
+        })
+      }
       return prev
-    }
-    if (fs.statSync(fullPath).isDirectory()) {
-      return prev.concat(findAllTestFiles(inputDir, fullPath, options))
-    } else if (options.testRegex.test(relativePath)) {
-      let name = file.split('/')
-      name = name[name.length - 1]
-      name = name.replace('.js', '').replace('.test', '')
-      prev.push({
-        name,
-        path: fullPath,
-      })
-    }
-    return prev
-  }, [])
+    }, [])
+  }
+
+  return recurse(_inputDir, _dir)
 }
 
 export function buildTestFile(inputDir, outputFile, options, argv) {

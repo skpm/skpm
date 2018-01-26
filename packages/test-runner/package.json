@@ -1,6 +1,6 @@
 {
   "name": "@skpm/test-runner",
-  "version": "0.1.26",
+  "version": "0.1.30",
   "description": "A test runner for sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -40,11 +40,13 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
-    "@skpm/builder": "^0.3.1",
+    "@skpm/builder": "^0.3.3",
     "@skpm/utils": "^0.1.5",
     "chalk": "^1.1.3",
     "chokidar": "^1.7.0",
+    "globby": "^7.1.1",
     "is-ci": "^1.0.10",
+    "minimatch": "^3.0.4",
     "sketch-utils": "^0.1.0",
     "source-map": "^0.6.1",
     "strip-ansi": "^4.0.0",
