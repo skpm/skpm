@@ -139,14 +139,14 @@ export default function getWebpackConfig(
         commandIdentifiers ? manifestFolder : process.cwd(),
         file
       ),
-      externals: {
-        '__legacy-sketch-api': {
-          commonjs: '__legacy-sketch-api',
+      externals: [
+        (context, request, callback) => {
+          if (/^sketch\//.test(request) || request === 'sketch') {
+            return callback(null, `commonjs ${request}`)
+          }
+          return callback()
         },
-        'sketch-api': {
-          commonjs: 'sketch-api',
-        },
-      },
+      ],
       output: {
         filename: basename,
         library: commandIdentifiers ? 'exports' : undefined,
