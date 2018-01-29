@@ -19,6 +19,7 @@
   "scripts": {
     "prebuild": "../../node_modules/.bin/rimraf lib",
     "build": "../../node_modules/.bin/babel src -d lib -D",
+    "watch": "npm run build -- --watch",
     "prepare": "npm run -s build"
   },
   "repository": {
@@ -47,7 +48,7 @@
     "globby": "^7.1.1",
     "is-ci": "^1.0.10",
     "minimatch": "^3.0.4",
-    "sketch-utils": "^0.1.0",
+    "sketch-utils": "^0.1.2",
     "source-map": "^0.6.1",
     "strip-ansi": "^4.0.0",
     "webpack": "^3.10.0",

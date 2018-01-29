@@ -5,62 +5,9 @@ import WebpackShellPlugin, {
   sketchtoolRunCommand,
 } from '@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin'
 import { CLEAR } from './constants'
+import findLoader from './loader-hacks/find-loader'
 
-// that's pretty ugly. not sure if there is a better solution
-function findLoader(config, loader) {
-  for (let i = 0; i < (config.module.rules || []).length; i += 1) {
-    const r = config.module.rules[i]
-    if (r) {
-      if (r.loader) {
-        if (r.loader === loader) {
-          // if we have a top level loader, move it inside use
-          r.use = {
-            loader: r.loader,
-          }
-          delete r.loader
-          r.exclude = /node_modules\/(?!(@skpm\/test-runner)\/).*/
-          return r.use
-        }
-      } else if (r.use) {
-        if (Array.isArray(r.use)) {
-          const useIndex = r.use.findIndex(u => u.loader === loader)
-          if (useIndex !== -1) {
-            r.exclude = /node_modules\/(?!(@skpm\/test-runner)\/).*/
-            return r.use[useIndex]
-          }
-        } else if (r.use.loader === loader) {
-          r.exclude = /node_modules\/(?!(@skpm\/test-runner)\/).*/
-          return r.use
-        }
-      }
-    }
-  }
-  return undefined
-}
-
-function hackBabelConfig(skpmConfig, loader) {
-  if (!loader.options) {
-    loader.options = {}
-  }
-  loader.options.plugins = (loader.options.plugins || []).concat([
-    [require('./globals-babel-plugin'), skpmConfig.test],
-  ])
-}
-
-function hackTypescriptConfig(skpmConfig, loader) {
-  if (!loader.options) {
-    loader.options = {}
-  }
-  if (!loader.options.babelOptions) {
-    loader.options.babelOptions = {
-      babelrc: false,
-    }
-  }
-  loader.options.useBabel = true
-  loader.options.babelOptions.plugins = (loader.options.babelOptions.plugins ||
-    []
-  ).concat([[require('./globals-babel-plugin'), skpmConfig.test]])
-}
+const SUPPORTED_LOADERS = ['babel-loader', 'awesome-typescript-loader']
 
 export default (skpmConfig, testFiles, argv) => config => {
   config.output.filename = 'compiled-tests.js'
@@ -101,20 +48,22 @@ export default (skpmConfig, testFiles, argv) => config => {
     )
   }
 
-  const babelLoader = findLoader(config, 'babel-loader')
+  let hacked = false
 
-  if (babelLoader) {
-    hackBabelConfig(skpmConfig, babelLoader)
-  } else {
-    const typescriptLoader = findLoader(config, 'awesome-typescript-loader')
+  for (let i = 0; i < SUPPORTED_LOADERS.length; i += 1) {
+    const loader = findLoader(config, SUPPORTED_LOADERS[i])
 
-    if (typescriptLoader) {
-      hackTypescriptConfig(skpmConfig, typescriptLoader)
-    } else {
-      throw new Error(
-        'Not sure how to handle your loader. Please open an issue on https://github.com/skpm/skpm'
-      )
+    if (loader) {
+      require(`./loader-hacks/${SUPPORTED_LOADERS[i]}.hack`)(skpmConfig, loader)
+      hacked = true
+      break
     }
+  }
+
+  if (!hacked) {
+    throw new Error(
+      'Not sure how to handle your loader. Please open an issue on https://github.com/skpm/skpm'
+    )
   }
 
   config.devtool = 'source-map'
