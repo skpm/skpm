@@ -41,4 +41,4 @@ Now every time `skpm` builds your plugin (`npm run build` etcetera), anything th
 ### NB
 
 * Name your subdirectories and files carefully so that you do not overwrite any resources built by your `webpack.skpm.config.js`.
-* Make sure to update `.gitignore` so that the assets copied to the `.sketchplugin` package.
+* Make sure to update `.gitignore` to exclude the assets copied to the `.sketchplugin`. (Easiest fix is to ignore the whole `.sketchplugin` directory).
