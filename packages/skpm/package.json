@@ -43,7 +43,6 @@
     "cross-spawn-promise": "^0.10.1",
     "fs.promised": "^3.0.0",
     "gittar": "^0.1.0",
-    "glob": "^7.1.2",
     "globby": "^7.1.1",
     "inquirer": "^3.3.0",
     "keytar": "^4.0.4",
