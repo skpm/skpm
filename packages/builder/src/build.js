@@ -194,15 +194,27 @@ function checkEnd() {
 }
 
 async function copyAsset(asset) {
-  const destPath = path.dirname(asset)
+  const destPath = path.join(
+    output,
+    'Contents',
+    'Resources',
+    asset.replace(path.dirname(asset), '')
+  )
+
+  await new Promise((resolve, reject) => {
+    mkdirp(path.dirname(destPath), err => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+
   return new Promise((resolve, reject) => {
     const stream = fs
       .createReadStream(asset)
-      .pipe(
-        fs.createWriteStream(
-          path.join(output, 'Contents', 'Resources', destPath)
-        )
-      )
+      .pipe(fs.createWriteStream(destPath))
 
     stream.on('close', () => {
       console.log(
@@ -212,6 +224,9 @@ async function copyAsset(asset) {
               `[${counter + 1}/${steps}] `
             )}${randomBuildEmoji()}  Copied ${chalk.blue(asset)}`
       )
+      if (!argv.watch) {
+        checkEnd()
+      }
       resolve()
     })
 
