@@ -100,8 +100,8 @@ async function copyManifest(manifestJSON) {
         author = parseAuthor(skpmConfig.author)
       }
       copy.author = author.name
-      if (!copy.email && author.email) {
-        copy.email = author.email
+      if (!copy.authorEmail && author.email) {
+        copy.authorEmail = author.email
       }
     }
 
