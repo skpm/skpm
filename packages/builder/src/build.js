@@ -6,7 +6,7 @@ import webpack from 'webpack'
 import yargs from 'yargs'
 import parseAuthor from 'parse-author'
 import chalk from 'chalk'
-import glob from 'glob'
+import globby from 'globby'
 import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
 import generateWebpackConfig from './utils/webpackConfig'
 
@@ -166,18 +166,22 @@ function getCommands(manifestJSON) {
   return Object.keys(commandsAndHandlers).map(k => commandsAndHandlers[k])
 }
 
-function getResources(_skpmConfig) {
-  const resourcesArrays = _skpmConfig.resources.map(resource =>
-    glob.sync(resource)
-  )
+async function getResources(_skpmConfig) {
+  if (!_skpmConfig.resources || !_skpmConfig.resources.length) {
+    return []
+  }
 
-  // flatten array
-  return resourcesArrays.reduce((prev, a) => {
-    a.forEach(resource => {
-      prev.push(resource)
-    })
-    return prev
-  }, [])
+  const resources = await globby(_skpmConfig.resources)
+  return resources
+}
+
+async function getAssets(_skpmConfig) {
+  if (!_skpmConfig.assets || !_skpmConfig.assets.length) {
+    return []
+  }
+
+  const assets = await globby(_skpmConfig.assets)
+  return assets
 }
 
 let steps
@@ -187,6 +191,55 @@ function checkEnd() {
     console.log(`${chalk.green('success')} Plugin built`)
     process.exit(0)
   }
+}
+
+async function copyAsset(asset) {
+  const destPath = path.join(
+    output,
+    'Contents',
+    'Resources',
+    asset.replace(path.dirname(asset), '')
+  )
+
+  await new Promise((resolve, reject) => {
+    mkdirp(path.dirname(destPath), err => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+
+  return new Promise((resolve, reject) => {
+    const stream = fs
+      .createReadStream(asset)
+      .pipe(fs.createWriteStream(destPath))
+
+    stream.on('close', () => {
+      console.log(
+        `${argv.watch
+          ? ''
+          : chalk.dim(
+              `[${counter + 1}/${steps}] `
+            )}${randomBuildEmoji()}  Copied ${chalk.blue(asset)}`
+      )
+      if (!argv.watch) {
+        checkEnd()
+      }
+      resolve()
+    })
+
+    stream.on('error', err => {
+      console.error(`${chalk.red('error')} Error while building ${asset}`)
+      console.error(err.stack || err)
+      if (err.details) {
+        console.error(err.details)
+      }
+      process.exit(1)
+      reject(err)
+    })
+  })
 }
 
 function buildCallback(file, watching) {
@@ -277,14 +330,29 @@ async function buildPlugin() {
   }
 
   const commands = getCommands(manifestJSON)
-  const resources = getResources(skpmConfig)
-  steps = commands.length + resources.length + 1
+  const resources = await getResources(skpmConfig)
+  const assets = await getAssets(skpmConfig)
+  steps = commands.length + resources.length + assets.length + 1
 
   const now = Date.now()
 
   // start by copying the manifest
   try {
     await copyManifest(manifestJSON)
+    if (!argv.watch) {
+      console.log(
+        `${chalk.dim(`[${counter + 1}/${steps}]`)} 🖨  Copied ${chalk.blue(
+          skpmConfig.manifest
+        )} in ${chalk.grey(Date.now() - now)}ms`
+      )
+      checkEnd()
+    } else {
+      console.log(
+        `🖨  Copied ${chalk.blue(skpmConfig.manifest)} in ${chalk.grey(
+          Date.now() - now
+        )}ms`
+      )
+    }
   } catch (err) {
     console.error(
       `${chalk.red('error')} Error while copying ${skpmConfig.manifest}`
@@ -295,20 +363,10 @@ async function buildPlugin() {
     }
   }
 
-  if (!argv.watch) {
-    console.log(
-      `${chalk.dim(`[${counter + 1}/${steps}]`)} 🖨  Copied ${chalk.blue(
-        skpmConfig.manifest
-      )} in ${chalk.grey(Date.now() - now)}ms`
-    )
-    checkEnd()
-  } else {
-    console.log(
-      `🖨  Copied ${chalk.blue(skpmConfig.manifest)} in ${chalk.grey(
-        Date.now() - now
-      )}ms`
-    )
-  }
+  // then copy the assets
+  // we do not watch them because we would need to spin a new chokidar instance and that's expensive
+  // if you add a new asset, just restart the build
+  await Promise.all(assets.map(copyAsset))
 
   // and then, build the commands
   return buildCommandsAndResources(commands, resources, argv.watch)

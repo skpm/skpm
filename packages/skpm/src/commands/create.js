@@ -1,5 +1,5 @@
 import ora from 'ora'
-import glob from 'glob'
+import globby from 'globby'
 import gittar from 'gittar'
 import fs from 'fs.promised'
 import { green } from 'chalk'
@@ -175,7 +175,7 @@ export default asyncCommand({
         pkgData.skpm.name = argv.name
       }
       // Find a `manifest.json`; use the first match, if any
-      const files = await Promise.promisify(glob)(`${target}/**/manifest.json`)
+      const files = await globby(`${target}/**/manifest.json`)
       const manifest = files[0] && JSON.parse(await fs.readFile(files[0]))
       if (manifest) {
         spinner.text = 'Updating `title` within `manifest.json` file'

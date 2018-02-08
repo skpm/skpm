@@ -12,6 +12,7 @@ module.exports = function getSkpmConfig(packageJSON) {
     title: skpmConfig.title || packageJSON.title,
     appcast: skpmConfig.appcast || packageJSON.appcast,
     resources: skpmConfig.resources || packageJSON.resources || [],
+    assets: skpmConfig.assets || packageJSON.assets || [],
     babel: skpmConfig.babel || packageJSON.babel,
     repository: extractRepository(
       skpmConfig.repository || packageJSON.repository

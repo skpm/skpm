@@ -42,7 +42,7 @@
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
     "@skpm/builder": "^0.3.3",
-    "@skpm/utils": "^0.1.5",
+    "@skpm/utils": "^0.1.6",
     "chalk": "^1.1.3",
     "chokidar": "^1.7.0",
     "globby": "^7.1.1",
