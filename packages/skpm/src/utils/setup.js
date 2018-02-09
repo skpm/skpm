@@ -1,5 +1,6 @@
 import spawn from 'cross-spawn-promise'
 import { hasCommand, warn } from './'
+import getGitUser from './get-git-user'
 
 export function install(cwd) {
   return spawn('npm', ['install'], {
@@ -19,28 +20,16 @@ export async function initGit(target) {
     await spawn('git', ['init'], { cwd })
     await spawn('git', ['add', '-A'], { cwd })
 
-    let gitUser
-    let gitEmail
     const defaultGitUser = 'skpm-bot'
     const defaultGitEmail = 'bot@skpm.io'
 
-    try {
-      gitEmail = (await spawn('git', ['config', 'user.email'])).toString()
-    } catch (e) {
-      gitEmail = defaultGitEmail
-    }
-
-    try {
-      gitUser = (await spawn('git', ['config', 'user.name'])).toString()
-    } catch (e) {
-      gitUser = defaultGitUser
-    }
+    const gitUser = await getGitUser(defaultGitEmail, defaultGitUser)
 
     await spawn('git', ['commit', '-m', 'initial commit from skpm'], {
       cwd,
       env: {
-        GIT_COMMITTER_NAME: gitUser,
-        GIT_COMMITTER_EMAIL: gitEmail,
+        GIT_COMMITTER_NAME: gitUser.username,
+        GIT_COMMITTER_EMAIL: gitUser.email,
         GIT_AUTHOR_NAME: defaultGitUser,
         GIT_AUTHOR_EMAIL: defaultGitEmail,
       },

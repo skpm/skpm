@@ -6,6 +6,7 @@ import { green } from 'chalk'
 import { resolve } from 'path'
 import { prompt } from 'inquirer'
 import asyncCommand from '../utils/async-command'
+import getGitUser from '../utils/get-git-user'
 import { info, isDir, error, warn } from '../utils'
 import { install, initGit, isMissing } from '../utils/setup'
 
@@ -164,11 +165,18 @@ export default asyncCommand({
       warn('Could not locate `package.json` file!')
     }
 
+    if (pkgData && !pkgData.author) {
+      const gitUser = await getGitUser()
+      if (gitUser && gitUser.username && gitUser.email) {
+        pkgData.author = `${gitUser.username} <${gitUser.email}>`
+      }
+    }
+
     if (argv.name) {
       // Update `package.json` key
       if (pkgData) {
         spinner.text = 'Updating `name` within `package.json` file'
-        pkgData.name = argv.name.toLowerCase().replace(/\s+/g, '_')
+        pkgData.name = argv.name.toLowerCase().replace(/\s+/g, '-')
         if (!pkgData.skpm) {
           pkgData.skpm = {}
         }
