@@ -1,4 +1,4 @@
-/* globals MSDocumentData, log, expect */
+/* globals MSDocumentData, log, expect, coscript */
 const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
 var sketch = require('sketch') // eslint-disable-line
 
@@ -160,9 +160,10 @@ module.exports = function runTests(context) {
       log(`${results.filter(t => t.type === 'failed').length} tests failed.`)
       log(`json results: ${JSON.stringify(results)}`)
       fiber.cleanup()
+      coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
     })
     .catch(err => {
-      fiber.cleanup()
+      coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
       throw err
     })
 }
