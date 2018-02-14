@@ -132,6 +132,11 @@ module.exports = function runTests(context) {
             testFailure.expected = err.expected
             testFailure.operator = err.operator
           }
+        } else if (err.reason && err.name) {
+          testFailure = {
+            message: String(err.reason()),
+            name: String(err.name()),
+          }
         } else {
           testFailure = err
         }
