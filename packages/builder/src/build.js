@@ -7,6 +7,7 @@ import yargs from 'yargs'
 import parseAuthor from 'parse-author'
 import chalk from 'chalk'
 import globby from 'globby'
+import { exec } from '@skpm/utils/exec'
 import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
 import generateWebpackConfig from './utils/webpackConfig'
 
@@ -213,12 +214,8 @@ async function copyAsset(asset) {
     })
   })
 
-  return new Promise((resolve, reject) => {
-    const stream = fs
-      .createReadStream(asset)
-      .pipe(fs.createWriteStream(destPath))
-
-    stream.on('close', () => {
+  return exec(`cp ${asset} ${destPath}`)
+    .then(() => {
       console.log(
         `${
           argv.watch ? '' : chalk.dim(`[${counter + 1}/${steps}] `)
@@ -227,19 +224,15 @@ async function copyAsset(asset) {
       if (!argv.watch) {
         checkEnd()
       }
-      resolve()
     })
-
-    stream.on('error', err => {
+    .catch(err => {
       console.error(`${chalk.red('error')} Error while building ${asset}`)
       console.error(err.stack || err)
       if (err.details) {
         console.error(err.details)
       }
       process.exit(1)
-      reject(err)
     })
-  })
 }
 
 function buildCallback(file, watching) {
