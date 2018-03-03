@@ -1,5 +1,4 @@
 import { getState, setState, getMatchers, setMatchers } from './matchers_object'
-import stringify from './stringify'
 import * as utils from './utils'
 import matchers from './matchers'
 import sketchMatchers from './sketch_matchers'
@@ -7,8 +6,6 @@ import {
   extractExpectedAssertionsErrors,
   resetAssertionsLocalState,
 } from './assertion-check'
-
-utils.stringify = stringify // eslint-disable-line
 
 const validateResult = result => {
   if (
@@ -23,7 +20,7 @@ const validateResult = result => {
         'Matcher functions should ' +
         'return an object in the following format:\n' +
         '  {message?: string | function, pass: boolean}\n' +
-        `'${stringify(result)}' was returned`
+        `'${utils.stringify(result)}' was returned`
     )
   }
 }

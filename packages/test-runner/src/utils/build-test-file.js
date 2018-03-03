@@ -48,7 +48,7 @@ export function findAllTestFiles(_inputDir, _dir, options) {
   return recurse(_inputDir, _dir)
 }
 
-export function buildTestFile(inputDir, outputFile, options, argv) {
+export function buildTestFile(inputDir, outputFile, options) {
   const pluginPath = path.join(
     __dirname,
     '../../test-runner.sketchplugin/Contents/Sketch'
@@ -56,13 +56,7 @@ export function buildTestFile(inputDir, outputFile, options, argv) {
   const testFiles = findAllTestFiles(inputDir, inputDir, options)
 
   const indexJS = fs
-    .readFileSync(
-      path.join(
-        pluginPath,
-        argv.enableAsync ? 'async-tests-template.js' : 'tests-template.js'
-      ),
-      'utf8'
-    )
+    .readFileSync(path.join(pluginPath, 'tests-template.js'), 'utf8')
     .replace(
       '/* {{IMPORTS}} */',
       testFiles.reduce(

@@ -1,5 +1,7 @@
 /* eslint-disable prefer-template, import/first */
-import stringify from './stringify'
+import { inspect } from '@skpm/util'
+
+export const stringify = inspect
 
 const chalk = {
   green: s => `{{{CHALK_green}}}${s}{{{/CHALK_green}}}`,

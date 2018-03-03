@@ -56,20 +56,20 @@ export default {
         new Error('You are not logged in. Please run `skpm login` first.')
       )
     }
-    return request(
-      options(token, `https://api.github.com/repos/${repo}`)
-    ).then(res => {
-      const permissions = JSON.parse(res).permissions || {}
-      if (!permissions.push) {
-        throw new Error(
-          `You don't have the right permissions on the repo. Need the "push" permission and only got:\n' ${JSON.stringify(
-            permissions,
-            null,
-            '  '
-          )}`
-        )
+    return request(options(token, `https://api.github.com/repos/${repo}`)).then(
+      res => {
+        const permissions = JSON.parse(res).permissions || {}
+        if (!permissions.push) {
+          throw new Error(
+            `You don't have the right permissions on the repo. Need the "push" permission and only got:\n' ${JSON.stringify(
+              permissions,
+              null,
+              '  '
+            )}`
+          )
+        }
       }
-    })
+    )
   },
   createDraftRelease(token, repo, tag) {
     const opts = options(
@@ -159,7 +159,9 @@ export default {
       return request(
         options(
           token,
-          `https://api.github.com/repos/${fork.full_name}/contents/plugins.json?ref=${repo}`
+          `https://api.github.com/repos/${
+            fork.full_name
+          }/contents/plugins.json?ref=${repo}`
         )
       ).then(
         data => JSON.parse(data).sha,

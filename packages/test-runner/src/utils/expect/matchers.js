@@ -1,4 +1,5 @@
 /* eslint-disable prefer-template, no-restricted-properties, no-void, eqeqeq, no-nested-ternary */
+import { isDeepStrictEqual } from '@skpm/util'
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -11,7 +12,6 @@ import {
   printWithType,
   getType,
 } from './utils'
-import { equals, iterableEquality, subsetEquality } from './equal'
 
 const escapeStrForRegex = string =>
   string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&')
@@ -73,7 +73,9 @@ const matchers = {
             (getType(received) === 'object' ||
               getType(expected) === 'array' ||
               getType(expected) === 'sketch-native') &&
-            equals(received, expected, [iterableEquality])
+            isDeepStrictEqual(received, expected, [
+              isDeepStrictEqual.iterableEquality,
+            ])
 
           return (
             matcherHint('.toBe') +
@@ -370,8 +372,9 @@ const matchers = {
     }
 
     const pass =
-      converted.findIndex(item => equals(item, value, [iterableEquality])) !==
-      -1
+      converted.findIndex(item =>
+        isDeepStrictEqual(item, value, [isDeepStrictEqual.iterableEquality])
+      ) !== -1
     const message = pass
       ? () =>
           matcherHint('.not.toContainEqual', collectionType, 'value') +
@@ -392,7 +395,9 @@ const matchers = {
   },
 
   toEqual(received, expected) {
-    const pass = equals(received, expected, [iterableEquality])
+    const pass = isDeepStrictEqual(received, expected, [
+      isDeepStrictEqual.iterableEquality,
+    ])
 
     const message = pass
       ? () =>
@@ -486,7 +491,9 @@ const matchers = {
     const { lastTraversedObject, hasEndProp } = result
 
     const pass = valuePassed
-      ? equals(result.value, value, [iterableEquality])
+      ? isDeepStrictEqual(result.value, value, [
+          isDeepStrictEqual.iterableEquality,
+        ])
       : hasEndProp
 
     const traversedPath = result.traversedPath.join('.')
@@ -587,9 +594,9 @@ const matchers = {
       )
     }
 
-    const pass = equals(receivedObject, expectedObject, [
-      iterableEquality,
-      subsetEquality,
+    const pass = isDeepStrictEqual(receivedObject, expectedObject, [
+      isDeepStrictEqual.iterableEquality,
+      isDeepStrictEqual.subsetEquality,
     ])
 
     const message = pass

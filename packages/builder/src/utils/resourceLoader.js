@@ -12,9 +12,9 @@ const commandResourceLoader = {
         return path.posix.join('..', 'Resources', '_webpack_resources', url)
       },
       publicPath(url) {
-        return `"file://" + context.plugin.urlForResourceNamed("${url.split(
-          '../Resources/'
-        )[1]}").path()`
+        return `"file://" + context.plugin.urlForResourceNamed("${
+          url.split('../Resources/')[1]
+        }").path()`
       },
     },
   },
