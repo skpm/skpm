@@ -131,7 +131,7 @@ try {
         console.log(
           `${chalk.yellow(
             'warning'
-          )} Starting with Sketch 45, you need to restart Sketch for your plugin to appear in the "plugins" menu`
+          )} Starting with Sketch 45, you may need to restart Sketch for your plugin to appear in the "Plugins" menu`
         )
         console.log()
       }
