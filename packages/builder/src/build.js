@@ -73,7 +73,9 @@ if (!fs.existsSync(path.join(output, 'Contents', 'Sketch'))) {
 
 const manifestFolder = path.dirname(manifest)
 
-const defaultAppcastURL = `https://raw.githubusercontent.com/${skpmConfig.repository}/master/.appcast.xml`
+const defaultAppcastURL = `https://raw.githubusercontent.com/${
+  skpmConfig.repository
+}/master/.appcast.xml`
 
 async function copyManifest(manifestJSON) {
   return new Promise((resolve, reject) => {
@@ -218,11 +220,9 @@ async function copyAsset(asset) {
 
     stream.on('close', () => {
       console.log(
-        `${argv.watch
-          ? ''
-          : chalk.dim(
-              `[${counter + 1}/${steps}] `
-            )}${randomBuildEmoji()}  Copied ${chalk.blue(asset)}`
+        `${
+          argv.watch ? '' : chalk.dim(`[${counter + 1}/${steps}] `)
+        }${randomBuildEmoji()}  Copied ${chalk.blue(asset)}`
       )
       if (!argv.watch) {
         checkEnd()
@@ -278,11 +278,9 @@ function buildCallback(file, watching) {
         })
       }
       console.log(
-        `${watching
-          ? ''
-          : chalk.dim(
-              `[${counter + 1}/${steps}] `
-            )}${randomBuildEmoji()}  Built ${chalk.blue(file)} in ${chalk.grey(
+        `${
+          watching ? '' : chalk.dim(`[${counter + 1}/${steps}] `)
+        }${randomBuildEmoji()}  Built ${chalk.blue(file)} in ${chalk.grey(
           info.time
         )}ms`
       )
@@ -309,7 +307,15 @@ async function buildCommandsAndResources(commands, resources, watch) {
       await webpackConfig(file, command.identifiers, command.handlers)
     )
     if (watch) {
-      compilers.push(compiler.watch({}, buildCallback(file, watch)))
+      // https://github.com/webpack/webpack.js.org/issues/125
+      // watchOptions in webpack config are only used by webpack-dev-server,
+      // and need to be manually passed to the watch() method.
+      compilers.push(
+        compiler.watch(
+          compiler.options.watchOptions,
+          buildCallback(file, watch)
+        )
+      )
     } else {
       compiler.run(buildCallback(file))
     }
