@@ -1,7 +1,7 @@
 # Installation
 
+> Important: [Node.js](https://nodejs.org/en/download/) > V6.x is a minimum requirement. You also need the [command line tools](http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/) installed.
+
 ```
 npm install -g skpm
 ```
-
-The `npm` command-line tool is bundled with Node.js. If you have it installed, then you already have npm too and you just have to copy paste the command above to install skpm. If not, go download [Node.js](https://nodejs.org/en/download/) first.

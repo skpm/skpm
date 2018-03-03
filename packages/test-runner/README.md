@@ -2,15 +2,17 @@
 
 Introducing Sketch Plugin Testing
 
-- **👩🏻‍💻 Easy Setup**: `skpm-test` is a complete and easy to set up Sketch Plugin testing solution. In fact, `skpm-test` works out of the box for any `skpm` project.
+* **👩🏻‍💻 Easy Setup**: `skpm-test` is a complete and easy to set up Sketch Plugin testing solution. In fact, `skpm-test` works out of the box for any `skpm` project.
 
-## Getting Started
+## Installation
 
-Install `skpm-test` using `npm`:
+_`@skpm/test-runner` requires Sketch 49 or higher._
 
-```
+```bash
 npm install --save-dev @skpm/test-runner
 ```
+
+## Getting Started
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
@@ -24,11 +26,11 @@ exports default sum;
 Then, create a file named `sum.test.js`. This will contain our actual test:
 
 ```javascript
-const sum = require('./sum');
+const sum = require('./sum')
 
 test('adds 1 + 2 to equal 3', (context, document) => {
-  expect(sum(1, 2)).toBe(3);
-});
+  expect(sum(1, 2)).toBe(3)
+})
 ```
 
 Add the following section to your `package.json`:
@@ -53,37 +55,39 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running the tests on TravisCI
 
-- Go to [Travis](https://travis-ci.org/profile)
-- Add your repo
-- In the settings, add an environment variable called `SKETCH_LICENSE` with your sketch license
-- Copy paste the following code in a new file named `.travis.yml`
-    ```yaml
-    os: osx
+* Go to [Travis](https://travis-ci.org/profile)
+* Add your repo
+* In the settings, add an environment variable called `SKETCH_LICENSE` with your sketch license
+* Copy paste the following code in a new file named `.travis.yml`
 
-    language: node_js
+  ```yaml
+  os: osx
 
-    node_js:
-      - "node"
+  language: node_js
 
-    before_install:
-      - brew update
-      - brew cask install sketch # install Sketch
-      - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3" # create support folder
-      - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3/Plugins" # create plugins folder
-      - echo $SKETCH_LICENSE > "~/Library/Application Support/com.bohemiancoding.sketch3/.deployment" # add the Sketch license
+  node_js:
+    - "node"
 
-    cache:
-      directories:
-        - "node_modules"
-        - $HOME/Library/Caches/Homebrew
+  before_install:
+    - brew update
+    - brew cask install sketch # install Sketch
+    - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3" # create support folder
+    - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3/Plugins" # create plugins folder
+    - echo $SKETCH_LICENSE > "~/Library/Application Support/com.bohemiancoding.sketch3/.deployment" # add the Sketch license
 
-    script:
-      - npm run test
+  cache:
+    directories:
+      - "node_modules"
+      - $HOME/Library/Caches/Homebrew
 
-    after_script:
-      - rm "~/Library/App Support/com.bohemiancoding.sketch3/.deployment" # remove the Sketch license
-    ```
-- Commit, Push, done!
+  script:
+    - npm run test
+
+  after_script:
+    - rm "~/Library/App Support/com.bohemiancoding.sketch3/.deployment" # remove the Sketch license
+  ```
+
+* Commit, Push, done!
 
 ## Contributing
 

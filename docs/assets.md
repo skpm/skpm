@@ -1,44 +1,52 @@
 # Adding Assets
 
-If your plugin needs assets like images, PDF or Sketch documents, you can add that as part of the `build` script in `package.json`. Here is one way to do it:
+`Skpm` supports two different types of assets:
 
-1. Place your assets in a directory `assets` at the root of your plugin repository (i.e. side by side with `src`).
-2. Make a `post_build.sh` script that copies the contents of the `assets` directory to `Contents/Resources/` in the built `.sketchplugin` package, _with the directory structure intact_.
-3. Call this script from the `build` script of `package.json`.
+* JavaScript assets that need to be compiles (for example the script running in a webiew)
+* any files the need to be bundled with your plugin
 
-Here's a `post_build.sh` script that does the copying:
+## JavaScript assets
 
-```sh
-#!/usr/bin/env bash
+To specify the javascript files that need to be compiled and bundled into your plugin, you need to add a field in your `package.json` called `resources` (either at the root or nested in a `skpm` object:
 
-PLUGIN_DIR=$(node << EOF
-    dict = $(<package.json);
-    console.log(dict.skpm.main);
-EOF
-)
-ASSETS_SRC_DIR='assets'
-RESOURCES_BUILD_DIR="${PLUGIN_DIR}/Contents/Resources/"
+For example, to compile all the JavaScript files in a `resources` folder:
 
-mkdir -p ${RESOURCES_BUILD_DIR}
-cp -a "${ASSETS_SRC_DIR}"/* ${RESOURCES_BUILD_DIR}
+```diff
+{
+  ...
+  "skpm": {
+    ...
++     "resources": [
++       "resources/**/*.js"
++     ]
+    ...
+  }
+}
 ```
 
-Make sure to make it executable:
+Let's say that there is a `resources/webview.js` file, it will be compiled and the output will be found in `plugin.sketchplugin/Contents/Resources/webview.js`. Note that the first folder (`resources` in this case) is stripped off from the output path.
 
-```sh
-$ chmod +x post_build.sh
+To modify the webpack config applied to the file, check out the [Build configuration](./build-configuration.md) documentation.
+
+## Any assets
+
+In order to "copy/paste" files into the plugin bundle, you need to add a field in your `package.json` called `assets` (either at the root or nested in a `skpm` object:
+
+For example, to bundle all the files in an `assets` folder:
+
+```diff
+{
+  ...
+  "skpm": {
+    ...
++     "assets": [
++       "assets/**/*"
++     ]
+    ...
+  }
+}
 ```
 
-Make the `build` script in `package.json` do the post build task like so:
+Let's say that there is a `assets/icon.png` file, it will be found in `plugin.sketchplugin/Contents/Resources/icon.png`. Note that the first folder (`assets` in this case) is stripped off from the output path.
 
-```js
-  "scripts": {
-    "build": "skpm-build && ./post_build.sh",
-```
-
-Now every time `skpm` builds your plugin (`npm run build` etcetera), anything that's in the `assets/` directory will be mirrored in `Contents/Resources/`, which means it can be used by your plugin.
-
-### NB
-
-* Name your subdirectories and files carefully so that you do not overwrite any resources built by your `webpack.skpm.config.js`.
-* Make sure to update `.gitignore` to exclude the assets copied to the `.sketchplugin`. (Easiest fix is to ignore the whole `.sketchplugin` directory).
+You can access the files in `plugin.sketchplugin/Contents/Resources` with `context.plugin.urlForResourceNamed('icon.png)`.
