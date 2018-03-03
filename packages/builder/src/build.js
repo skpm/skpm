@@ -308,8 +308,7 @@ async function buildCommandsAndResources(commands, resources, watch) {
     )
     if (watch) {
       // https://github.com/webpack/webpack.js.org/issues/125
-      // watchOptions in webpack config are only used by webpack-dev-server,
-      // and need to be manually passed to the watch() method.
+      // watchOptions need to be manually passed to the watch() method.
       compilers.push(
         compiler.watch(
           compiler.options.watchOptions,
