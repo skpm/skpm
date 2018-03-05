@@ -168,7 +168,7 @@ export default asyncCommand({
     if (pkgData && !pkgData.author) {
       const gitUser = await getGitUser()
       if (gitUser && gitUser.username && gitUser.email) {
-        pkgData.author = `${gitUser.username} <${gitUser.email}>`
+        pkgData.author = `${gitUser.username.trim()} <${gitUser.email.trim()}>`
       }
     }
 
