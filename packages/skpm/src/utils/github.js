@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import requestWithCallback from 'request'
+import parseAuthor from 'parse-author'
 
 /* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
 function getErrorFromBody(body, opts) {
@@ -226,7 +227,11 @@ export default {
       }
 
       if (skpmConfig.author) {
-        plugin.author = skpmConfig.author
+        let { author } = skpmConfig
+        if (typeof skpmConfig.author === 'string') {
+          author = parseAuthor(skpmConfig.author)
+        }
+        plugin.author = author.name
       }
 
       const newPlugins = JSON.stringify(

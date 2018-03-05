@@ -205,7 +205,7 @@ export default asyncCommand({
 
     if (!argv.skipRegistry) {
       spinner.text = 'Publishing the plugin on the official plugin directory'
-      await github.addPluginToPluginsRegistryRepo(token, packageJSON, repo)
+      await github.addPluginToPluginsRegistryRepo(token, skpmConfig, repo)
     }
 
     spinner.succeed('Plugin published!')
