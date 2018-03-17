@@ -30,6 +30,16 @@ function testDevMode() {
         yesno.ask('Do you want to enable it? (y/N)', false, ok => {
           if (ok) {
             exec(command('write', '-bool YES'))
+              .then(() =>
+                exec(
+                  '/usr/bin/defaults write com.bohemiancoding.sketch3 WebKitDeveloperExtras -bool true'
+                )
+              )
+              .then(() =>
+                console.log(
+                  `${chalk.green('success')} Sketch developer mode enabled`
+                )
+              )
               .then(resolve)
               .catch(reject)
           } else {
