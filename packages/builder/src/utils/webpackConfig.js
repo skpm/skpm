@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import webpack from 'webpack'
-import UglifyJSPlugin from 'uglifyjs-webpack-plugin'
+import merge from 'webpack-merge'
 import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
 import BabelLoader from './babelLoader'
@@ -106,7 +106,7 @@ export default function getWebpackConfig(
 
     if (isProd) {
       plugins.push(
-        new UglifyJSPlugin({
+        new webpack.optimize.UglifyJsPlugin({
           uglifyOptions: {
             mangle: {
               // @see https://bugs.webkit.org/show_bug.cgi?id=171041
@@ -118,7 +118,9 @@ export default function getWebpackConfig(
       )
     }
 
-    const webpackConfig = {
+    let webpackConfig = {
+      mode: 'development',
+      devtool: isProd ? undefined : 'source-map',
       module: {
         rules,
       },
@@ -158,7 +160,13 @@ export default function getWebpackConfig(
     }
 
     if (userDefinedWebpackConfig) {
-      await userDefinedWebpackConfig(webpackConfig, !!commandIdentifiers)
+      const resolvedUserDefinedConfig = await userDefinedWebpackConfig(
+        webpackConfig,
+        !!commandIdentifiers
+      )
+      if (resolvedUserDefinedConfig) {
+        webpackConfig = merge.smart(webpackConfig, resolvedUserDefinedConfig)
+      }
     }
 
     return webpackConfig

@@ -29,13 +29,12 @@ ${definedKeys
 `
 
 /* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
-module.exports = function WebpackFooterPlugin(definedKeys) {
+module.exports = function WebpackHeaderFooterPlugin(definedKeys) {
   return {
     apply(compiler) {
-      compiler.plugin('compilation', compilation => {
-        compilation.plugin('optimize-chunk-assets', (chunks, callback) => {
+      compiler.hooks.compilation.tap('HeaderFooter', compilation => {
+        compilation.hooks.optimizeChunkAssets.tap('HeaderFooter', chunks => {
           chunks.forEach(chunk => {
-            if (!chunk.isInitial()) return
             chunk.files.forEach(file => {
               compilation.assets[file] = new ConcatSource(
                 header,
@@ -46,7 +45,6 @@ module.exports = function WebpackFooterPlugin(definedKeys) {
               )
             })
           })
-          callback()
         })
       })
     },

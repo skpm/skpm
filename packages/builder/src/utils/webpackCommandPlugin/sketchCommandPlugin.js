@@ -7,7 +7,7 @@ export default function SketchCommandPlugin(options) {
       const { bundleURL, commandIdentifier } = options
 
       if (bundleURL && commandIdentifier) {
-        compiler.plugin('after-emit', (compilation, callback) => {
+        compiler.hooks.afterEmit.tapPromise('Run Sketch Command', () =>
           runPluginCommand({
             bundleURL,
             identifier: commandIdentifier,
@@ -23,9 +23,6 @@ export default function SketchCommandPlugin(options) {
               }
               res.stdout.split('\\n').map(line => console.log(line))
             })
-            .then(() => {
-              callback()
-            })
             .catch(err => {
               console.error(
                 `${chalk.red(
@@ -33,9 +30,9 @@ export default function SketchCommandPlugin(options) {
                 )} Error while running the command after build`
               )
               console.error(err)
-              callback()
+              throw err
             })
-        })
+        )
       }
     },
   }
