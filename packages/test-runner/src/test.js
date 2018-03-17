@@ -44,7 +44,9 @@ try {
   process.exit(1)
 }
 
-argv.app = getSketchPath(argv.app)
+if (!argv.buildOnly) {
+  argv.app = getSketchPath(argv.app)
+}
 
 const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
 
