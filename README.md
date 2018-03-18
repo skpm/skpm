@@ -112,6 +112,7 @@ skpm publish <new-version> | major | minor | patch | premajor | preminor | prepa
 ```
 
 The exact order of execution (without options) is as follows:
+
 * Run the `preversion` script
 * Bump `version` in package.json as requested (`patch`, `minor`, `major`, etc).
 * Run the `version` script

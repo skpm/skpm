@@ -71,7 +71,6 @@ This test used `expect` and `toBe` to test that two values were exactly identica
   before_install:
     - brew update
     - brew cask install sketch # install Sketch
-    - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3" # create support folder
     - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3/Plugins" # create plugins folder
     - echo $SKETCH_LICENSE > "~/Library/Application Support/com.bohemiancoding.sketch3/.deployment" # add the Sketch license
 
@@ -81,7 +80,7 @@ This test used `expect` and `toBe` to test that two values were exactly identica
       - $HOME/Library/Caches/Homebrew
 
   script:
-    - npm run test
+    - npm run test -- --app=/Applications/Sketch.app
 
   after_script:
     - rm "~/Library/App Support/com.bohemiancoding.sketch3/.deployment" # remove the Sketch license
