@@ -214,7 +214,7 @@ async function copyAsset(asset) {
     })
   })
 
-  return exec(`cp ${asset} ${destPath}`)
+  return exec(`cp "${asset}" "${destPath}"`)
     .then(() => {
       console.log(
         `${

@@ -1,0 +1,15 @@
+{
+  "unreleased": [],
+  "releases": {
+    "0.5.0": [
+      "[New] Update webpack dependency to webpack@4",
+      "[New] Update babel dependency to babel@7",
+      "[New] The `webpack.skpm.config.js` file can now return a webpack config that will be merged (instead of mutating the config)",
+      "[New] The `skpm-link` command now set the `WebKitDeveloperExtras` setting to true when enabling the dev mode (see https://developer.sketchapp.com/guides/preferences/#inspect-a-webview)"
+    ],
+    "0.4.3": ["[Fixed] Fixed copying assets with a space in their path"],
+    "0.4.2": [
+      "[Improved] Use `cp` to copy the assets instead of create a new file entirely (in order to preserve the chmod)"
+    ]
+  }
+}
