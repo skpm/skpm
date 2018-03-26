@@ -72,7 +72,7 @@ npm run watch
 Additionally, if you wish to run the plugin every time it is built:
 
 ```bash
-npm run watch -- --run
+npm run start
 ```
 
 #### View the plugin's log
