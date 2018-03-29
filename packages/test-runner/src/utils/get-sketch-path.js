@@ -1,13 +1,16 @@
 import fs from 'fs'
 import path from 'path'
 import childProcess from 'child_process'
-import { get as getConfig } from '@skpm/utils/tool-config'
+import {
+  get as getConfig
+} from '@skpm/utils/tool-config'
 
 function appInfoForKey(app, key) {
   const plistPath = path.join(app, 'Contents', 'Info.plist')
   const result = childProcess.execSync(
-    `/usr/libexec/PlistBuddy -c "Print :'${key}'" ${plistPath}`,
-    { encoding: 'utf8' }
+    `/usr/libexec/PlistBuddy -c "Print :'${key}'" "${plistPath}"`, {
+      encoding: 'utf8'
+    }
   )
 
   return result.trim()

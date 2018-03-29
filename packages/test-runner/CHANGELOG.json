@@ -1,0 +1,6 @@
+{
+  "unreleased": [],
+  "releases": {
+    "0.2.1": ["[Fixed] Fix an bug when the path to Sketch have a space"]
+  }
+}
