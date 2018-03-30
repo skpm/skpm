@@ -49,32 +49,36 @@ export default function({ types: t }) {
                 )
               )
 
-              // function __hookedLogs (string) { __skpm_logs__.push(string); return console.__log(string) }
+              // var __hookedLogs = (string) => { __skpm_logs__.push(string); return console.__log(string) }
               path.insertBefore(
-                t.functionDeclaration(
-                  t.identifier('__hookedLogs'),
-                  [t.identifier('string')],
-                  t.blockStatement([
-                    t.expressionStatement(
-                      t.callExpression(
-                        t.memberExpression(
-                          t.identifier('__skpm_logs__'),
-                          t.identifier('push')
+                t.variableDeclaration('var', [
+                  t.variableDeclarator(
+                    t.identifier('__hookedLogs'),
+                    t.arrowFunctionExpression(
+                      [t.identifier('string')],
+                      t.blockStatement([
+                        t.expressionStatement(
+                          t.callExpression(
+                            t.memberExpression(
+                              t.identifier('__skpm_logs__'),
+                              t.identifier('push')
+                            ),
+                            [t.identifier('string')]
+                          )
                         ),
-                        [t.identifier('string')]
-                      )
-                    ),
-                    t.returnStatement(
-                      t.callExpression(
-                        t.memberExpression(
-                          t.identifier('console'),
-                          t.identifier('__log')
+                        t.returnStatement(
+                          t.callExpression(
+                            t.memberExpression(
+                              t.identifier('console'),
+                              t.identifier('__log')
+                            ),
+                            [t.identifier('string')]
+                          )
                         ),
-                        [t.identifier('string')]
-                      )
-                    ),
-                  ])
-                )
+                      ])
+                    )
+                  ),
+                ])
               )
 
               /**
@@ -93,7 +97,7 @@ export default function({ types: t }) {
 
               /**
                *
-               * function test (description, fn) {
+               * var test = (description, fn) => {
                *   function withLogs(context, document) {
                *     console.log = __hookedLogs
                *     return fn(context, document)
@@ -102,45 +106,49 @@ export default function({ types: t }) {
                * }
                */
               path.insertBefore(
-                t.functionDeclaration(
-                  t.identifier('test'),
-                  [t.identifier('description'), t.identifier('fn')],
-                  t.blockStatement([
-                    t.functionDeclaration(
-                      t.identifier('withLogs'),
-                      [t.identifier('context'), t.identifier('document')],
+                t.variableDeclaration('var', [
+                  t.variableDeclarator(
+                    t.identifier('test'),
+                    t.arrowFunctionExpression(
+                      [(t.identifier('description'), t.identifier('fn'))],
                       t.blockStatement([
+                        t.functionDeclaration(
+                          t.identifier('withLogs'),
+                          [t.identifier('context'), t.identifier('document')],
+                          t.blockStatement([
+                            t.expressionStatement(
+                              t.assignmentExpression(
+                                '=',
+                                t.memberExpression(
+                                  t.identifier('console'),
+                                  t.identifier('log')
+                                ),
+                                t.identifier('__hookedLogs')
+                              )
+                            ),
+                            t.returnStatement(
+                              t.callExpression(t.identifier('fn'), [
+                                t.identifier('context'),
+                                t.identifier('document'),
+                              ])
+                            ),
+                          ])
+                        ),
                         t.expressionStatement(
                           t.assignmentExpression(
                             '=',
                             t.memberExpression(
-                              t.identifier('console'),
-                              t.identifier('log')
+                              t.identifier('__skpm_tests__'),
+                              t.identifier('description'),
+                              true
                             ),
-                            t.identifier('__hookedLogs')
+                            t.identifier('withLogs')
                           )
                         ),
-                        t.returnStatement(
-                          t.callExpression(t.identifier('fn'), [
-                            t.identifier('context'),
-                            t.identifier('document'),
-                          ])
-                        ),
                       ])
-                    ),
-                    t.expressionStatement(
-                      t.assignmentExpression(
-                        '=',
-                        t.memberExpression(
-                          t.identifier('__skpm_tests__'),
-                          t.identifier('description'),
-                          true
-                        ),
-                        t.identifier('withLogs')
-                      )
-                    ),
-                  ])
-                )
+                    )
+                  ),
+                ])
               )
 
               // test.only = function (description, fn) { fn.only = true; return test(description, fn) }
