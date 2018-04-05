@@ -7,6 +7,7 @@ import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
 import BabelLoader from './babelLoader'
 import resourceLoader from './resourceLoader'
+import nibLoader from './nibLoader'
 
 async function getCommands(output, commandIdentifiers) {
   return Promise.all(
@@ -98,6 +99,7 @@ export default function getWebpackConfig(
       )
 
       rules.push(resourceLoader)
+      rules.push(nibLoader)
     }
 
     if (argv.run && commandIdentifiers) {

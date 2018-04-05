@@ -1,6 +1,6 @@
 import path from 'path'
 
-const fileRegex = /^(?!.*\.(jsx?|tsx?|json)$).*/ // match everything except .jsx? and .tsx? and json
+const fileRegex = /^(?!.*\.(jsx?|tsx?|json|nib|xib)$).*/ // match everything except .jsx? and .tsx? and json
 
 const WEBPACK_DIRECTORY = '_webpack_resources'
 
