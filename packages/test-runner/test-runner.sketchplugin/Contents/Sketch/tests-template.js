@@ -1,4 +1,4 @@
-/* globals MSDocumentData, log, expect, coscript, AppController */
+/* globals MSDocumentData, log, expect, coscript */
 const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
 var sketch = require('sketch') // eslint-disable-line
 
@@ -170,11 +170,6 @@ module.exports = function runTests(context) {
       log(`json results: ${JSON.stringify(results)}`)
       fiber.cleanup()
       coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
-
-      // force cleaning up finished commands so we don't have to wait for the GC
-      AppController.sharedInstance()
-        .pluginManager()
-        .cleanupFinishedCommands()
     })
     .catch(err => {
       coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
