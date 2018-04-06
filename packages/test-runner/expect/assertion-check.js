@@ -1,10 +1,14 @@
 /* eslint-disable prefer-template */
 
-import { EXPECTED_COLOR, RECEIVED_COLOR, matcherHint, pluralize } from './utils'
+const {
+  EXPECTED_COLOR,
+  RECEIVED_COLOR,
+  matcherHint,
+  pluralize,
+} = require('./utils')
+const { getState, setState } = require('./matchers_object')
 
-import { getState, setState } from './matchers_object'
-
-export const resetAssertionsLocalState = () => {
+module.exports.resetAssertionsLocalState = function resetAssertionsLocalState() {
   setState({
     assertionCalls: 0,
     expectedAssertionsNumber: null,
@@ -14,7 +18,7 @@ export const resetAssertionsLocalState = () => {
 
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matchers state.
-export const extractExpectedAssertionsErrors = () => {
+module.exports.extractExpectedAssertionsErrors = function extractExpectedAssertionsErrors() {
   const {
     assertionCalls,
     expectedAssertionsNumber,

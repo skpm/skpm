@@ -1,15 +1,13 @@
 /* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
-import path from 'path'
-import webpack from 'webpack'
-import WebpackShellPlugin, {
-  sketchtoolRunCommand,
-} from '@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin'
-import { CLEAR } from './constants'
-import findLoader from './loader-hacks/find-loader'
+const path = require('path')
+const webpack = require('webpack')
+const WebpackShellPlugin = require('@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin')
+const { CLEAR } = require('./constants')
+const findLoader = require('./loader-hacks/find-loader')
 
 const SUPPORTED_LOADERS = ['babel-loader', 'awesome-typescript-loader']
 
-export default (skpmConfig, testFiles, argv) => config => {
+module.exports = (skpmConfig, testFiles, argv) => config => {
   config.output.filename = 'compiled-tests.js'
   config.output.path = path.resolve(
     __dirname,
@@ -20,14 +18,15 @@ export default (skpmConfig, testFiles, argv) => config => {
 
   config.plugins.push(
     new webpack.ProvidePlugin({
-      expect: [require.resolve('./expect'), 'default'],
+      expect: require.resolve('../../expect'),
     })
   )
 
   if (!argv.buildOnly) {
     config.plugins.push(
-      new WebpackShellPlugin({
-        script: sketchtoolRunCommand(
+      // eslint-disable-next-line
+      new WebpackShellPlugin.default({
+        script: WebpackShellPlugin.sketchtoolRunCommand(
           path.resolve(__dirname, '../../test-runner.sketchplugin'),
           'plugin-tests',
           {

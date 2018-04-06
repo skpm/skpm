@@ -1,12 +1,16 @@
 function isCalleeTest(t, callee) {
   return (
-    t.isIdentifier(callee, { name: 'test' }) ||
+    t.isIdentifier(callee, {
+      name: 'test',
+    }) ||
     (t.isMemberExpression(callee) &&
-      t.isIdentifier(callee.object, { name: 'test' }))
+      t.isIdentifier(callee.object, {
+        name: 'test',
+      }))
   )
 }
 
-export default function({ types: t }) {
+module.exports = function babelPluginTestInjector({ types: t }) {
   return {
     visitor: {
       ExpressionStatement(path) {
@@ -32,29 +36,26 @@ export default function({ types: t }) {
                 ])
               )
 
-              // console.__log = console.log
+              // var __skpm_console_log__ = console.log
               path.insertBefore(
-                t.expressionStatement(
-                  t.assignmentExpression(
-                    '=',
-                    t.memberExpression(
-                      t.identifier('console'),
-                      t.identifier('__log')
-                    ),
+                t.variableDeclaration('var', [
+                  t.variableDeclarator(
+                    t.identifier('__skpm_console_log__'),
                     t.memberExpression(
                       t.identifier('console'),
                       t.identifier('log')
                     )
-                  )
-                )
+                  ),
+                ])
               )
 
-              // var __hookedLogs = (string) => { __skpm_logs__.push(string); return console.__log(string) }
+              // var __hookedLogs = function (string) { __skpm_logs__.push(string); return __skpm_console_log__(string) }
               path.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('__hookedLogs'),
-                    t.arrowFunctionExpression(
+                    t.functionExpression(
+                      null,
                       [t.identifier('string')],
                       t.blockStatement([
                         t.expressionStatement(
@@ -68,10 +69,7 @@ export default function({ types: t }) {
                         ),
                         t.returnStatement(
                           t.callExpression(
-                            t.memberExpression(
-                              t.identifier('console'),
-                              t.identifier('__log')
-                            ),
+                            t.identifier('__skpm_console_log__'),
                             [t.identifier('string')]
                           )
                         ),
@@ -97,7 +95,7 @@ export default function({ types: t }) {
 
               /**
                *
-               * var test = (description, fn) => {
+               * var test = function (description, fn) => {
                *   function withLogs(context, document) {
                *     console.log = __hookedLogs
                *     return fn(context, document)
@@ -109,8 +107,9 @@ export default function({ types: t }) {
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('test'),
-                    t.arrowFunctionExpression(
-                      [(t.identifier('description'), t.identifier('fn'))],
+                    t.functionExpression(
+                      null,
+                      [t.identifier('description'), t.identifier('fn')],
                       t.blockStatement([
                         t.functionDeclaration(
                           t.identifier('withLogs'),

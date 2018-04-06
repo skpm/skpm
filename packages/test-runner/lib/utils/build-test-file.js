@@ -14,7 +14,7 @@ const isIgnoredByPatterns = patterns => {
   return filePath => matches.some(m => m(filePath))
 }
 
-export function findAllTestFiles(_inputDir, _dir, options) {
+function findAllTestFiles(_inputDir, _dir, options) {
   const ignoredByPatterns = isIgnoredByPatterns(options.ignore)
   const ignoredByGitignore =
     options.gitignore !== false ? globby.gitignore.sync() : () => false
@@ -48,7 +48,13 @@ export function findAllTestFiles(_inputDir, _dir, options) {
   return recurse(_inputDir, _dir)
 }
 
-export function buildTestFile(inputDir, outputFile, options) {
+module.exports.findAllTestFiles = findAllTestFiles
+
+module.exports.buildTestFile = function buildTestFile(
+  inputDir,
+  outputFile,
+  options
+) {
   const pluginPath = path.join(
     __dirname,
     '../../test-runner.sketchplugin/Contents/Sketch'
@@ -71,11 +77,7 @@ export function buildTestFile(inputDir, outputFile, options) {
       name: ${JSON.stringify(file.name)},
       type: 'failed',
       exec: true,
-      reason: {
-        message: err.message,
-        name: err.name,
-        stack: prepareStackTrace(err.stack),
-      },
+      reason: getTestFailure(err),
     })
   }
 `,

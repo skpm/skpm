@@ -72,7 +72,6 @@ export default function getWebpackConfig(
 
       plugins.push(
         new webpack.ProvidePlugin({
-          console: require.resolve('sketch-polyfill-console'),
           fetch: require.resolve('sketch-polyfill-fetch'),
           setTimeout: [require.resolve('@skpm/timers/timeout'), 'setTimeout'],
           clearTimeout: [

@@ -10,14 +10,18 @@ const MATCHERS_OBJECT = {
   },
 }
 
-export const getState = () => MATCHERS_OBJECT.state
+module.exports.getState = function getState() {
+  return MATCHERS_OBJECT.state
+}
 
-export const setState = state => {
+module.exports.setState = function setState(state) {
   Object.assign(MATCHERS_OBJECT.state, state)
 }
 
-export const getMatchers = () => MATCHERS_OBJECT.matchers
+module.exports.getMatchers = function getMatchers() {
+  return MATCHERS_OBJECT.matchers
+}
 
-export const setMatchers = matchers => {
+module.exports.setMatchers = function setMatchers(matchers) {
   Object.assign(MATCHERS_OBJECT.matchers, matchers)
 }

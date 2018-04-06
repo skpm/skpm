@@ -1,9 +1,33 @@
-/* globals MSDocumentData, log, expect, coscript */
+/* globals MSDocumentData, log, expect, coscript, AppController */
 const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
 var sketch = require('sketch') // eslint-disable-line
 
 function SerialPromise(promises) {
   return promises.reduce((prev, p) => prev.then(() => p()), Promise.resolve())
+}
+
+function getTestFailure(err) {
+  let testFailure
+  if (err instanceof Error) {
+    testFailure = {
+      message: err.message,
+      name: err.name,
+      stack: prepareStackTrace(err.stack || ''),
+    }
+    if (err.actual) {
+      testFailure.actual = err.actual
+      testFailure.expected = err.expected
+      testFailure.operator = err.operator
+    }
+  } else if (err.reason && err.name) {
+    testFailure = {
+      message: String(err.reason()),
+      name: String(err.name()),
+    }
+  } else {
+    testFailure = err
+  }
+  return testFailure
 }
 
 module.exports = function runTests(context) {
@@ -119,31 +143,11 @@ module.exports = function runTests(context) {
                   })
                 })
                 .catch(err => {
-                  let testFailure
-                  if (err instanceof Error) {
-                    testFailure = {
-                      message: err.message,
-                      name: err.name,
-                      stack: prepareStackTrace(err.stack),
-                    }
-                    if (err.actual) {
-                      testFailure.actual = err.actual
-                      testFailure.expected = err.expected
-                      testFailure.operator = err.operator
-                    }
-                  } else if (err.reason && err.name) {
-                    testFailure = {
-                      message: String(err.reason()),
-                      name: String(err.name()),
-                    }
-                  } else {
-                    testFailure = err
-                  }
                   testResults.push({
                     name,
                     only: test.only,
                     type: 'failed',
-                    reason: testFailure,
+                    reason: getTestFailure(err),
                     ancestorSuites: test.ancestorSuites,
                     logs: i === 0 ? logs : [],
                   })
@@ -166,6 +170,11 @@ module.exports = function runTests(context) {
       log(`json results: ${JSON.stringify(results)}`)
       fiber.cleanup()
       coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
+
+      // force cleaning up finished commands so we don't have to wait for the GC
+      AppController.sharedInstance()
+        .pluginManager()
+        .cleanupFinishedCommands()
     })
     .catch(err => {
       coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck

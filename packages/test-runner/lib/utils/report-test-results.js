@@ -36,7 +36,7 @@ const indicators = {
 }
 
 const JSON_RESULT_REGEX = /^json results: (.*)$/g
-function reportData() {
+async function reportData() {
   const lines = data.split('\n')
 
   const raw = lines.find(l => JSON_RESULT_REGEX.test(l))
@@ -76,7 +76,8 @@ function reportData() {
 
   suites.sort((a, b) => a.failed.length - b.failed.length)
 
-  suites.forEach(suite => {
+  for (let i = 0; i < suites.length; i += 1) {
+    const suite = suites[i]
     if (suite.skipped === suite.tests.length) {
       console.log(chalk.bgYellow.white(' SKIP ') + ' ' + chalk.dim(suite.name))
 
@@ -107,21 +108,21 @@ function reportData() {
       suite.logs.forEach(l => console.log(`  > ${l}`))
     }
 
-    suite.failed.forEach(failure => {
+    for (let j = 0; j < suite.failed.length; j += 1) {
+      const failure = suite.failed[j]
       console.log('')
       console.log(
-        failure.exec
+        await (failure.exec
           ? formatExecError(failure, {})
-          : formatTestError(failure, {})
+          : formatTestError(failure, {}))
       )
       console.log('')
-    })
+    }
 
-    console.log(suite.name)
     suite.tests.forEach(test => {
       console.log(indicators[test.type] + ' ' + chalk.dim(test.name))
     })
-  })
+  }
 
   console.log('')
   const passedSuites = suites.filter(s => !s.failed.length).length

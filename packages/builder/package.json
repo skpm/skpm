@@ -11,7 +11,7 @@
     "skpm-link": "lib/link.js"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "files": [
     "lib"
@@ -54,7 +54,6 @@
     "promise-polyfill": "^7.0.0",
     "run-sketch-plugin": "^1.0.0",
     "semver": "^5.3.0",
-    "sketch-polyfill-console": "^0.6.2",
     "sketch-polyfill-fetch": "^0.3.0",
     "webpack": "^4.5.0",
     "webpack-merge": "^4.1.2",

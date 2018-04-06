@@ -1,7 +1,7 @@
 /* eslint-disable prefer-template, import/first */
-import { inspect } from '@skpm/util'
+const { inspect } = require('util')
 
-export const stringify = inspect
+module.exports.stringify = inspect
 
 const chalk = {
   green: s => `{{{CHALK_green}}}${s}{{{/CHALK_green}}}`,
@@ -11,13 +11,18 @@ const chalk = {
 }
 
 const REVERSE_REGEX = /{{{CHALK_([a-z]+)}}}([\s\S]*?){{{\/CHALK_\1}}}/gm
-export const reverseChalk = (realChalk, s) =>
+const reverseChalk = (realChalk, s) =>
   s.replace(REVERSE_REGEX, (match, mode, inside) =>
     realChalk[mode](reverseChalk(realChalk, inside))
   )
 
-export const EXPECTED_COLOR = chalk.green
-export const RECEIVED_COLOR = chalk.red
+module.exports.reverseChalk = reverseChalk
+
+const EXPECTED_COLOR = chalk.green
+const RECEIVED_COLOR = chalk.red
+
+module.exports.EXPECTED_COLOR = EXPECTED_COLOR
+module.exports.RECEIVED_COLOR = RECEIVED_COLOR
 
 const NUMBERS = [
   'zero',
@@ -36,19 +41,24 @@ const NUMBERS = [
   'thirteen',
 ]
 
-export const SUGGEST_TO_EQUAL = chalk.dim(
+module.exports.SUGGEST_TO_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with strict `toBe` matcher. You probably need to use `toEqual` instead.'
 )
 
-export const highlightTrailingWhitespace = text =>
+const highlightTrailingWhitespace = text =>
   text.replace(/\s+$/gm, chalk.inverse('$&'))
 
-export const printReceived = object =>
-  RECEIVED_COLOR(highlightTrailingWhitespace(stringify(object)))
-export const printExpected = value =>
-  EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)))
+module.exports.highlightTrailingWhitespace = highlightTrailingWhitespace
 
-export const getType = value => {
+const printReceived = object =>
+  RECEIVED_COLOR(highlightTrailingWhitespace(inspect(object)))
+const printExpected = value =>
+  EXPECTED_COLOR(highlightTrailingWhitespace(inspect(value)))
+
+module.exports.printReceived = printReceived
+module.exports.printExpected = printExpected
+
+const getType = value => {
   if (typeof value === 'undefined') {
     return 'undefined'
   } else if (value === null) {
@@ -82,7 +92,9 @@ export const getType = value => {
   throw new Error(`value of unknown type: ${value}`)
 }
 
-export const printWithType = (name, received, print) => {
+module.exports.getType = getType
+
+const printWithType = (name, received, print) => {
   const type = getType(received)
   return (
     name +
@@ -92,7 +104,9 @@ export const printWithType = (name, received, print) => {
   )
 }
 
-export const matcherHint = (
+module.exports.printWithType
+
+const matcherHint = (
   matcherName,
   received = 'received',
   expected = 'expected',
@@ -110,7 +124,9 @@ export const matcherHint = (
   )
 }
 
-export const ensureNoExpected = (expected, matcherName) => {
+module.exports.matcherHint = matcherHint
+
+const ensureNoExpected = (expected, matcherName) => {
   if (typeof expected !== 'undefined') {
     throw new Error(
       `${matcherHint(`[.not]${matcherName || 'This'}`, undefined, '')}
@@ -121,7 +137,9 @@ ${printWithType('Got', expected, printExpected)}`
   }
 }
 
-export const ensureActualIsNumber = (actual, matcherName) => {
+module.exports.ensureNoExpected = ensureNoExpected
+
+const ensureActualIsNumber = (actual, matcherName) => {
   if (typeof actual !== 'number') {
     throw new Error(
       matcherHint(`[.not]${matcherName || 'This matcher'}`) +
@@ -132,7 +150,9 @@ export const ensureActualIsNumber = (actual, matcherName) => {
   }
 }
 
-export const ensureExpectedIsNumber = (expected, matcherName) => {
+module.exports.ensureActualIsNumber = ensureActualIsNumber
+
+const ensureExpectedIsNumber = (expected, matcherName) => {
   if (typeof expected !== 'number') {
     throw new Error(
       matcherHint(`[.not]${matcherName || 'This matcher'}`) +
@@ -143,10 +163,16 @@ export const ensureExpectedIsNumber = (expected, matcherName) => {
   }
 }
 
-export const ensureNumbers = (actual, expected, matcherName) => {
+module.exports.ensureExpectedIsNumber = ensureExpectedIsNumber
+
+const ensureNumbers = (actual, expected, matcherName) => {
   ensureActualIsNumber(actual, matcherName)
   ensureExpectedIsNumber(expected, matcherName)
 }
 
-export const pluralize = (word, count) =>
+module.exports.ensureNumbers = ensureNumbers
+
+const pluralize = (word, count) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's')
+
+module.exports.pluralize = pluralize

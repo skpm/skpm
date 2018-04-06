@@ -1,5 +1,6 @@
 # build artefacts
 lib
+!packages/test-runner/lib
 
 # npm
 node_modules

@@ -1,6 +1,6 @@
 /* eslint-disable prefer-template, no-restricted-properties, no-void, eqeqeq, no-nested-ternary */
-import { isDeepStrictEqual } from '@skpm/util'
-import {
+const { isDeepStrictEqual } = require('util')
+const {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   SUGGEST_TO_EQUAL,
@@ -11,7 +11,7 @@ import {
   printExpected,
   printWithType,
   getType,
-} from './utils'
+} = require('./utils')
 
 const escapeStrForRegex = string =>
   string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&')
@@ -617,4 +617,4 @@ const matchers = {
   },
 }
 
-export default matchers
+module.exports = matchers
