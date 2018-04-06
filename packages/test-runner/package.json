@@ -18,10 +18,7 @@
     "expect"
   ],
   "scripts": {
-    "prebuild": "../../node_modules/.bin/rimraf lib && rm ./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js || true && rm ./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js.map || true && rm ./test-runner.sketchplugin/Contents/Sketch/generated-tests.js || true",
-    "build": "../../node_modules/.bin/babel src -d lib -D",
-    "watch": "npm run build -- --watch",
-    "prepare": "npm run -s build"
+    "prepare": "./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js || true && rm ./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js.map || true && rm ./test-runner.sketchplugin/Contents/Sketch/generated-tests.js || true"
   },
   "repository": {
     "type": "git",
