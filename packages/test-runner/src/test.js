@@ -6,12 +6,11 @@ import chalk from 'chalk'
 import webpack from 'webpack'
 import chokidar from 'chokidar'
 import stripAnsi from 'strip-ansi'
-import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
+import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import generateWebpackConfig from '@skpm/builder/lib/utils/webpackConfig'
 import { buildTestFile } from './utils/build-test-file'
 import updateWebpackConfig from './utils/update-webpack-config'
 import { CLEAR, KEYS } from './utils/constants'
-import { getSketchPath } from './utils/get-sketch-path'
 
 const isInteractive = require('./utils/is-interactive')
 
@@ -42,10 +41,6 @@ try {
   )
   console.error(err)
   process.exit(1)
-}
-
-if (!argv.buildOnly) {
-  argv.app = getSketchPath(argv.app)
 }
 
 const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
