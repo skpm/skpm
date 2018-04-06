@@ -27,20 +27,3 @@ module.exports.execFile = function execFile(command, options) {
     })
   })
 }
-
-module.exports.spawn = function spawn(command, args) {
-  return new Promise((resolve, reject) => {
-    const child = childProcess.spawn(command, args, {
-      cwd: process.cwd(),
-      stdio: 'inherit',
-    })
-
-    child.on('exit', () => {
-      resolve()
-    })
-
-    child.on('error', err => {
-      reject(err)
-    })
-  })
-}
