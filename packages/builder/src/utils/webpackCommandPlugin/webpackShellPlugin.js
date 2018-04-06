@@ -1,8 +1,6 @@
-import { get as getConfig } from '@skpm/utils/tool-config'
-import { exec } from '@skpm/utils/exec'
+import getSketchPath from '@skpm/internal-utils/get-sketch-path'
+import { exec } from '@skpm/internal-utils/exec'
 import chalk from 'chalk'
-
-const config = getConfig()
 
 export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
   let command = ''
@@ -12,9 +10,9 @@ export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
     command += ' '
   }
 
-  command += `"${options.app ||
-    process.env.SKETCH_PATH ||
-    config.sketchPath}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
+  command += `"${getSketchPath(
+    options.app || process.env.SKETCH_PATH
+  )}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
 
   if (options.withoutActivating) {
     command += ' --without-activating'

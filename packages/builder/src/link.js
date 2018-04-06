@@ -5,10 +5,10 @@ import { join } from 'path'
 import yargs from 'yargs'
 import chalk from 'chalk'
 import semver from 'semver'
-import { get as getConfig } from '@skpm/utils/tool-config'
-import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
-import { exec } from '@skpm/utils/exec'
-import getSketchVersion from '@skpm/utils/getSketchVersion'
+import { get as getConfig } from '@skpm/internal-utils/tool-config'
+import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
+import { exec } from '@skpm/internal-utils/exec'
+import getSketchVersion from '@skpm/internal-utils/getSketchVersion'
 
 const { pluginDirectory } = getConfig()
 

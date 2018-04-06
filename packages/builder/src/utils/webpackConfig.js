@@ -9,6 +9,8 @@ import BabelLoader from './babelLoader'
 import resourceLoader from './resourceLoader'
 import nibLoader from './nibLoader'
 
+const CORE_MODULES = ['util', 'events', 'console']
+
 async function getCommands(output, commandIdentifiers) {
   return Promise.all(
     commandIdentifiers.map(commandIdentifier =>
@@ -145,7 +147,12 @@ export default function getWebpackConfig(
       ),
       externals: [
         (context, request, callback) => {
+          // sketch API
           if (/^sketch\//.test(request) || request === 'sketch') {
+            return callback(null, `commonjs ${request}`)
+          }
+          // core modules shipped in Sketch
+          if (CORE_MODULES.indexOf(request) !== -1) {
             return callback(null, `commonjs ${request}`)
           }
           return callback()
