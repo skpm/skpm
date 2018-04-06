@@ -42,6 +42,7 @@
   "dependencies": {
     "@babel/core": "^7.0.0-beta.42",
     "@skpm/file-loader": "^2.0.0",
+    "@skpm/nib-loader": "^0.1.1",
     "@skpm/timers": "^0.1.0",
     "@skpm/utils": "^0.1.6",
     "babel-loader": "^8.0.0-beta.2",
