@@ -37,6 +37,11 @@ const { argv } = yargs
       "The path to the copy of Sketch to run the plugin after compiling. If this isn't supplied, we try to run the latest Xcode build. If there is none, we try to find a normal Sketch.",
     type: 'string',
   })
+  .option('manifest', {
+    describe:
+      'The path to another manifest. Use this option if you need to build different version of your plugin.',
+    type: 'string',
+  })
   .help()
   .strict()
 
@@ -51,7 +56,7 @@ try {
   process.exit(1)
 }
 
-const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
+const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON, argv)
 
 if (!skpmConfig.main) {
   console.error(
