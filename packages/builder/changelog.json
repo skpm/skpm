@@ -10,7 +10,8 @@
       "[New] Handle core modules shipped in Sketch (by not bundling a polyfill)",
       "[Improved] If reading the dev mode status fails, assume that it's disabled",
       "[Improved] Add an option to specify which Sketch variant to use when running the plugin",
-      "[New] Remove polyfill for `console` as it is provided by Sketch 50 natively"
+      "[New] Remove polyfill for `console` as it is provided by Sketch 50 natively",
+      "[New] Add option to specify the path to another manifest"
     ],
     "0.4.3": ["[Fixed] Fixed copying assets with a space in their path"],
     "0.4.2": [
