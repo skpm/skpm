@@ -51,7 +51,7 @@ try {
   process.exit(1)
 }
 
-const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
+const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON, argv)
 
 if (!skpmConfig.main) {
   console.error(
@@ -71,10 +71,7 @@ if (!skpmConfig.manifest) {
 }
 
 const output = path.join(process.cwd(), skpmConfig.main)
-const manifest = path.join(
-  process.cwd(),
-  argv.manifest ? argv.manifest : skpmConfig.manifest
-)
+const manifest = path.join(process.cwd(), skpmConfig.manifest)
 
 if (!fs.existsSync(path.join(output, 'Contents', 'Sketch'))) {
   mkdirp.sync(path.join(output, 'Contents', 'Sketch'))
