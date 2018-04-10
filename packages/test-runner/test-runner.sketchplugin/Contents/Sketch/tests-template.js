@@ -158,7 +158,7 @@ module.exports = function runTests(context) {
       .then(() => testResults)
   }
 
-  const fiber = sketch.Async.createFiber()
+  sketch.Async.createFiber()
   runUnitTests(testSuites)
     .then(results => {
       if (results.some(t => t.only)) {
@@ -168,7 +168,6 @@ module.exports = function runTests(context) {
       log(`${results.filter(t => t.type === 'passed').length} tests succeeded.`)
       log(`${results.filter(t => t.type === 'failed').length} tests failed.`)
       log(`json results: ${JSON.stringify(results)}`)
-      fiber.cleanup()
       coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
     })
     .catch(err => {
