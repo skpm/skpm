@@ -32,6 +32,11 @@ const { argv } = yargs
     describe: 'Run plugin after compiling',
     type: 'boolean',
   })
+  .option('manifest', {
+    alias: 'm',
+    describe: 'Build from another manifest',
+    type: 'string',
+  })
   .help()
   .strict()
 
@@ -46,7 +51,7 @@ try {
   process.exit(1)
 }
 
-const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
+const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON, argv)
 
 if (!skpmConfig.main) {
   console.error(
