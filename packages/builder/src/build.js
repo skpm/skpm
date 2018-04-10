@@ -32,6 +32,11 @@ const { argv } = yargs
     describe: 'Run plugin after compiling',
     type: 'boolean',
   })
+  .option('manifest', {
+    alias: 'm',
+    describe: 'Build from another manifest',
+    type: 'string',
+  })
   .help()
   .strict()
 
@@ -66,7 +71,10 @@ if (!skpmConfig.manifest) {
 }
 
 const output = path.join(process.cwd(), skpmConfig.main)
-const manifest = path.join(process.cwd(), skpmConfig.manifest)
+const manifest = path.join(
+  process.cwd(),
+  argv.manifest ? argv.manifest : skpmConfig.manifest
+)
 
 if (!fs.existsSync(path.join(output, 'Contents', 'Sketch'))) {
   mkdirp.sync(path.join(output, 'Contents', 'Sketch'))
