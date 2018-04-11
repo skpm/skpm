@@ -15,6 +15,7 @@ install:
   - cd packages/builder && npm prune && npm install && cd ../..
   - cd packages/utils && npm prune && npm install && cd ../..
   - cd packages/test-runner && npm prune && npm install && cd ../..
+  - cd packages/babel-preset && npm prune && npm install && cd ../..
 
 cache:
   directories:
@@ -23,6 +24,7 @@ cache:
     - packages/builder/node_modules
     - packages/utils/node_modules
     - packages/test-runner/node_modules
+    - packages/babel-preset/node_modules
 
 before_install:
   - npm set progress=false
