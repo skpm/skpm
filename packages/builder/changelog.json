@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.3": ["[Improved] Copy the assets starting with a `.` as well"],
     "0.5.2": ["[Fixed] Use custom babel preset compatible with babel 7"],
     "0.5.1": [
       "[Improved] Use `fs.copyFile` instead of `cp` now that we dropped support for Node < 8",

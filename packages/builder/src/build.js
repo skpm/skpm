@@ -192,7 +192,7 @@ async function getAssets(_skpmConfig) {
     return []
   }
 
-  const assets = await globby(_skpmConfig.assets)
+  const assets = await globby(_skpmConfig.assets, { dot: true })
   return assets
 }
 
