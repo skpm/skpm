@@ -2,11 +2,14 @@ import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import webpack from 'webpack'
-import UglifyJSPlugin from 'uglifyjs-webpack-plugin'
+import merge from 'webpack-merge'
 import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
 import BabelLoader from './babelLoader'
 import resourceLoader from './resourceLoader'
+import nibLoader from './nibLoader'
+
+const CORE_MODULES = ['util', 'events', 'console']
 
 async function getCommands(output, commandIdentifiers) {
   return Promise.all(
@@ -69,7 +72,6 @@ export default function getWebpackConfig(
 
       plugins.push(
         new webpack.ProvidePlugin({
-          console: require.resolve('sketch-polyfill-console'),
           fetch: require.resolve('sketch-polyfill-fetch'),
           setTimeout: [require.resolve('@skpm/timers/timeout'), 'setTimeout'],
           clearTimeout: [
@@ -98,6 +100,7 @@ export default function getWebpackConfig(
       )
 
       rules.push(resourceLoader)
+      rules.push(nibLoader)
     }
 
     if (argv.run && commandIdentifiers) {
@@ -106,7 +109,7 @@ export default function getWebpackConfig(
 
     if (isProd) {
       plugins.push(
-        new UglifyJSPlugin({
+        new webpack.optimize.UglifyJsPlugin({
           uglifyOptions: {
             mangle: {
               // @see https://bugs.webkit.org/show_bug.cgi?id=171041
@@ -118,7 +121,9 @@ export default function getWebpackConfig(
       )
     }
 
-    const webpackConfig = {
+    let webpackConfig = {
+      mode: 'development',
+      devtool: isProd ? undefined : 'source-map',
       module: {
         rules,
       },
@@ -141,7 +146,12 @@ export default function getWebpackConfig(
       ),
       externals: [
         (context, request, callback) => {
+          // sketch API
           if (/^sketch\//.test(request) || request === 'sketch') {
+            return callback(null, `commonjs ${request}`)
+          }
+          // core modules shipped in Sketch
+          if (CORE_MODULES.indexOf(request) !== -1) {
             return callback(null, `commonjs ${request}`)
           }
           return callback()
@@ -158,7 +168,13 @@ export default function getWebpackConfig(
     }
 
     if (userDefinedWebpackConfig) {
-      await userDefinedWebpackConfig(webpackConfig, !!commandIdentifiers)
+      const resolvedUserDefinedConfig = await userDefinedWebpackConfig(
+        webpackConfig,
+        !!commandIdentifiers
+      )
+      if (resolvedUserDefinedConfig) {
+        webpackConfig = merge.smart(webpackConfig, resolvedUserDefinedConfig)
+      }
     }
 
     return webpackConfig

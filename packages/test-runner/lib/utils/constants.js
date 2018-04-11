@@ -1,6 +1,6 @@
-export const CLEAR = '\x1B[2J\x1B[3J\x1B[H'
+module.exports.CLEAR = '\x1B[2J\x1B[3J\x1B[H'
 
-export const KEYS = {
+module.exports.KEYS = {
   A: '61',
   ARROW_DOWN: '1b5b42',
   ARROW_LEFT: '1b5b44',

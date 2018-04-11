@@ -1,13 +1,15 @@
-import fs from 'fs'
-import path from 'path'
-import childProcess from 'child_process'
-import { get as getConfig } from '@skpm/utils/tool-config'
+const fs = require('fs')
+const path = require('path')
+const childProcess = require('child_process')
+const { get: getConfig } = require('./tool-config')
 
 function appInfoForKey(app, key) {
   const plistPath = path.join(app, 'Contents', 'Info.plist')
   const result = childProcess.execSync(
-    `/usr/libexec/PlistBuddy -c "Print :'${key}'" ${plistPath}`,
-    { encoding: 'utf8' }
+    `/usr/libexec/PlistBuddy -c "Print :'${key}'" "${plistPath}"`,
+    {
+      encoding: 'utf8',
+    }
   )
 
   return result.trim()
@@ -20,13 +22,13 @@ function pathToAppsWithId(id) {
 }
 
 // attempts to find an app with Sketch Xcode's bundle id inside the derived data folder
-export function pathToLatestXCodeBuild() {
+function pathToLatestXCodeBuild() {
   const output = pathToAppsWithId('com.bohemiancoding.sketch3.xcode')
   const apps = output.split('\n')
   return apps.find(app => app.indexOf('/DerivedData/') !== -1)
 }
 
-export function pathToLatestApp() {
+function pathToLatestApp() {
   const output = pathToAppsWithId('com.bohemiancoding.sketch3')
   let latest = {
     version: -1,
@@ -51,11 +53,17 @@ export function pathToLatestApp() {
   return undefined
 }
 
-export function getSketchPath(app) {
+const CACHE = {}
+
+module.exports = function getSketchPath(app) {
+  if (CACHE[app || 'undefined']) {
+    return CACHE[app || 'undefined']
+  }
   let appPath = app
   const useXCode = app === 'xcode'
   const useLatest = app === 'latest'
 
+  // start by trying to find a xcode build
   if ((!appPath && !useLatest) || useXCode) {
     appPath = pathToLatestXCodeBuild()
     if (useXCode && !appPath) {
@@ -64,6 +72,7 @@ export function getSketchPath(app) {
     }
   }
 
+  // if there is no xcode build, try to find the latest version
   if (!appPath || useLatest) {
     appPath = pathToLatestApp()
     if (useLatest && !appPath) {
@@ -72,6 +81,7 @@ export function getSketchPath(app) {
     }
   }
 
+  // resort to use a hardcoded path
   if (!appPath) {
     appPath = getConfig().sketchApp
   }
@@ -83,5 +93,10 @@ export function getSketchPath(app) {
     process.exit(1)
   }
 
+  CACHE[app || 'undefined'] = appPath
+
   return appPath
 }
+
+module.exports.pathToLatestXCodeBuild = pathToLatestXCodeBuild
+module.exports.pathToLatestApp = pathToLatestApp

@@ -1,5 +1,5 @@
 // that's pretty ugly. not sure if there is a better solution
-export default function findLoader(config, loader) {
+module.exports = function findLoader(config, loader) {
   for (let i = 0; i < (config.module.rules || []).length; i += 1) {
     const r = config.module.rules[i]
     if (r) {

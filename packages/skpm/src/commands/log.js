@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
-import { get as getConfig } from '@skpm/utils/tool-config'
-import { exec } from '@skpm/utils/exec'
+import { get as getConfig } from '@skpm/internal-utils/tool-config'
+import { exec } from '@skpm/internal-utils/exec'
 import asyncCommand from '../utils/async-command'
 import { error } from '../utils'
 

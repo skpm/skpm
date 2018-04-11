@@ -1,8 +1,13 @@
 /* eslint-disable prefer-template */
-import { matcherHint, printReceived, printExpected, getType } from './utils'
+const {
+  matcherHint,
+  printReceived,
+  printExpected,
+  getType,
+} = require('./utils')
 
 // /* Sketch specific matchers */
-export default {
+module.exports = {
   toBeInstanceOf(received, constructor) {
     const constType = getType(constructor)
 

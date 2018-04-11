@@ -1,21 +1,19 @@
 const path = require('path')
-const getConfig = require('./tool-config').get
 const exec = require('./exec')
-
-const config = getConfig()
+const getSketchPath = require('./get-sketch-path')
 
 const regex = /sketchtool Version ((\d|\.)+) \(\d+\)/
 function extractVersion(string) {
   return regex.exec(string)[1]
 }
 
-let CACHED_VERSION
+const CACHED_VERSION = {}
 
-function getSketchVersion() {
+function getSketchVersion(app) {
   return exec
     .execFile(
       path.join(
-        config.sketchPath,
+        getSketchPath(app),
         '/Contents/Resources/sketchtool/bin/sketchtool'
       ),
       ['-v']
@@ -33,12 +31,12 @@ function getSketchVersion() {
     .catch(() => undefined)
 }
 
-module.exports = function getSketchVersionWithCache() {
-  if (CACHED_VERSION) {
-    return CACHED_VERSION
+module.exports = function getSketchVersionWithCache(app) {
+  if (CACHED_VERSION[app || 'undefined']) {
+    return CACHED_VERSION[app || 'undefined']
   }
-  return getSketchVersion().then(version => {
-    CACHED_VERSION = version
+  return getSketchVersion(app).then(version => {
+    CACHED_VERSION[app || 'undefined'] = version
     return version
   })
 }

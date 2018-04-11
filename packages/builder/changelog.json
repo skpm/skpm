@@ -5,7 +5,13 @@
       "[New] Update webpack dependency to webpack@4",
       "[New] Update babel dependency to babel@7",
       "[New] The `webpack.skpm.config.js` file can now return a webpack config that will be merged (instead of mutating the config)",
-      "[New] The `skpm-link` command now set the `WebKitDeveloperExtras` setting to true when enabling the dev mode (see https://developer.sketchapp.com/guides/preferences/#inspect-a-webview)"
+      "[New] The `skpm-link` command now set the `WebKitDeveloperExtras` setting to true when enabling the dev mode (see https://developer.sketchapp.com/guides/preferences/#inspect-a-webview)",
+      "[New] You can now load a `nib` or a `xib` file directly",
+      "[New] Handle core modules shipped in Sketch (by not bundling a polyfill)",
+      "[Improved] If reading the dev mode status fails, assume that it's disabled",
+      "[Improved] Add an option to specify which Sketch variant to use when running the plugin",
+      "[New] Remove polyfill for `console` as it is provided by Sketch 50 natively",
+      "[New] Add option to specify the path to another manifest"
     ],
     "0.4.3": ["[Fixed] Fixed copying assets with a space in their path"],
     "0.4.2": [

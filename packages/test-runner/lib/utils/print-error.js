@@ -1,7 +1,7 @@
 const path = require('path')
 const chalk = require('chalk')
 const mapStackToSourceMap = require('./source-map-stack-trace')
-const { reverseChalk } = require('./expect/utils')
+const { reverseChalk } = require('../../expect/utils')
 
 const TITLE_INDENT = '  '
 const MESSAGE_INDENT = '    '
@@ -20,8 +20,8 @@ function formatPath(fullPath) {
   )}`
 }
 
-const formatStackTrace = stack => {
-  const mappedStack = mapStackToSourceMap(stack)
+const formatStackTrace = async stack => {
+  const mappedStack = await mapStackToSourceMap(stack)
   return mappedStack
     .reduce((prev, frame) => {
       prev.push(
@@ -36,18 +36,22 @@ const formatStackTrace = stack => {
     .join('\n')
 }
 
-// ExecError is an error thrown outside of the test suite (not inside an `it` or
-// `before/after each` hooks). If it's thrown, none of the tests in the file
-// are executed.
-module.exports.formatExecError = (test, options) => {
-  const { reason, name } = test
-  let { message, stack } = reason
-
-  message = reverseChalk(chalk, message || '')
+function formatMessage(message) {
+  return reverseChalk(chalk, message || '')
     .split(/\n/)
     .map(line => MESSAGE_INDENT + line)
     .join('\n')
-  stack = stack && !options.noStackTrace ? formatStackTrace(stack) : ''
+}
+
+// ExecError is an error thrown outside of the test suite (not inside an `it` or
+// `before/after each` hooks). If it's thrown, none of the tests in the file
+// are executed.
+module.exports.formatExecError = async (test, options) => {
+  const { reason, name } = test
+  let { message, stack } = reason
+
+  message = formatMessage(message)
+  stack = stack && !options.noStackTrace ? await formatStackTrace(stack) : ''
 
   if (message.match(/^\s*$/) && !stack.match(/^\s*$/)) {
     // this can happen if an empty object is thrown.
@@ -61,16 +65,9 @@ ${stack}
 `
 }
 
-module.exports.formatTestError = (test, options) => {
+module.exports.formatTestError = async (test, options) => {
   const { reason, ancestorSuites, name } = test
-  let { message, stack } = reason
-
-  stack = stack && !options.noStackTrace ? formatStackTrace(stack) : ''
-
-  message = reverseChalk(chalk, message || '')
-    .split(/\n/)
-    .map(line => MESSAGE_INDENT + line)
-    .join('\n')
+  const { message, stack } = reason
 
   const title = chalk.bold.red(
     TITLE_INDENT +
@@ -82,6 +79,6 @@ module.exports.formatTestError = (test, options) => {
 
   return `${title}
 
-${message}
-${stack}`
+${formatMessage(message)}
+${stack && !options.noStackTrace ? await formatStackTrace(stack) : ''}`
 }

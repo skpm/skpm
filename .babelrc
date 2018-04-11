@@ -5,7 +5,7 @@
       {
         "loose": true,
         "targets": {
-          "node": 6
+          "node": 8
         },
         "exclude": ["transform-regenerator"]
       }

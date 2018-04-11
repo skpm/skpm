@@ -1,6 +1,6 @@
 {
   "name": "@skpm/test-runner",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A test runner for sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -10,17 +10,15 @@
     "skpm-test": "lib/test.js"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "files": [
     "lib",
-    "test-runner.sketchplugin"
+    "test-runner.sketchplugin",
+    "expect"
   ],
   "scripts": {
-    "prebuild": "../../node_modules/.bin/rimraf lib",
-    "build": "../../node_modules/.bin/babel src -d lib -D",
-    "watch": "npm run build -- --watch",
-    "prepare": "npm run -s build"
+    "prepare": "./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js || true && rm ./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js.map || true && rm ./test-runner.sketchplugin/Contents/Sketch/generated-tests.js || true"
   },
   "repository": {
     "type": "git",
@@ -41,18 +39,17 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
-    "@skpm/builder": "^0.4.1",
-    "@skpm/util": "^0.1.5",
-    "@skpm/utils": "^0.1.6",
+    "@skpm/builder": "^0.5.0",
+    "@skpm/internal-utils": "^0.1.8",
     "chalk": "^1.1.3",
-    "chokidar": "^1.7.0",
-    "globby": "^7.1.1",
+    "chokidar": "^2.0.3",
+    "globby": "^8.0.1",
     "is-ci": "^1.0.10",
     "minimatch": "^3.0.4",
     "sketch-utils": "^0.1.2",
-    "source-map": "^0.6.1",
+    "source-map": "^0.7.2",
     "strip-ansi": "^4.0.0",
-    "webpack": "^3.10.0",
+    "webpack": "^4.5.0",
     "yargs": "^9.0.1"
   }
 }

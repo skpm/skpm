@@ -1,13 +1,18 @@
-import { getState, setState, getMatchers, setMatchers } from './matchers_object'
-import * as utils from './utils'
-import matchers from './matchers'
-import sketchMatchers from './sketch_matchers'
-import {
+const {
+  getState,
+  setState,
+  getMatchers,
+  setMatchers,
+} = require('./matchers_object')
+const utils = require('./utils')
+const matchers = require('./matchers')
+const sketchMatchers = require('./sketch_matchers')
+const {
   extractExpectedAssertionsErrors,
   resetAssertionsLocalState,
-} from './assertion-check'
+} = require('./assertion-check')
 
-const validateResult = result => {
+function validateResult(result) {
   if (
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
@@ -25,11 +30,12 @@ const validateResult = result => {
   }
 }
 
-const getMessage = message =>
-  (message && message()) || 'No message was specified for this matcher.'
+function getMessage(message) {
+  return (message && message()) || 'No message was specified for this matcher.'
+}
 
-const makeThrowingMatcher = (matcher, isNot, actual) =>
-  function throwingMatcher(...args) {
+function makeThrowingMatcher(matcher, isNot, actual) {
+  return function throwingMatcher(...args) {
     let throws = true
     const matcherContext = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
@@ -81,6 +87,7 @@ const makeThrowingMatcher = (matcher, isNot, actual) =>
       }
     }
   }
+}
 
 const expect = (actual, ...rest) => {
   if (rest.length !== 0) {
@@ -127,4 +134,4 @@ expect.setState = setState
 expect.resetAssertionsLocalState = resetAssertionsLocalState
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors
 
-export default expect
+module.exports = expect

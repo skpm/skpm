@@ -91,7 +91,7 @@ const retrieveSourceMap = source => {
   }
 }
 
-function mapSourcePosition(position) {
+async function mapSourcePosition(position) {
   let sourceMap = sourceMapCache[position.source]
 
   if (!sourceMap) {
@@ -100,7 +100,7 @@ function mapSourcePosition(position) {
       sourceMap = {
         url: urlAndMap.url,
         rawMap: urlAndMap.map,
-        map: new SourceMapConsumer(urlAndMap.map),
+        map: await new SourceMapConsumer(urlAndMap.map),
       }
 
       sourceMapCache[position.source] = sourceMap
@@ -151,14 +151,17 @@ function mapSourcePosition(position) {
   return position
 }
 
-module.exports = stack =>
-  (stack || []).reduce((prev, frame) => {
+module.exports = async stack => {
+  const mappedStack = []
+
+  for (let i = 0; i < stack.length; i += 1) {
+    const frame = stack[i]
     if (
       typeof frame.line !== 'undefined' &&
       typeof frame.column !== 'undefined' &&
       frame.filePath
     ) {
-      const mappedPosition = mapSourcePosition({
+      const mappedPosition = await mapSourcePosition({
         source: frame.filePath,
         line: frame.line,
         column: frame.column,
@@ -170,9 +173,10 @@ module.exports = stack =>
         ) === -1 &&
         mappedPosition.source.indexOf('test-runner/lib/utils/') === -1
       ) {
-        prev.push(mappedPosition)
+        mappedStack.push(mappedPosition)
       }
     }
+  }
 
-    return prev
-  }, [])
+  return mappedStack
+}

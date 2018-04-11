@@ -10,7 +10,7 @@ function babelLoader(userDefinedBabelConfig) {
       loader: 'babel-loader',
       options: {
         babelrc: false,
-        presets: [require('babel-preset-airbnb')],
+        presets: [[require('babel-preset-airbnb'), { modules: false }]],
         ...(userDefinedBabelConfig || {}),
       },
     },

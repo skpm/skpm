@@ -1,0 +1,16 @@
+{
+  "unreleased": [],
+  "releases": {
+    "0.3.0": [
+      "[Improved] Use variable declarations instead of function declarations in the tests",
+      "[Improved] Use Webpack 4",
+      "[Improved] Use @skpm/builder 0.5",
+      "[New] Use util module shipped with Sketch",
+      "[Improved] more expressive error when failing to load a test suite"
+    ],
+    "0.2.2": [
+      "[Fixed] Use variable declarations instead of function declarations in the tests"
+    ],
+    "0.2.1": ["[Fixed] Fix an bug when the path to Sketch have a space"]
+  }
+}

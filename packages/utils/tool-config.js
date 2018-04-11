@@ -9,8 +9,6 @@ const DEFAULT_CONFIG = {
   sketchPath: '/Applications/Sketch.app',
   pluginDirectory: `${homedir}/Library/Application Support/com.bohemiancoding.sketch3/Plugins/`,
   logsLocation: `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log`,
-  registryURL:
-    'https://mahcfk07h5.execute-api.eu-west-1.amazonaws.com/prod/registry/',
   plugins: {},
 }
 

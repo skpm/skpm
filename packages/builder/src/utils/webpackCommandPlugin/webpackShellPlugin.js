@@ -1,8 +1,6 @@
-import { get as getConfig } from '@skpm/utils/tool-config'
-import { exec } from '@skpm/utils/exec'
+import getSketchPath from '@skpm/internal-utils/get-sketch-path'
+import { exec } from '@skpm/internal-utils/exec'
 import chalk from 'chalk'
-
-const config = getConfig()
 
 export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
   let command = ''
@@ -12,9 +10,9 @@ export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
     command += ' '
   }
 
-  command += `"${options.app ||
-    process.env.SKETCH_PATH ||
-    config.sketchPath}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
+  command += `"${getSketchPath(
+    options.app || process.env.SKETCH_PATH
+  )}/Contents/Resources/sketchtool/bin/sketchtool" run "${output}" "${commandIdentifier}"`
 
   if (options.withoutActivating) {
     command += ' --without-activating'
@@ -56,35 +54,33 @@ export function sketchtoolRunCommand(output, commandIdentifier, options = {}) {
 export default function WebpackShellPlugin(options) {
   return {
     apply(compiler) {
-      compiler.plugin('after-emit', (compilation, callback) => {
-        if (options.script) {
-          exec(options.script, { shell: '/bin/bash' })
-            .then(res => {
-              if (res.stderr) {
-                console.error(res.stderr)
-              }
-              if (res.stdout.trim().length > 0) {
-                res.stdout
-                  .trim()
-                  .split('\n')
-                  .forEach(line => {
-                    console.log(line)
-                  })
-              }
-            })
-            .then(callback)
-            .catch(err => {
-              console.error(
-                `${chalk.red(
-                  'error'
-                )} Error while running the command after build`
-              )
-              console.error(err)
-              callback()
-            })
-        } else {
-          callback()
+      compiler.hooks.afterEmit.tapPromise('Run Sketch Command', () => {
+        if (!options.script) {
+          return Promise.resolve()
         }
+        return exec(options.script, { shell: '/bin/bash' })
+          .then(res => {
+            if (res.stderr) {
+              console.error(res.stderr)
+            }
+            if (res.stdout.trim().length > 0) {
+              res.stdout
+                .trim()
+                .split('\n')
+                .forEach(line => {
+                  console.log(line)
+                })
+            }
+          })
+          .catch(err => {
+            console.error(
+              `${chalk.red(
+                'error'
+              )} Error while running the command after build`
+            )
+            console.error(err)
+            throw err
+          })
       })
     },
   }

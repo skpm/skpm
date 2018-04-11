@@ -1,5 +1,5 @@
 import semver from 'semver'
-import getSketchVersion from '@skpm/utils/getSketchVersion'
+import getSketchVersion from '@skpm/internal-utils/getSketchVersion'
 import WebpackShellPlugin, { sketchtoolRunCommand } from './webpackShellPlugin'
 import SketchCommandPlugin from './sketchCommandPlugin'
 

@@ -1,18 +1,17 @@
 #!/usr/bin/env node
-import path from 'path'
-import readline from 'readline'
-import yargs from 'yargs'
-import chalk from 'chalk'
-import webpack from 'webpack'
-import chokidar from 'chokidar'
-import stripAnsi from 'strip-ansi'
-import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
-import generateWebpackConfig from '@skpm/builder/lib/utils/webpackConfig'
-import { buildTestFile } from './utils/build-test-file'
-import updateWebpackConfig from './utils/update-webpack-config'
-import { CLEAR, KEYS } from './utils/constants'
-import { getSketchPath } from './utils/get-sketch-path'
-
+const path = require('path')
+const readline = require('readline')
+const yargs = require('yargs')
+const chalk = require('chalk')
+const webpack = require('webpack')
+const chokidar = require('chokidar')
+const stripAnsi = require('strip-ansi')
+const getSkpmConfigFromPackageJSON = require('@skpm/internal-utils/skpm-config')
+const generateWebpackConfig = require('@skpm/builder/lib/utils/webpackConfig')
+  .default
+const { buildTestFile } = require('./utils/build-test-file')
+const updateWebpackConfig = require('./utils/update-webpack-config')
+const { CLEAR, KEYS } = require('./utils/constants')
 const isInteractive = require('./utils/is-interactive')
 
 const { argv } = yargs
@@ -43,8 +42,6 @@ try {
   console.error(err)
   process.exit(1)
 }
-
-argv.app = getSketchPath(argv.app)
 
 const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
 

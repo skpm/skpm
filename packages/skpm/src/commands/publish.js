@@ -3,9 +3,9 @@ import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
 import open from 'open'
-import { exec } from '@skpm/utils/exec'
-import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
-import extractRepository from '@skpm/utils/extract-repository'
+import { exec } from '@skpm/internal-utils/exec'
+import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
+import extractRepository from '@skpm/internal-utils/extract-repository'
 import auth from '../utils/auth'
 import github from '../utils/github'
 import asyncCommand from '../utils/async-command'
@@ -178,7 +178,9 @@ export default asyncCommand({
 
       spinner.text = 'Zipping the plugin'
       const tempZip = `${Date.now()}.zip`
-      await exec(`zip -r ${tempZip} '${skpmConfig.main}' -x '*.DS_Store'`)
+      await exec(`zip -r ${tempZip} '${skpmConfig.main}' -x '*.DS_Store'`, {
+        maxBuffer: 2000 * 1024,
+      })
 
       spinner.text = 'Creating a draft release on GitHub'
       const { id: releaseId } = await github.createDraftRelease(

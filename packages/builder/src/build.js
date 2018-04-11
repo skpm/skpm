@@ -7,8 +7,8 @@ import yargs from 'yargs'
 import parseAuthor from 'parse-author'
 import chalk from 'chalk'
 import globby from 'globby'
-import { exec } from '@skpm/utils/exec'
-import getSkpmConfigFromPackageJSON from '@skpm/utils/skpm-config'
+import { exec } from '@skpm/internal-utils/exec'
+import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import generateWebpackConfig from './utils/webpackConfig'
 
 const buildEmojis = ['🔧', '🔨', '⚒', '🛠', '⛏', '🔩']
@@ -32,9 +32,14 @@ const { argv } = yargs
     describe: 'Run plugin after compiling',
     type: 'boolean',
   })
+  .option('app', {
+    describe:
+      "The path to the copy of Sketch to run the plugin after compiling. If this isn't supplied, we try to run the latest Xcode build. If there is none, we try to find a normal Sketch.",
+    type: 'string',
+  })
   .option('manifest', {
-    alias: 'm',
-    describe: 'Build from another manifest',
+    describe:
+      'The path to another manifest. Use this option if you need to build different version of your plugin.',
     type: 'string',
   })
   .help()
