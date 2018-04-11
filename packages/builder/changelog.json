@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.1": [
+      "[Improved] Use `fs.copyFile` instead of `cp` now that we dropped support for Node < 8",
+      "[Fixed] Respect the hierarchy when copying assets"
+    ],
     "0.5.0": [
       "[New] Update webpack dependency to webpack@4",
       "[New] Update babel dependency to babel@7",

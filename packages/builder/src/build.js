@@ -7,7 +7,6 @@ import yargs from 'yargs'
 import parseAuthor from 'parse-author'
 import chalk from 'chalk'
 import globby from 'globby'
-import { exec } from '@skpm/internal-utils/exec'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import generateWebpackConfig from './utils/webpackConfig'
 
@@ -207,12 +206,12 @@ function checkEnd() {
 }
 
 async function copyAsset(asset) {
-  const destPath = path.join(
-    output,
-    'Contents',
-    'Resources',
-    asset.replace(path.dirname(asset), '')
-  )
+  const dirWithoutFirst = asset
+    .split(path.sep)
+    .splice(1)
+    .join(path.sep)
+
+  const destPath = path.join(output, 'Contents', 'Resources', dirWithoutFirst)
 
   await new Promise((resolve, reject) => {
     mkdirp(path.dirname(destPath), err => {
@@ -224,7 +223,15 @@ async function copyAsset(asset) {
     })
   })
 
-  return exec(`cp "${asset}" "${destPath}"`)
+  return new Promise((resolve, reject) => {
+    fs.copyFile(asset, destPath, err => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve()
+    })
+  })
     .then(() => {
       console.log(
         `${
@@ -236,7 +243,7 @@ async function copyAsset(asset) {
       }
     })
     .catch(err => {
-      console.error(`${chalk.red('error')} Error while building ${asset}`)
+      console.error(`${chalk.red('error')} Error while copying ${asset}`)
       console.error(err.stack || err)
       if (err.details) {
         console.error(err.details)

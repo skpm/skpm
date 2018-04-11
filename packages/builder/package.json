@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -11,7 +11,7 @@
     "skpm-link": "lib/link.js"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.5"
   },
   "files": [
     "lib"
