@@ -1,0 +1,23 @@
+{
+  "name": "@skpm/babel-preset",
+  "version": "0.1.1",
+  "description": "A babel preset for transforming your JavaScript for skpm",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skpm/skpm.git"
+  },
+  "keywords": [
+    "babel",
+    "es6",
+    "es2015",
+    "javascript"
+  ],
+  "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/preset-react": "^7.0.0-beta.44"
+  },
+  "scripts": {}
+}

@@ -1,0 +1,35 @@
+# @skpm/babel-preset
+
+> A babel preset for transforming your JavaScript for Sketch.
+
+## Install
+
+```sh
+$ npm install --save-dev @skpm/babel-preset
+```
+
+## Usage
+
+### Via `.babelrc` (Recommended)
+
+**.babelrc**
+
+```json
+{
+  "presets": ["@skpm/babel-preset"]
+}
+```
+
+### Via CLI
+
+```sh
+$ babel script.js --presets @skpm/babel-preset
+```
+
+### Via Node API
+
+```javascript
+require('babel-core').transform('code', {
+  presets: ['@skpm/babel-preset'],
+})
+```
