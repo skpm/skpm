@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.4": ["[Improved] Fallback to `cp` if `fs.copyFile` is not available"],
     "0.5.3": ["[Improved] Copy the assets starting with a `.` as well"],
     "0.5.2": ["[Fixed] Use custom babel preset compatible with babel 7"],
     "0.5.1": [

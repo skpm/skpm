@@ -7,6 +7,7 @@ import yargs from 'yargs'
 import parseAuthor from 'parse-author'
 import chalk from 'chalk'
 import globby from 'globby'
+import { exec } from 'child_process'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import generateWebpackConfig from './utils/webpackConfig'
 
@@ -224,13 +225,18 @@ async function copyAsset(asset) {
   })
 
   return new Promise((resolve, reject) => {
-    fs.copyFile(asset, destPath, err => {
+    const callback = err => {
       if (err) {
         reject(err)
         return
       }
       resolve()
-    })
+    }
+    if (fs.copyFile) {
+      fs.copyFile(asset, destPath, callback)
+    } else {
+      exec(`cp "${asset}" "${destPath}"`, callback)
+    }
   })
     .then(() => {
       console.log(
