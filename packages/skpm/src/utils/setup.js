@@ -2,11 +2,16 @@ import spawn from 'cross-spawn-promise'
 import { hasCommand, warn } from './'
 import getGitUser from './get-git-user'
 
-export function install(cwd) {
-  return spawn('npm', ['install'], {
-    cwd,
-    stdio: 'ignore',
-  })
+export async function install(cwd) {
+  try {
+    await spawn('npm', ['install'], {
+      cwd,
+      stdio: 'ignore',
+    })
+  } catch (err) {
+    console.error(Buffer.from(err.stderr.toString).toString())
+    throw err
+  }
 }
 
 // Initializes the folder using `git init` and a proper `.gitignore` file

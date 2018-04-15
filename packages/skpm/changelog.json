@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.0.15": ["[Improved] Print error log when installing dependencies fail"],
     "1.0.14": ["[Fixed] Fix getting the author name when publishing"],
     "1.0.13": ["[Improved] Populate the author field with the git user"],
     "1.0.12": ["[Fixed] `name` should actually be the name of the repo"],
