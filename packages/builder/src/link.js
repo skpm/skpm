@@ -135,7 +135,7 @@ try {
   )
 
   testDevMode()
-    .then(getSketchVersion)
+    .then(() => getSketchVersion())
     .then(sketchVersion => {
       if (sketchVersion && semver.gte(sketchVersion, '45.0.0')) {
         console.log()
