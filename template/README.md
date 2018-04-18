@@ -50,7 +50,7 @@ To customize webpack create `webpack.skpm.config.js` file which exports function
  * @param {object} config - original webpack config.
  * @param {boolean} isPluginCommand - wether the config is for a plugin command or a resource
  **/
-module.exports = function (config, isPluginCommand) {
+module.exports = function(config, isPluginCommand) {
   /** you can change config here **/
 }
 ```
@@ -71,3 +71,23 @@ skpm log
 
 The `-f` option causes `skpm log` to not stop when the end of logs is reached, but rather to wait for additional data to be appended to the input
 
+## Publishing your plugin
+
+```bash
+skpm publish <bump>
+```
+
+(where `bump` can be `patch`, `minor` or `major`)
+
+`skpm publish` will create a new release on your GitHub repository and create an appcast file in order for Sketch users to be notified of the update.
+
+You will need to specify a `repository` in the `package.json`:
+
+```diff
+...
++ "repository" : {
++   "type": "git",
++   "url": "git+https://github.com/ORG/NAME.git"
++  }
+...
+```
