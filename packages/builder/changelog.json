@@ -2,6 +2,8 @@
   "unreleased": [],
   "releases": {
     "0.5.5": [
+      "[Fixed] Use uglifyjs-webpack-plugin to fix production build",
+      "[Fixed] Look for loaders in @skpm/builder first to avoid conflicts",
       "[Fixed] Testing for dev mode would fail if it was already enabled"
     ],
     "0.5.4": ["[Improved] Fallback to `cp` if `fs.copyFile` is not available"],

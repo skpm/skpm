@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -55,6 +55,7 @@
     "run-sketch-plugin": "^1.0.0",
     "semver": "^5.3.0",
     "sketch-polyfill-fetch": "^0.3.0",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "^4.5.0",
     "webpack-merge": "^4.1.2",
     "webpack-sources": "^1.1.0",
