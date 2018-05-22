@@ -26,7 +26,7 @@ export default asyncCommand({
       default: '.',
     },
     name: {
-      description: "The application's name",
+      description: "The plugin's name",
       type: 'string',
     },
     template: {

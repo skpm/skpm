@@ -161,16 +161,17 @@ export default function getWebpackConfig(
       output: {
         filename: basename,
         library: commandIdentifiers ? 'exports' : undefined,
-        path: commandIdentifiers ?
-          path.join(output, 'Contents', 'Sketch') :
-          path.join(output, 'Contents', 'Resources'),
+        path: commandIdentifiers
+          ? path.join(output, 'Contents', 'Sketch')
+          : path.join(output, 'Contents', 'Resources'),
       },
       plugins,
     }
 
     if (userDefinedWebpackConfig) {
       const resolvedUserDefinedConfig = await userDefinedWebpackConfig(
-        webpackConfig, !!commandIdentifiers
+        webpackConfig,
+        !!commandIdentifiers
       )
       if (resolvedUserDefinedConfig) {
         webpackConfig = merge.smart(webpackConfig, resolvedUserDefinedConfig)
