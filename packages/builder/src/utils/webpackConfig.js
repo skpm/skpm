@@ -110,7 +110,7 @@ export default function getWebpackConfig(
 
     if (isProd) {
       plugins.push(
-        Uglify({
+        new Uglify({
           uglifyOptions: {
             mangle: {
               // @see https://bugs.webkit.org/show_bug.cgi?id=171041
