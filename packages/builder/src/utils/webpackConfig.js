@@ -124,7 +124,7 @@ export default function getWebpackConfig(
 
     let webpackConfig = {
       mode: 'development',
-      devtool: isProd ? undefined : 'source-map',
+      devtool: isProd ? 'none' : 'source-map',
       module: {
         rules,
       },

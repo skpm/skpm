@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.7": ["[Fixed] Set sourcemap to `none` when building a release"],
     "0.5.6": [
       "[Fixed] Use `new` for uglifyjs-webpack-plugin because it's a class",
       "[Improved] Improve the --name option help message"
