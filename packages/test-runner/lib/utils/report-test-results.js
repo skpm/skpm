@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* eslint-disable prefer-template, no-console */
+/* eslint-disable prefer-template, no-console, no-continue */
 process.env.FORCE_COLOR = true // forces chalk to output colors
 const readline = require('readline')
 const chalk = require('chalk')
@@ -11,7 +11,9 @@ const stdin = process.openStdin()
 let data = ''
 
 // clear the screen
-const watching = process.argv.find(arg => arg.indexOf('--watch') === 0)
+const watching = process.argv.find(
+  arg => arg.indexOf('--watch') === 0 || arg.indexOf('-w') === 0
+)
 
 if (!watching || !require('./is-interactive')) {
   let numberOfTestFiles =
@@ -46,7 +48,6 @@ async function reportData() {
     return
   }
   const json = JSON.parse(raw.replace('json results: ', ''))
-
   const suites = []
 
   json.forEach(test => {
@@ -86,7 +87,7 @@ async function reportData() {
         suite.logs.forEach(l => console.log(`  > ${l}`))
         console.log('')
       }
-      return
+      continue
     }
 
     if (!suite.failed.length) {
@@ -97,7 +98,7 @@ async function reportData() {
         suite.logs.forEach(l => console.log(`  > ${l}`))
         console.log('')
       }
-      return
+      continue
     }
 
     console.log('')

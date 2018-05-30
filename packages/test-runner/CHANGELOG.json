@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.1": [
+      "[Fixed] Fix printing the result of the tests",
+      "[Improved] Show when the tests start running again in watch mode"
+    ],
     "0.3.0": [
       "[Improved] Use variable declarations instead of function declarations in the tests",
       "[Improved] Use Webpack 4",

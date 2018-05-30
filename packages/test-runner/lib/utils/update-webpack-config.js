@@ -1,6 +1,7 @@
 /* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
 const path = require('path')
 const webpack = require('webpack')
+const chalk = require('chalk')
 const WebpackShellPlugin = require('@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin')
 const { CLEAR } = require('./constants')
 const findLoader = require('./loader-hacks/find-loader')
@@ -46,6 +47,18 @@ module.exports = (skpmConfig, testFiles, argv) => config => {
       })
     )
   }
+
+  config.plugins.push({
+    apply(compiler) {
+      compiler.hooks.watchRun.tapPromise('Clean up screen', () => {
+        process.stdout.write(CLEAR)
+        testFiles.forEach(f =>
+          console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
+        )
+        return Promise.resolve()
+      })
+    },
+  })
 
   let hacked = false
 
