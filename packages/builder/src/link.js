@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs'
 import mkdirp from 'mkdirp'
-import { join } from 'path'
+import { join, basename } from 'path'
 import yargs from 'yargs'
 import chalk from 'chalk'
 import semver from 'semver'
@@ -126,7 +126,7 @@ try {
   // Create the symlink within the encompassing directory
   fs.symlinkSync(
     getPath(skpmConfig.main),
-    join(pluginDirectory, skpmConfig.name, skpmConfig.main)
+    join(pluginDirectory, skpmConfig.name, basename(skpmConfig.main))
   )
 
   console.log(`${chalk.green('success')} Plugin ${skpmConfig.name} symlinked`)
