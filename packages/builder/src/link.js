@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs'
 import mkdirp from 'mkdirp'
-import { join } from 'path'
+import { join, basename } from 'path'
 import yargs from 'yargs'
 import chalk from 'chalk'
 import semver from 'semver'
@@ -115,8 +115,13 @@ try {
     mkdirp.sync(join(pluginDirectory, skpmConfig.name))
   }
 
+  const symlinkPath = join(
+    pluginDirectory,
+    skpmConfig.name,
+    basename(skpmConfig.main)
+  )
   // Show an error if this symlink already exists
-  if (fs.existsSync(join(pluginDirectory, skpmConfig.name, skpmConfig.main))) {
+  if (fs.existsSync(symlinkPath)) {
     console.log(
       `${chalk.yellow('warning')} This plugin has already been linked.`
     )
@@ -124,10 +129,7 @@ try {
   }
 
   // Create the symlink within the encompassing directory
-  fs.symlinkSync(
-    getPath(skpmConfig.main),
-    join(pluginDirectory, skpmConfig.name, skpmConfig.main)
-  )
+  fs.symlinkSync(getPath(skpmConfig.main), symlinkPath)
 
   console.log(`${chalk.green('success')} Plugin ${skpmConfig.name} symlinked`)
   console.log(
