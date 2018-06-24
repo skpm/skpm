@@ -181,6 +181,9 @@ export default asyncCommand({
           pkgData.skpm = {}
         }
         pkgData.skpm.name = argv.name
+        if (!pkgData.skpm.main || pkgData.skpm.main === 'plugin.sketchplugin') {
+          pkgData.skpm.main = `${pkgData.name}.sketchplugin`
+        }
       }
       // Find a `manifest.json`; use the first match, if any
       const files = await globby(`${target}/**/manifest.json`)
