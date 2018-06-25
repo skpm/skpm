@@ -1,6 +1,6 @@
 {
   "name": "@skpm/internal-utils",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A set of functions used across skpm",
   "main": "index.js",
   "publishConfig": {
@@ -13,7 +13,13 @@
     "type": "git",
     "url": "git+https://github.com/skpm/skpm.git"
   },
-  "keywords": ["sketch", "cocoascript", "javascript", "babel", "skpm"],
+  "keywords": [
+    "sketch",
+    "cocoascript",
+    "javascript",
+    "babel",
+    "skpm"
+  ],
   "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
   "license": "MIT",
   "bugs": {
@@ -21,7 +27,9 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
+    "chalk": "^2.4.1",
     "js-yaml": "^3.10.0",
-    "object-assign": "*"
+    "object-assign": "*",
+    "yesno": "0.0.1"
   }
 }

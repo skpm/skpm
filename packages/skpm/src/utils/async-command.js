@@ -1,11 +1,16 @@
+import { error } from './index'
+
 function done(err, result) {
   if (err) {
-    process.stderr.write(`\n${String(err)}\n`)
+    error(String(err))
     if (err.stdout) {
-      process.stdout.write(`${err.stdout}\n`)
+      console.log(err.stdout)
     }
     if (err.stderr) {
-      process.stderr.write(`${err.stderr}\n`)
+      console.error(err.stderr)
+    }
+    if (err.stack) {
+      console.error(err.stack)
     }
     process.exit(err.exitCode || 1)
   } else {

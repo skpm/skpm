@@ -5,6 +5,7 @@ import fs from 'fs.promised'
 import { green } from 'chalk'
 import { resolve } from 'path'
 import { prompt } from 'inquirer'
+import checkDevMode from '@skpm/internal-utils/check-dev-mode'
 import asyncCommand from '../utils/async-command'
 import getGitUser from '../utils/get-git-user'
 import { info, isDir, error, warn } from '../utils'
@@ -201,12 +202,18 @@ export default asyncCommand({
       await fs.writeFile(pkgFile, JSON.stringify(pkgData, null, 2))
     }
 
+    let shouldAskForDevMode = false
+
     if (argv.install) {
       spinner.text = 'Installing dependencies'
-      await install(target)
+      shouldAskForDevMode = await install(target, spinner)
     }
 
     spinner.succeed('Done!\n')
+
+    if (shouldAskForDevMode) {
+      await checkDevMode()
+    }
 
     if (argv.git) {
       await initGit(target)

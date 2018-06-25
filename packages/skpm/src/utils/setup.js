@@ -1,17 +1,38 @@
-import spawn from 'cross-spawn-promise'
+import { spawn } from 'child_process'
 import { hasCommand, warn } from './'
 import getGitUser from './get-git-user'
 
 export async function install(cwd) {
-  try {
-    await spawn('npm', ['install'], {
-      cwd,
-      stdio: 'ignore',
+  const child = spawn('npm', ['install'], {
+    cwd,
+  })
+  child.stdin.setEncoding('utf-8')
+  child.stdout.setEncoding('utf-8')
+  child.stderr.setEncoding('utf-8')
+
+  let shouldAskForDevMode = false
+
+  let stderr = ''
+
+  child.stdout.on('data', data => {
+    if (data.indexOf('The Sketch developer mode is not enabled') !== -1) {
+      // answer no for know but return true so that we can ask later
+      shouldAskForDevMode = true
+      setTimeout(() => child.stdin.write('n\n'), 50)
+    }
+  })
+
+  child.stderr.on('data', data => {
+    stderr += data
+  })
+
+  return new Promise((resolve, reject) => {
+    child.on('close', () => resolve(shouldAskForDevMode))
+    child.on('error', err => {
+      console.error(stderr)
+      reject(err)
     })
-  } catch (err) {
-    console.error(Buffer.from(err.stderr.toString).toString())
-    throw err
-  }
+  })
 }
 
 // Initializes the folder using `git init` and a proper `.gitignore` file
