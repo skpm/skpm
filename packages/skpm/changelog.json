@@ -1,6 +1,13 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.0": [
+      "[Improved] Don't swallow the developer mode prompt when creating a plugin",
+      "[Improved] Use the name of the plugin for the sketchplugin filename",
+      "[Improved] Add something nice to the body of the PR to the registry",
+      "[Fixed] Make sure that origin is up to date with upstream when creating a PR to add the plugin to the registry",
+      "[Fixed] Reset the existing PR when publishing again before the PR is merged"
+    ],
     "1.0.15": ["[Improved] Print error log when installing dependencies fail"],
     "1.0.14": ["[Fixed] Fix getting the author name when publishing"],
     "1.0.13": ["[Improved] Populate the author field with the git user"],
