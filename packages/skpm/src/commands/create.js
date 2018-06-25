@@ -18,7 +18,7 @@ const isMedia = str => RGX.test(str)
 export default asyncCommand({
   command: 'create <dest>',
 
-  desc: 'Create a new plugin.',
+  desc: 'Create a new Sketch plugin.',
 
   builder: {
     cwd: {
