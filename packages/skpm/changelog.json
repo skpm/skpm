@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.1": ["[Fixed] Fix missing argument when deleting existing branch"],
     "1.1.0": [
       "[Improved] Don't swallow the developer mode prompt when creating a plugin",
       "[Improved] Use the name of the plugin for the sketchplugin filename",

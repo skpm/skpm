@@ -167,7 +167,7 @@ export default {
     }
 
     function getOriginBranchSHA(fork) {
-      return deleteExistingBranch().then(() =>
+      return deleteExistingBranch(fork).then(() =>
         Promise.all([
           request(
             options(
