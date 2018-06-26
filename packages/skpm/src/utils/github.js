@@ -314,7 +314,7 @@ export default {
       prOptions.json = {
         title: `Add the ${repo} plugin`,
         head: `${fork.owner.login}:${repo}`,
-        body: `Hello Ale :waves:
+        body: `Hello Ale :wave:
 
 The plugin is [here](${skpmConfig.homepage ||
           `https://github.com/${repo}`}) if you want to have a look.
