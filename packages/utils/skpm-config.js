@@ -11,6 +11,7 @@ module.exports = function getSkpmConfig(packageJSON, argv) {
     description: skpmConfig.description || packageJSON.description,
     name: skpmConfig.name || packageJSON.name,
     title: skpmConfig.title || packageJSON.title,
+    identifer: skpmConfig.identifier || packageJSON.name,
     appcast: skpmConfig.appcast || packageJSON.appcast,
     resources: skpmConfig.resources || packageJSON.resources || [],
     assets: skpmConfig.assets || packageJSON.assets || [],
