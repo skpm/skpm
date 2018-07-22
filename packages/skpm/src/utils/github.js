@@ -1,39 +1,7 @@
 import path from 'path'
 import fs from 'fs'
-import requestWithCallback from 'request'
 import parseAuthor from 'parse-author'
-
-/* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
-function getErrorFromBody(body, opts) {
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body)
-    } catch (e) {
-      body = {}
-    }
-  }
-  // hide token from logs
-  opts.headers.Authorization = 'Token **********'
-  // log the request options to help debugging
-  body.request = opts
-  return new Error(JSON.stringify(body, null, '  '))
-}
-/* eslint-enable */
-
-function request(opts) {
-  return new Promise((resolve, reject) => {
-    requestWithCallback(opts, (err, response, body) => {
-      if (err) {
-        return reject(err)
-      }
-      const is2xx = !err && /^2/.test(String(response.statusCode))
-      if (!is2xx) {
-        return reject(getErrorFromBody(body, opts))
-      }
-      return resolve(body)
-    })
-  })
-}
+import { request, streamingRequest } from './request'
 
 function options(token, url, method) {
   return {
@@ -100,15 +68,8 @@ export default {
     const rd = fs.createReadStream(asset)
     opts.headers['Content-Type'] = 'application/zip'
     opts.headers['Content-Length'] = stat.size
-    const us = requestWithCallback(opts)
 
-    return new Promise((resolve, reject) => {
-      rd.on('error', err => reject(err))
-      us.on('error', err => reject(err))
-      us.on('end', () => resolve())
-
-      rd.pipe(us)
-    })
+    return streamingRequest(rd, opts)
   },
   publishRelease(token, repo, releaseId) {
     const opts = options(
