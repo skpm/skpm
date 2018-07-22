@@ -95,6 +95,8 @@ async function copyManifest(manifestJSON) {
     copy.description = manifestJSON.description || skpmConfig.description
     copy.homepage = manifestJSON.homepage || skpmConfig.homepage
     copy.name = manifestJSON.name || skpmConfig.name
+    copy.identifier =
+      manifestJSON.identifier || skpmConfig.identifier || skpmConfig.name
     copy.disableCocoaScriptPreprocessor =
       typeof manifestJSON.disableCocoaScriptPreprocessor === 'undefined'
         ? true

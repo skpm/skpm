@@ -10,7 +10,7 @@ import BabelLoader from './babelLoader'
 import resourceLoader from './resourceLoader'
 import nibLoader from './nibLoader'
 
-const CORE_MODULES = ['util', 'events', 'console']
+const CORE_MODULES = ['util', 'events', 'console', 'buffer', 'path', 'os']
 
 async function getCommands(output, commandIdentifiers) {
   return Promise.all(
