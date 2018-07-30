@@ -39,7 +39,8 @@ async function getToken(repo) {
 }
 
 export default asyncCommand({
-  command: 'publish <bump>',
+  command:
+    'publish <new-version> | major | minor | patch | premajor | preminor | prepatch | prerelease',
 
   desc: 'Publish a new version of the plugin.',
 
