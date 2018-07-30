@@ -87,7 +87,9 @@ export default asyncCommand({
       (argv.repoUrl && extractRepository(argv.repoUrl)) || skpmConfig.repository
 
     if (!repo) {
-      throw new Error('Missing "repository" field in the package.json.')
+      throw new Error(
+        'Please supply github.com repo URL as --repo-url or in "repository" field in the package.json.'
+      )
     }
 
     if (!argv.skipRegistry && !skpmConfig.description) {
