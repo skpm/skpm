@@ -1,23 +1,18 @@
 // taken for most part from https://github.com/evanw/node-source-map-support/blob/master/source-map-support.js
+/* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign */
 
 const { SourceMapConsumer } = require('source-map')
 const path = require('path')
 const fs = require('fs')
 
-// Maps a file path to a string containing the file contents
-const fileContentsCache = {}
-
-// Maps a file path to a source map for that file
-const sourceMapCache = {}
-
 // Regex for detecting source maps
 const reSourceMap = /^data:application\/json[^,]+base64,/
 
-const retrieveFile = filePath => {
+const retrieveFile = (filePath, caches) => {
   // Trim the path to make sure there is no extra whitespace.
   filePath = filePath.trim() // eslint-disable-line
-  if (filePath in fileContentsCache) {
-    return fileContentsCache[filePath]
+  if (filePath in caches.fileContents) {
+    return caches.fileContents[filePath]
   }
 
   let contents = null
@@ -27,7 +22,7 @@ const retrieveFile = filePath => {
     contents = ''
   }
 
-  fileContentsCache[filePath] = contents
+  caches.fileContents[filePath] = contents
 
   return contents
 }
@@ -42,9 +37,9 @@ function supportRelativeURL(file, url) {
   return protocol + path.resolve(dir.slice(protocol.length), url)
 }
 
-function retrieveSourceMapURL(source) {
+function retrieveSourceMapURL(source, caches) {
   // Get the URL of the source map
-  const fileData = retrieveFile(source)
+  const fileData = retrieveFile(source, caches)
 
   const re = /(?:\/\/[@#][ \t]+sourceMappingURL=([^\s'"]+?)[ \t]*$)|(?:\/\*[@#][ \t]+sourceMappingURL=([^*]+?)[ \t]*(?:\*\/)[ \t]*$)/gm
   // Keep executing the search to find the *last* sourceMappingURL to avoid
@@ -64,8 +59,8 @@ function retrieveSourceMapURL(source) {
 // there is no source map.  The map field may be either a string or the parsed
 // JSON object (ie, it must be a valid argument to the SourceMapConsumer
 // constructor).
-const retrieveSourceMap = source => {
-  let sourceMappingURL = retrieveSourceMapURL(source)
+const retrieveSourceMap = (source, caches) => {
+  let sourceMappingURL = retrieveSourceMapURL(source, caches)
   if (!sourceMappingURL) return null
 
   // Read the contents of the source map
@@ -78,7 +73,7 @@ const retrieveSourceMap = source => {
   } else {
     // Support source map URLs relative to the source URL
     sourceMappingURL = supportRelativeURL(source, sourceMappingURL)
-    sourceMapData = retrieveFile(sourceMappingURL)
+    sourceMapData = retrieveFile(sourceMappingURL, caches)
   }
 
   if (!sourceMapData) {
@@ -91,11 +86,11 @@ const retrieveSourceMap = source => {
   }
 }
 
-async function mapSourcePosition(position) {
-  let sourceMap = sourceMapCache[position.source]
+async function mapSourcePosition(position, caches) {
+  let sourceMap = caches.sourceMap[position.source]
 
   if (!sourceMap) {
-    const urlAndMap = retrieveSourceMap(position.source)
+    const urlAndMap = retrieveSourceMap(position.source, caches)
     if (urlAndMap) {
       sourceMap = {
         url: urlAndMap.url,
@@ -103,7 +98,7 @@ async function mapSourcePosition(position) {
         map: await new SourceMapConsumer(urlAndMap.map),
       }
 
-      sourceMapCache[position.source] = sourceMap
+      caches.sourceMap[position.source] = sourceMap
 
       // Load all sources stored inline with the source map into the file cache
       // to pretend like they are already loaded. They may not exist on disk.
@@ -112,7 +107,7 @@ async function mapSourcePosition(position) {
           const contents = sourceMap.map.sourcesContent[i]
           if (contents) {
             const url = supportRelativeURL(sourceMap.url, source)
-            fileContentsCache[url] = contents
+            caches.fileContents[url] = contents
           }
         })
       }
@@ -123,7 +118,7 @@ async function mapSourcePosition(position) {
         map: null,
       }
 
-      sourceMapCache[position.source] = sourceMap
+      caches.sourceMap[position.source] = sourceMap
     }
   }
 
@@ -152,6 +147,13 @@ async function mapSourcePosition(position) {
 }
 
 module.exports = async stack => {
+  const caches = {
+    // Maps a file path to a string containing the file contents
+    fileContents: {},
+    // Maps a file path to a source map for that file
+    sourceMap: {},
+  }
+
   const mappedStack = []
 
   for (let i = 0; i < stack.length; i += 1) {
@@ -161,11 +163,14 @@ module.exports = async stack => {
       typeof frame.column !== 'undefined' &&
       frame.filePath
     ) {
-      const mappedPosition = await mapSourcePosition({
-        source: frame.filePath,
-        line: frame.line,
-        column: frame.column,
-      })
+      const mappedPosition = await mapSourcePosition(
+        {
+          source: frame.filePath,
+          line: frame.line,
+          column: frame.column,
+        },
+        caches
+      )
       if (
         mappedPosition.source &&
         mappedPosition.source.indexOf(
