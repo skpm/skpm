@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.2": [
+      "[Fixed] Make sure that the file cache for the source maps is per run and not per cli instance",
+      "[Fixed] Tests cannot be generated in a loop (see #177)"
+    ],
     "0.3.1": [
       "[Fixed] Fix printing the result of the tests",
       "[Improved] Show when the tests start running again in watch mode"
