@@ -10,6 +10,13 @@ function isCalleeTest(t, callee) {
   )
 }
 
+function getProgramChild(path) {
+  if (path.parentPath && path.parentPath.type !== 'Program') {
+    return getProgramChild(path.parentPath)
+  }
+  return path
+}
+
 module.exports = function babelPluginTestInjector({ types: t }) {
   return {
     visitor: {
@@ -20,6 +27,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
           if (isCalleeTest(t, callee) && !path.scope.hasBinding('test')) {
             const { injected } = path.hub.file.opts
             if (!injected) {
+              const programBody = getProgramChild(path)
               path.hub.file.opts.injected = true // eslint-disable-line
 
               /**
@@ -27,7 +35,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
                */
 
               // var __skpm_logs__ = []
-              path.insertBefore(
+              programBody.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('__skpm_logs__'),
@@ -37,7 +45,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
               )
 
               // var __skpm_console_log__ = console.log
-              path.insertBefore(
+              programBody.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('__skpm_console_log__'),
@@ -50,7 +58,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
               )
 
               // var __hookedLogs = function (string) { __skpm_logs__.push(string); return __skpm_console_log__(string) }
-              path.insertBefore(
+              programBody.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('__hookedLogs'),
@@ -84,7 +92,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
                */
 
               // var __skpm_tests__ = {}
-              path.insertBefore(
+              programBody.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('__skpm_tests__'),
@@ -103,7 +111,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
                *   __skpm_tests__[description] = withLogs
                * }
                */
-              path.insertBefore(
+              programBody.insertBefore(
                 t.variableDeclaration('var', [
                   t.variableDeclarator(
                     t.identifier('test'),
@@ -151,7 +159,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
               )
 
               // test.only = function (description, fn) { fn.only = true; return test(description, fn) }
-              path.insertBefore(
+              programBody.insertBefore(
                 t.expressionStatement(
                   t.assignmentExpression(
                     '=',
@@ -186,7 +194,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
               )
 
               // test.skip = function (description, fn) { fn.skipped = true; return test(description, fn) }
-              path.insertBefore(
+              programBody.insertBefore(
                 t.expressionStatement(
                   t.assignmentExpression(
                     '=',
@@ -225,7 +233,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
                */
 
               // module.exports.tests = __skpm_tests__
-              path.insertBefore(
+              programBody.insertBefore(
                 t.expressionStatement(
                   t.assignmentExpression(
                     '=',
@@ -235,7 +243,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
                 )
               )
               // module.exports.logs = __skpm_logs__
-              path.insertBefore(
+              programBody.insertBefore(
                 t.expressionStatement(
                   t.assignmentExpression(
                     '=',
