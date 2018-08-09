@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.2": [
+      "[Fixed] Spaces are replaced by dots in the GitHub asset URL so do that in the appcast as well"
+    ],
     "1.1.1": ["[Fixed] Fix missing argument when deleting existing branch"],
     "1.1.0": [
       "[Improved] Don't swallow the developer mode prompt when creating a plugin",

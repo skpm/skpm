@@ -141,9 +141,9 @@ export default asyncCommand({
           $: {
             url:
               argv.downloadUrl ||
-              `https://github.com/${repo}/releases/download/${tag}/${path.basename(
-                skpmConfig.main
-              )}.zip`,
+              `https://github.com/${repo}/releases/download/${tag}/${path
+                .basename(skpmConfig.main)
+                .replace(/ /g, '.')}.zip`,
             'sparkle:version': tag.replace('v', ''),
           },
         },
