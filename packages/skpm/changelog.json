@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.3": [
+      "[Improved] The login method will now ask for the token if called without instead of showing an error",
+      "[Fixed] The help of the publish command was causing the command to expect 15 arguments"
+    ],
     "1.1.2": [
       "[Fixed] Spaces are replaced by dots in the GitHub asset URL so do that in the appcast as well"
     ],
