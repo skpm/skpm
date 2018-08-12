@@ -18,7 +18,8 @@
     "prebuild": "../../node_modules/.bin/rimraf lib",
     "build": "../../node_modules/.bin/babel src -d lib -D",
     "watch": "npm run build -- --watch",
-    "prepare": "npm run -s build"
+    "prepare": "npm run -s build",
+    "postpublish": "echo '⚠️  do not forget to publish create-sketch-plugin as well'"
   },
   "repository": {
     "type": "git",
