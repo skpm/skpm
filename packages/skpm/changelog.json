@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.4": [
+      "[Improved] Print something when creating or publishing a plugin on a CI"
+    ],
     "1.1.3": [
       "[Improved] The login method will now ask for the token if called without instead of showing an error",
       "[Fixed] The help of the publish command was causing the command to expect 15 arguments"

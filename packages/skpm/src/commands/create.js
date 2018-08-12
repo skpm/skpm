@@ -100,6 +100,16 @@ export default asyncCommand({
       color: 'magenta',
     }).start()
 
+    function print(text) {
+      if (process.env.CI) {
+        console.log(text)
+      } else {
+        spinner.text = text
+      }
+    }
+
+    print('Fetching the template')
+
     // Attempt to fetch the `template`
     const archive = await gittar.fetch(repo).catch(err => {
       spinner.fail('An error occured while fetching template.')
@@ -111,7 +121,7 @@ export default asyncCommand({
       )
     })
 
-    spinner.text = 'Extracting the template'
+    print('Extracting the template')
 
     // Extract files from `archive` to `target`
     // TODO: read & respond to meta/hooks
@@ -154,7 +164,7 @@ export default asyncCommand({
       return error(`No \`template\` directory found within ${repo}!`, 1)
     }
 
-    spinner.text = 'Parsing `package.json` file'
+    print('Parsing `package.json` file')
 
     // Validate user's `package.json` file
     let pkgData
@@ -176,7 +186,7 @@ export default asyncCommand({
     if (argv.name) {
       // Update `package.json` key
       if (pkgData) {
-        spinner.text = 'Updating `name` within `package.json` file'
+        print('Updating `name` within `package.json` file')
         pkgData.name = argv.name.toLowerCase().replace(/\s+/g, '-')
         if (!pkgData.skpm) {
           pkgData.skpm = {}
@@ -190,7 +200,7 @@ export default asyncCommand({
       const files = await globby(`${target}/**/manifest.json`)
       const manifest = files[0] && JSON.parse(await fs.readFile(files[0]))
       if (manifest) {
-        spinner.text = 'Updating `title` within `manifest.json` file'
+        print('Updating `title` within `manifest.json` file')
         manifest.menu.title = argv.name
         // Write changes to `manifest.json`
         await fs.writeFile(files[0], JSON.stringify(manifest, null, 2))
@@ -205,13 +215,13 @@ export default asyncCommand({
     let shouldAskForDevMode = false
 
     if (argv.install) {
-      spinner.text = 'Installing dependencies'
+      print('Installing dependencies')
       shouldAskForDevMode = await install(target, spinner)
     }
 
     spinner.succeed('Done!\n')
 
-    if (shouldAskForDevMode) {
+    if (!process.env.CI && shouldAskForDevMode) {
       await checkDevMode()
     }
 

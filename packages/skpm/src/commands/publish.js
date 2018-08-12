@@ -110,15 +110,25 @@ export default asyncCommand({
       color: 'magenta',
     }).start()
 
+    function print(text) {
+      if (process.env.CI) {
+        console.log(text)
+      } else {
+        spinner.text = text
+      }
+    }
+
+    print(`Checking if \`${repo}\` is accessible`)
+
     if (argv.bump) {
-      spinner.text = 'Bumping package.json version and creating git tag'
+      print('Bumping package.json version and creating git tag')
       const { stdout } = await exec(
         `npm version ${argv.bump} -m "Publish %s release :rocket:"`
       )
       tag = stdout.trim()
     }
 
-    spinner.text = 'Updating the appcast file'
+    print('Updating the appcast file')
 
     const appcast = path.join(process.cwd(), '.appcast.xml')
     const appcastObj = await new Promise(resolve => {
@@ -157,7 +167,7 @@ export default asyncCommand({
     await exec(`git add "${appcast}"`)
     await exec('git commit -m "Update .appcast with new tag :sparkles:"')
 
-    spinner.text = 'Pushing the changes to Github'
+    print('Pushing the changes to Github')
 
     await exec(`git push origin HEAD`)
 
@@ -175,24 +185,24 @@ export default asyncCommand({
       }
 
       if (script) {
-        spinner.text = 'Building the plugin'
+        print('Building the plugin')
         await exec(`NODE_ENV=production npm run ${script}`)
       }
 
-      spinner.text = 'Zipping the plugin'
+      print('Zipping the plugin')
       const tempZip = `${Date.now()}.zip`
       await exec(`zip -r ${tempZip} '${skpmConfig.main}' -x '*.DS_Store'`, {
         maxBuffer: 2000 * 1024,
       })
 
-      spinner.text = 'Creating a draft release on GitHub'
+      print('Creating a draft release on GitHub')
       const { id: releaseId } = await github.createDraftRelease(
         token,
         repo,
         tag
       )
 
-      spinner.text = 'Uploading zip asset'
+      print('Uploading zip asset')
       await github.updateAsset(
         token,
         repo,
@@ -201,15 +211,15 @@ export default asyncCommand({
         `${path.basename(skpmConfig.main)}.zip`
       )
 
-      spinner.text = 'Publishing the release'
+      print('Publishing the release')
       await github.publishRelease(token, repo, releaseId)
 
-      spinner.text = 'Removing the temporary zip'
+      print('Removing the temporary zip')
       await exec(`rm -f ${tempZip}`)
     }
 
     if (!argv.skipRegistry) {
-      spinner.text = 'Publishing the plugin on the official plugin directory'
+      print('Publishing the plugin on the official plugin directory')
       await github.addPluginToPluginsRegistryRepo(token, skpmConfig, repo)
     }
 
