@@ -1,19 +1,19 @@
-import ora from 'ora'
-import globby from 'globby'
-import gittar from 'gittar'
-import fs from 'fs.promised'
-import { green } from 'chalk'
-import { resolve } from 'path'
-import { prompt } from 'inquirer'
-import checkDevMode from '@skpm/internal-utils/check-dev-mode'
-import asyncCommand from '../utils/async-command'
-import getGitUser from '../utils/get-git-user'
-import { info, isDir, error, warn } from '../utils'
-import { install, initGit, isMissing } from '../utils/setup'
+import ora from 'ora';
+import globby from 'globby';
+import gittar from 'gittar';
+import fs from 'fs.promised';
+import { green } from 'chalk';
+import { resolve } from 'path';
+import { prompt } from 'inquirer';
+import checkDevMode from '@skpm/internal-utils/check-dev-mode';
+import asyncCommand from '../utils/async-command';
+import getGitUser from '../utils/get-git-user';
+import { info, isDir, error, warn } from '../utils';
+import { install, initGit, isMissing } from '../utils/setup';
 
-const TEMPLATE = 'skpm/skpm'
-const RGX = /\.(woff2?|ttf|eot|jpe?g|ico|png|gif|mp4|mov|ogg|webm)(\?.*)?$/i
-const isMedia = str => RGX.test(str)
+const TEMPLATE = 'skpm/skpm';
+const RGX = /\.(woff2?|ttf|eot|jpe?g|ico|png|gif|mp4|mov|ogg|webm)(\?.*)?$/i;
+const isMedia = str => RGX.test(str);
 
 export default asyncCommand({
   command: 'create <dest>',
@@ -55,27 +55,27 @@ export default asyncCommand({
   async handler(argv) {
     // Prompt if incomplete data
     if (!argv.dest) {
-      warn('Insufficient command arguments! Prompting...')
-      info('Alternatively, run `skpm create --help` for usage info.')
+      warn('Insufficient command arguments! Prompting...');
+      info('Alternatively, run `skpm create --help` for usage info.');
 
-      const questions = isMissing(argv)
-      const response = await prompt(questions)
-      Object.assign(argv, response)
+      const questions = isMissing(argv);
+      const response = await prompt(questions);
+      Object.assign(argv, response);
     }
 
     if (!argv.name) {
-      argv.name = argv.dest // eslint-disable-line
+      argv.name = argv.dest; // eslint-disable-line
     }
 
-    const cwd = resolve(argv.cwd)
-    const target = argv.dest && resolve(cwd, argv.dest)
-    const exists = target && isDir(target)
+    const cwd = resolve(argv.cwd);
+    const target = argv.dest && resolve(cwd, argv.dest);
+    const exists = target && isDir(target);
 
     if (exists && !argv.force) {
       return error(
         'Refusing to overwrite current directory! Please specify a different destination or use the `--force` flag',
         1
-      )
+      );
     }
 
     if (exists && argv.force) {
@@ -84,149 +84,149 @@ export default asyncCommand({
         name: 'enableForce',
         message: `You are using '--force'. Do you wish to continue?`,
         default: false,
-      })
+      });
 
       if (enableForce) {
-        info('Initializing project in the current directory!')
+        info('Initializing project in the current directory!');
       } else {
-        return error('Refusing to overwrite current directory!', 1)
+        return error('Refusing to overwrite current directory!', 1);
       }
     }
 
-    const repo = argv.template || TEMPLATE
+    const repo = argv.template || TEMPLATE;
 
     const spinner = ora({
       text: 'Fetching the template',
       color: 'magenta',
-    }).start()
+    }).start();
 
     function print(text) {
       if (process.env.CI) {
-        console.log(text)
+        console.log(text);
       } else {
-        spinner.text = text
+        spinner.text = text;
       }
     }
 
-    print('Fetching the template')
+    print('Fetching the template');
 
     // Attempt to fetch the `template`
     const archive = await gittar.fetch(repo).catch(err => {
-      spinner.fail('An error occured while fetching template.')
+      spinner.fail('An error occured while fetching template.');
       return error(
         (err || {}).code === 404
           ? `Could not find repository: ${repo}`
           : (err || {}).message,
         1
-      )
-    })
+      );
+    });
 
-    print('Extracting the template')
+    print('Extracting the template');
 
     // Extract files from `archive` to `target`
     // TODO: read & respond to meta/hooks
-    const keeps = []
+    const keeps = [];
     await gittar.extract(archive, target, {
       strip: 2,
       filter(path, obj) {
         if (path.includes('/template/')) {
           obj.on('end', () => {
             if (obj.type === 'File' && !isMedia(obj.path)) {
-              keeps.push(obj.absolute)
+              keeps.push(obj.absolute);
             }
-          })
-          return true
+          });
+          return true;
         }
-        return false
+        return false;
       },
-    })
+    });
 
     if (keeps.length) {
       // eslint-disable-next-line
-      let dict = new Map()
+      let dict = new Map();
       // TODO: concat author-driven patterns
-      ;['name'].forEach(str => {
+      ['name'].forEach(str => {
         // if value is defined
         if (argv[str] !== undefined) {
-          dict.set(new RegExp(`{{\\s?${str}\\s}}`, 'g'), argv[str])
+          dict.set(new RegExp(`{{\\s?${str}\\s}}`, 'g'), argv[str]);
         }
-      })
+      });
       // Update each file's contents
-      const enc = 'utf8'
+      const enc = 'utf8';
       for (const entry of keeps) {
-        let buf = await fs.readFile(entry, enc)
+        let buf = await fs.readFile(entry, enc);
         dict.forEach((v, k) => {
-          buf = buf.replace(k, v)
-        })
-        await fs.writeFile(entry, buf, enc)
+          buf = buf.replace(k, v);
+        });
+        await fs.writeFile(entry, buf, enc);
       }
     } else {
-      return error(`No \`template\` directory found within ${repo}!`, 1)
+      return error(`No \`template\` directory found within ${repo}!`, 1);
     }
 
-    print('Parsing `package.json` file')
+    print('Parsing `package.json` file');
 
     // Validate user's `package.json` file
-    let pkgData
-    const pkgFile = resolve(target, 'package.json')
+    let pkgData;
+    const pkgFile = resolve(target, 'package.json');
 
     if (pkgFile) {
-      pkgData = JSON.parse(await fs.readFile(pkgFile))
+      pkgData = JSON.parse(await fs.readFile(pkgFile));
     } else {
-      warn('Could not locate `package.json` file!')
+      warn('Could not locate `package.json` file!');
     }
 
     if (pkgData && !pkgData.author) {
-      const gitUser = await getGitUser()
+      const gitUser = await getGitUser();
       if (gitUser && gitUser.username && gitUser.email) {
-        pkgData.author = `${gitUser.username.trim()} <${gitUser.email.trim()}>`
+        pkgData.author = `${gitUser.username.trim()} <${gitUser.email.trim()}>`;
       }
     }
 
     if (argv.name) {
       // Update `package.json` key
       if (pkgData) {
-        print('Updating `name` within `package.json` file')
-        pkgData.name = argv.name.toLowerCase().replace(/\s+/g, '-')
+        print('Updating `name` within `package.json` file');
+        pkgData.name = argv.name.toLowerCase().replace(/\s+/g, '-');
         if (!pkgData.skpm) {
-          pkgData.skpm = {}
+          pkgData.skpm = {};
         }
-        pkgData.skpm.name = argv.name
+        pkgData.skpm.name = argv.name;
         if (!pkgData.skpm.main || pkgData.skpm.main === 'plugin.sketchplugin') {
-          pkgData.skpm.main = `${pkgData.name}.sketchplugin`
+          pkgData.skpm.main = `${pkgData.name}.sketchplugin`;
         }
       }
       // Find a `manifest.json`; use the first match, if any
-      const files = await globby(`${target}/**/manifest.json`)
-      const manifest = files[0] && JSON.parse(await fs.readFile(files[0]))
-      if (manifest) {
-        print('Updating `title` within `manifest.json` file')
-        manifest.menu.title = argv.name
+      const files = await globby(`${target}/**/manifest.json`);
+      const manifest = files[0] && JSON.parse(await fs.readFile(files[0]));
+      if (manifest && manifest.menu) {
+        print('Updating `title` within `manifest.json` file');
+        manifest.menu.title = argv.name;
         // Write changes to `manifest.json`
-        await fs.writeFile(files[0], JSON.stringify(manifest, null, 2))
+        await fs.writeFile(files[0], JSON.stringify(manifest, null, 2));
       }
     }
 
     if (pkgData) {
       // Assume changes were made ¯\_(ツ)_/¯
-      await fs.writeFile(pkgFile, JSON.stringify(pkgData, null, 2))
+      await fs.writeFile(pkgFile, JSON.stringify(pkgData, null, 2));
     }
 
-    let shouldAskForDevMode = false
+    let shouldAskForDevMode = false;
 
     if (argv.install) {
-      print('Installing dependencies')
-      shouldAskForDevMode = await install(target, spinner)
+      print('Installing dependencies');
+      shouldAskForDevMode = await install(target, spinner);
     }
 
-    spinner.succeed('Done!\n')
+    spinner.succeed('Done!\n');
 
     if (!process.env.CI && shouldAskForDevMode) {
-      await checkDevMode()
+      await checkDevMode();
     }
 
     if (argv.git) {
-      await initGit(target)
+      await initGit(target);
     }
 
     return `${`
@@ -241,6 +241,6 @@ To build the plugin:
 
 To publish the plugin:
   ${green('skpm publish')}
-`}\n`
+`}\n`;
   },
-})
+});

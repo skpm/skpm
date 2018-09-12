@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.6": ["[Fixed] Handle template of plugins without menu"],
     "1.1.4": [
       "[Improved] Print something when creating or publishing a plugin on a CI"
     ],
