@@ -3,7 +3,7 @@
   "scripts": {
     "test": "eslint . --ignore-path .gitignore",
     "lint-staged": "lint-staged",
-    "prettier:base": "prettier --single-quote --trailing-comma es5 --no-semi --write",
+    "prettier:base": "prettier --write",
     "prettify": "npm run prettier:base 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'"
   },
   "devDependencies": {
@@ -19,7 +19,7 @@
     "eslint-plugin-no-not-accumulator-reassign": "^0.1.0",
     "eslint-plugin-prettier": "^2.6.0",
     "lerna": "^2.9.0",
-    "lint-staged": "^7.0.0",
+    "lint-staged": "^7.2.2",
     "pre-commit": "^1.2.2",
     "prettier": "^1.11.1",
     "rimraf": "^2.6.2"
@@ -30,7 +30,7 @@
   "lint-staged": {
     "*.js": [
       "npm run prettier:base",
-      "eslint --quiet --rule 'prettier/prettier: [\"error\", {\"trailingComma\": \"es5\", \"singleQuote\": true}]'",
+      "eslint --quiet",
       "git add"
     ]
   }
