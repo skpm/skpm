@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.10": [
+      "[Improves] Update babel to babel@7 and add support for async/await"
+    ],
+    "0.5.9": ["[New] Support `os`, `buffer` and `path` core modules"],
     "0.5.8": ["[Improved] Moved testDevMode to utils"],
     "0.5.7": ["[Fixed] Set sourcemap to `none` when building a release"],
     "0.5.6": [
