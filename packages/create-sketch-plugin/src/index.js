@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
-import yargs from 'yargs';
-import create from './commands/create';
+import yargs from 'yargs'
+import create from './commands/create'
 
-create.builder(yargs);
+create.builder(yargs)
 
 const { argv } = yargs
   .help()
   .alias('h', 'help')
   .demandCommand()
-  .strict();
+  .strict()
 
-argv.dest = argv._[0]; // eslint-disable-line
+argv.dest = argv._[0] // eslint-disable-line
 
-create.handler(argv);
+create.handler(argv)
