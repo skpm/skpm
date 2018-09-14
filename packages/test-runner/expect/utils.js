@@ -61,31 +61,42 @@ module.exports.printExpected = printExpected
 const getType = value => {
   if (typeof value === 'undefined') {
     return 'undefined'
-  } else if (value === null) {
+  }
+  if (value === null) {
     return 'null'
-  } else if (Array.isArray(value)) {
+  }
+  if (Array.isArray(value)) {
     return 'array'
-  } else if (typeof value === 'boolean') {
+  }
+  if (typeof value === 'boolean') {
     return 'boolean'
-  } else if (typeof value === 'function') {
+  }
+  if (typeof value === 'function') {
     return 'function'
-  } else if (typeof value === 'number') {
+  }
+  if (typeof value === 'number') {
     return 'number'
-  } else if (typeof value === 'string') {
+  }
+  if (typeof value === 'string') {
     return 'string'
-  } else if (typeof value === 'object') {
+  }
+  if (typeof value === 'object') {
     if (value.constructor === RegExp) {
       return 'regexp'
-    } else if (value.constructor === Map) {
+    }
+    if (value.constructor === Map) {
       return 'map'
-    } else if (value.constructor === Set) {
+    }
+    if (value.constructor === Set) {
       return 'set'
-    } else if (value.class && typeof value.class === 'function') {
+    }
+    if (value.class && typeof value.class === 'function') {
       return 'sketch-native'
     }
     return 'object'
     // $FlowFixMe https://github.com/facebook/flow/issues/1015
-  } else if (typeof value === 'symbol') {
+  }
+  if (typeof value === 'symbol') {
     return 'symbol'
   }
 
