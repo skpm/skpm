@@ -1,5 +1,5 @@
 import { spawn } from 'child_process'
-import { hasCommand, warn } from './'
+import { hasCommand, warn } from '.'
 import getGitUser from './get-git-user'
 
 export async function install(cwd) {

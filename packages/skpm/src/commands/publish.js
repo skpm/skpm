@@ -2,7 +2,7 @@ import ora from 'ora'
 import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
-import open from 'open'
+import open from 'opn'
 import { exec } from '@skpm/internal-utils/exec'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import extractRepository from '@skpm/internal-utils/extract-repository'
@@ -94,7 +94,16 @@ export default asyncCommand({
     }
 
     if (!argv.skipRegistry && !skpmConfig.description) {
-      throw new Error('Missing "description" field in the package.json.')
+      const manifest = path.join(process.cwd(), skpmConfig.manifest)
+      let manifestJSON
+      try {
+        manifestJSON = require(manifest)
+      } catch (err) {
+        // ignore
+      }
+      if (!manifestJSON || !manifestJSON.description) {
+        throw new Error('Missing "description" field in the package.json.')
+      }
     }
 
     let token

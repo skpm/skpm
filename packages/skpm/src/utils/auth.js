@@ -1,5 +1,5 @@
 import keytar from 'keytar'
-import { error } from './'
+import { error } from '.'
 
 const tokenName = 'Github.com API Token'
 
