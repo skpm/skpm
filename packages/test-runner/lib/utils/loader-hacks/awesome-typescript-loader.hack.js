@@ -10,7 +10,7 @@ module.exports = function hackTypescriptConfig(skpmConfig, loader) {
     }
   }
   loader.options.useBabel = true
-  loader.options.babelOptions.plugins = (
-    loader.options.babelOptions.plugins || []
-  ).concat([[require('./globals-babel-plugin'), skpmConfig.test]])
+  loader.options.babelOptions.plugins = [
+    [require('./globals-babel-plugin'), skpmConfig.test],
+  ].concat(loader.options.babelOptions.plugins || [])
 }

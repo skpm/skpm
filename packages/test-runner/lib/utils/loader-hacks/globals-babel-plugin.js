@@ -232,25 +232,18 @@ module.exports = function babelPluginTestInjector({ types: t }) {
                * EXPORTS
                */
 
-              // module.exports.tests = __skpm_tests__
+              // export {__sketch_tests__ as tests, __sketch_logs__ as logs }
               programBody.insertBefore(
-                t.expressionStatement(
-                  t.assignmentExpression(
-                    '=',
-                    t.identifier('module.exports.tests'),
-                    t.identifier('__skpm_tests__')
-                  )
-                )
-              )
-              // module.exports.logs = __skpm_logs__
-              programBody.insertBefore(
-                t.expressionStatement(
-                  t.assignmentExpression(
-                    '=',
-                    t.identifier('module.exports.logs'),
-                    t.identifier('__skpm_logs__')
-                  )
-                )
+                t.exportNamedDeclaration(null, [
+                  t.exportSpecifier(
+                    t.identifier('__skpm_tests__'),
+                    t.identifier('tests')
+                  ),
+                  t.exportSpecifier(
+                    t.identifier('__skpm_logs__'),
+                    t.identifier('logs')
+                  ),
+                ])
               )
             }
           }

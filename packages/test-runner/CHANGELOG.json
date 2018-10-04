@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.3": [
+      "[Improved] Make sure the injection runs before the other plugins"
+    ],
     "0.3.2": [
       "[Fixed] Make sure that the file cache for the source maps is per run and not per cli instance",
       "[Fixed] Tests cannot be generated in a loop (see #177)"
