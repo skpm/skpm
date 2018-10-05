@@ -1,10 +1,9 @@
 import childProcess from 'child_process'
-import { get as getConfig } from '@skpm/internal-utils/tool-config'
 import { exec } from '@skpm/internal-utils/exec'
 import asyncCommand from '../utils/async-command'
 import { error } from '../utils'
 
-const config = getConfig()
+const homedir = require('os').homedir()
 
 export default asyncCommand({
   command: 'log',
@@ -35,51 +34,79 @@ export default asyncCommand({
       args.push(`-n ${argv.number}`)
     }
 
-    args.push(config.logsLocation)
+    const childProcesses = []
 
-    let restarted = false
-
-    const child = childProcess.spawn('tail', args, {
-      cwd: process.cwd(),
-    })
-
-    if (child.stdout) {
-      child.stdout.on('data', data => {
-        console.log(
-          String(data)
-            .replace(/ «Plugin Output»/g, '')
-            .replace(/\n$/g, '')
-        )
-      })
-    }
-
-    if (child.stderr) {
-      child.stderr.on('data', data => {
-        const dataString = String(data)
-        if (dataString.indexOf('No such file or directory')) {
-          restarted = true
-          return exec(`touch "${config.logsLocation}"`)
-            .then(() => {
-              this.handler(argv, done)
-            })
-            .catch(err => {
-              error('while reading the logs')
-              done(err)
-            })
+    function killAll() {
+      childProcesses.forEach(child => {
+        if (!child.killed) {
+          child.kill()
         }
-        return console.error(String(data))
       })
     }
 
-    child.on('exit', () => {
-      if (!restarted) {
-        done()
-      }
-    })
+    function listenToLogs(logsLocation) {
+      let restarted = false
 
-    child.on('error', err => {
-      error('while reading the logs')
-      done(err)
-    })
+      const child = childProcess.spawn('tail', [...args, logsLocation], {
+        cwd: process.cwd(),
+      })
+
+      if (child.stdout) {
+        child.stdout.on('data', data => {
+          console.log(
+            String(data)
+              .replace(/ «Plugin Output»/g, '')
+              .replace(/\n$/g, '')
+          )
+        })
+      }
+
+      if (child.stderr) {
+        child.stderr.on('data', data => {
+          const dataString = String(data)
+          if (dataString.indexOf('No such file or directory')) {
+            restarted = true
+            return exec(`touch "${logsLocation}"`)
+              .then(() => {
+                this.handler(argv, done)
+              })
+              .catch(err => {
+                if (err.message.indexOf('No such file or directory')) {
+                  return
+                }
+                error('while reading the logs')
+                done(err)
+              })
+          }
+          return console.error(String(data))
+        })
+      }
+
+      child.on('exit', () => {
+        if (!restarted) {
+          killAll()
+          done()
+        }
+      })
+
+      child.on('error', err => {
+        error('while reading the logs')
+        killAll()
+        done(err)
+      })
+
+      childProcesses.push(child)
+    }
+
+    ;[
+      `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log`,
+      `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Log.log`,
+      `${homedir}/Library/Logs/com.bohemiancoding.sketch3.xcode/Plugin Log.log`,
+      `${homedir}/Library/Logs/com.bohemiancoding.sketch3.beta/Plugin Log.log`,
+    ].forEach(listenToLogs)
+
+    if (!childProcesses.length) {
+      done()
+    }
   },
 })
