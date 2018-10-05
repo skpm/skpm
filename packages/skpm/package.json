@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
-    "@skpm/internal-utils": "^0.1.10",
+    "@skpm/internal-utils": "^0.1.11",
     "bluebird": "^3.5.2",
     "chalk": "^2.4.1",
     "cross-spawn-promise": "^0.10.1",
