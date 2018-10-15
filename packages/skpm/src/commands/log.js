@@ -5,6 +5,14 @@ import { error } from '../utils'
 
 const homedir = require('os').homedir()
 
+const logLocations = [
+  `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log`,
+  `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Log.log`,
+  `${homedir}/Library/Logs/com.bohemiancoding.sketch3.xcode/Plugin Log.log`,
+  `${homedir}/Library/Logs/com.bohemiancoding.sketch3.beta/Plugin Log.log`,
+  `${homedir}/Library/Logs/com.bohemiancoding.sketch3.private/Plugin Log.log`,
+]
+
 export default asyncCommand({
   command: 'log',
 
@@ -42,6 +50,15 @@ export default asyncCommand({
           child.kill()
         }
       })
+    }
+
+    let count = 0
+    function checkEnd() {
+      count += 1
+      if (count >= logLocations.length) {
+        killAll()
+        done()
+      }
     }
 
     function listenToLogs(logsLocation) {
@@ -84,8 +101,7 @@ export default asyncCommand({
 
       child.on('exit', () => {
         if (!restarted) {
-          killAll()
-          done()
+          checkEnd()
         }
       })
 
@@ -98,12 +114,7 @@ export default asyncCommand({
       childProcesses.push(child)
     }
 
-    ;[
-      `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log`,
-      `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Log.log`,
-      `${homedir}/Library/Logs/com.bohemiancoding.sketch3.xcode/Plugin Log.log`,
-      `${homedir}/Library/Logs/com.bohemiancoding.sketch3.beta/Plugin Log.log`,
-    ].forEach(listenToLogs)
+    logLocations.forEach(listenToLogs)
 
     if (!childProcesses.length) {
       done()

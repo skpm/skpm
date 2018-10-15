@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.9": ["[Fixed] Fix log tailing ending while it shouldn't (#187)"],
     "1.1.8": [
       "[Improved] `skpm log` will now print logs from all the Sketch variants (normal, beta, xcode)",
       "[Fixed] Fix log on Sketch 52"

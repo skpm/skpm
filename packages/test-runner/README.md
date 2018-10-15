@@ -2,7 +2,7 @@
 
 Introducing Sketch Plugin Testing
 
-* **👩🏻‍💻 Easy Setup**: `skpm-test` is a complete and easy to set up Sketch Plugin testing solution. In fact, `skpm-test` works out of the box for any `skpm` project.
+- **👩🏻‍💻 Easy Setup**: `skpm-test` is a complete and easy to set up Sketch Plugin testing solution. In fact, `skpm-test` works out of the box for any `skpm` project.
 
 ## Installation
 
@@ -55,10 +55,10 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running the tests on TravisCI
 
-* Go to [Travis](https://travis-ci.org/profile)
-* Add your repo
-* In the settings, add an environment variable called `SKETCH_LICENSE` with your sketch license
-* Copy paste the following code in a new file named `.travis.yml`
+- Go to [Travis](https://travis-ci.org/profile)
+- Add your repo
+- In the settings, add an environment variable called `SKETCH_LICENSE` with your sketch license
+- Copy paste the following code in a new file named `.travis.yml`
 
   ```yaml
   os: osx
@@ -66,17 +66,17 @@ This test used `expect` and `toBe` to test that two values were exactly identica
   language: node_js
 
   node_js:
-    - "node"
+    - 'node'
 
   before_install:
-    - brew update
+    - brew update >/dev/null # brew is really verbose and we don't really care about it so shut it up
     - brew cask install sketch # install Sketch
     - mkdir -p "~/Library/Application Support/com.bohemiancoding.sketch3/Plugins" # create plugins folder
     - echo $SKETCH_LICENSE > "~/Library/Application Support/com.bohemiancoding.sketch3/.deployment" # add the Sketch license
 
   cache:
     directories:
-      - "node_modules"
+      - 'node_modules'
       - $HOME/Library/Caches/Homebrew
 
   script:
@@ -86,7 +86,7 @@ This test used `expect` and `toBe` to test that two values were exactly identica
     - rm "~/Library/App Support/com.bohemiancoding.sketch3/.deployment" # remove the Sketch license
   ```
 
-* Commit, Push, done!
+- Commit, Push, done!
 
 ## Contributing
 
