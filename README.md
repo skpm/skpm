@@ -49,8 +49,8 @@ skpm create <plugin-name>
 > Current available official templates include:
 >
 > * [`skpm/skpm`](https://github.com/skpm/skpm/tree/master/template) - The simplest possible plugin setup. (_default_)
->
 > * [`skpm/with-prettier`](https://github.com/skpm/with-prettier) - A plugin setup featuring linting with ESLint and code formatting with Prettier.
+> * [`skpm/with-datasupplier`](https://github.com/skpm/with-datasupplier) - A template to create DataSupplier plugins (check [our blog](https://blog.sketchapp.com/do-more-with-data-2b765e870e4f) for more info)
 >
 > > 💁 Tip: Any Github repo with a 'template' folder can be used as a custom template:
 > > `skpm create <project-name> --template=<username>/<repository>`
