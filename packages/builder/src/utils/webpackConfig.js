@@ -58,6 +58,9 @@ export default function getWebpackConfig(
       new webpack.EnvironmentPlugin({
         NODE_ENV: 'development', // default to 'development'
       }),
+      new webpack.DefinePlugin({
+        'process.type': JSON.stringify('sketch'),
+      }),
     ]
     const rules = [babelLoader]
 

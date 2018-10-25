@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.11": ["[New] Add `process.type = 'sketch'`"],
     "0.5.10": [
       "[Improves] Update babel to babel@7 and add support for async/await"
     ],
