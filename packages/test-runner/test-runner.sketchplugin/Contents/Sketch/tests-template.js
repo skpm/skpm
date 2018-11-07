@@ -158,7 +158,6 @@ module.exports = function runTests(context) {
       .then(() => testResults)
   }
 
-  sketch.Async.createFiber()
   runUnitTests(testSuites)
     .then(results => {
       if (results.some(t => t.only)) {
@@ -167,11 +166,26 @@ module.exports = function runTests(context) {
       log(`${results.length} tests ran.`)
       log(`${results.filter(t => t.type === 'passed').length} tests succeeded.`)
       log(`${results.filter(t => t.type === 'failed').length} tests failed.`)
-      log(`json results: ${JSON.stringify(results)}`)
-      coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
+      try {
+        log(`json results: ${JSON.stringify(results)}`)
+      } catch (err) {
+        results.forEach(result => {
+          try {
+            JSON.stringify(result)
+          } catch (err2) {
+            log(`failed to stringify the result "${result.name}": ${err2}`)
+          }
+        })
+      }
+
+      // the tests could have finished but didn't properly clean up after them
+      // so we need to do it by cleaning the fibers
+      coscript.cleanupFibers()
     })
     .catch(err => {
-      coscript.cleanupFibers() // cleanup all the fibers to avoid getting stuck
+      // the tests could have finished but didn't properly clean up after them
+      // so we need to do it by cleaning the fibers
+      coscript.cleanupFibers()
       throw err
     })
 }
