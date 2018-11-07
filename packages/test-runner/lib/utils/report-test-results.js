@@ -18,7 +18,7 @@ function clearScreen(options) {
     }
   }
 
-  for (let i = 0; i < 3; i += 1) {
+  for (let i = 0; i < 2; i += 1) {
     readline.moveCursor(process.stdout, 0, -1)
     readline.clearLine(process.stdout, 0)
   }

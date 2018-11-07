@@ -40,7 +40,7 @@ module.exports = (skpmConfig, testFiles, argv) => config => {
           }
         ),
         watching: argv.watch,
-        testFiles: testFiles.length,
+        numberOfTestFiles: testFiles.length,
       })
     )
   }

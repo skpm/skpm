@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.5": ["[Fixed] Cleaning screen"],
     "0.3.4": [
       "[Improved] Add some information about what steps the runner is doing (building, running, parsing, etc.)",
       "[Improved] Don't fail completely if we can't stringify the result"
