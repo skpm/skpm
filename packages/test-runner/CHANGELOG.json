@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.4": [
+      "[Improved] Add some information about what steps the runner is doing (building, running, parsing, etc.)",
+      "[Improved] Don't fail completely if we can't stringify the result"
+    ],
     "0.3.3": [
       "[Improved] Make sure the injection runs before the other plugins"
     ],

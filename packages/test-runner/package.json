@@ -1,6 +1,6 @@
 {
   "name": "@skpm/test-runner",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A test runner for sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
