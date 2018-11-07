@@ -1,52 +1,51 @@
 #!/usr/bin/env node
 
-/* eslint-disable prefer-template, no-console, no-continue */
+/* eslint-disable prefer-template, no-continue */
 process.env.FORCE_COLOR = true // forces chalk to output colors
 const readline = require('readline')
 const chalk = require('chalk')
 const { formatExecError, formatTestError } = require('./print-error')
 
-// get the stdin
-const stdin = process.openStdin()
-let data = ''
-
-// clear the screen
-const watching = process.argv.find(
-  arg => arg.indexOf('--watch') === 0 || arg.indexOf('-w') === 0
-)
-
-if (!watching || !require('./is-interactive')) {
-  let numberOfTestFiles =
-    process.argv.find(arg => arg.indexOf('--testFiles=') === 0) || 0
-  if (numberOfTestFiles) {
-    numberOfTestFiles = parseInt(
-      numberOfTestFiles.replace('--testFiles=', ''),
-      10
-    )
+function clearScreen(options) {
+  if (!require('./is-interactive')) {
+    return
   }
 
-  for (let i = 0; i < numberOfTestFiles; i += 1) {
+  if (!options.watching) {
+    for (let i = 0; i < options.numberOfTestFiles; i += 1) {
+      readline.moveCursor(process.stdout, 0, -1)
+      readline.clearLine(process.stdout, 0)
+    }
+  }
+
+  for (let i = 0; i < 3; i += 1) {
     readline.moveCursor(process.stdout, 0, -1)
     readline.clearLine(process.stdout, 0)
   }
 }
 
-const indicators = {
-  skipped: chalk.yellow('  \u25CB'),
-  failed: chalk.red('  \u2715'),
-  passed: chalk.green('  \u2713'),
-}
+module.exports = async function reportTestResults(err, data, options) {
+  require('./update-build-status')('Parsing test results...')
 
-const JSON_RESULT_REGEX = /^json results: (.*)$/g
-async function reportData() {
+  const indicators = {
+    skipped: chalk.yellow('  \u25CB'),
+    failed: chalk.red('  \u2715'),
+    passed: chalk.green('  \u2713'),
+  }
+
+  const JSON_RESULT_REGEX = /^json results: (.*)$/g
+
   const lines = data.split('\n')
 
   const raw = lines.find(l => JSON_RESULT_REGEX.test(l))
   if (!raw) {
+    clearScreen(options)
     console.log(chalk.bgRed.white("Error: couldn't find the test results"))
     console.log(data)
     return
   }
+
+  const logs = []
   const json = JSON.parse(raw.replace('json results: ', ''))
   const suites = []
 
@@ -80,56 +79,58 @@ async function reportData() {
   for (let i = 0; i < suites.length; i += 1) {
     const suite = suites[i]
     if (suite.skipped === suite.tests.length) {
-      console.log(chalk.bgYellow.white(' SKIP ') + ' ' + chalk.dim(suite.name))
+      logs.push(chalk.bgYellow.white(' SKIP ') + ' ' + chalk.dim(suite.name))
 
       if (suite.logs.length) {
-        console.log('')
-        suite.logs.forEach(l => console.log(`  > ${l}`))
-        console.log('')
+        logs.push('')
+        suite.logs.forEach(l => logs.push(`  > ${l}`))
+        logs.push('')
       }
       continue
     }
 
     if (!suite.failed.length) {
-      console.log(chalk.bgGreen.white(' PASS ') + ' ' + chalk.dim(suite.name))
+      logs.push(chalk.bgGreen.white(' PASS ') + ' ' + chalk.dim(suite.name))
 
       if (suite.logs.length) {
-        console.log('')
-        suite.logs.forEach(l => console.log(`  > ${l}`))
-        console.log('')
+        logs.push('')
+        suite.logs.forEach(l => logs.push(`  > ${l}`))
+        logs.push('')
       }
       continue
     }
 
-    console.log('')
-    console.log(chalk.bgRed.white(' FAIL ') + ' ' + suite.name)
+    if (i !== 0) {
+      logs.push('')
+    }
+    logs.push(chalk.bgRed.white(' FAIL ') + ' ' + suite.name)
 
     if (suite.logs.length) {
-      console.log('')
-      suite.logs.forEach(l => console.log(`  > ${l}`))
+      logs.push('')
+      suite.logs.forEach(l => logs.push(`  > ${l}`))
     }
 
     for (let j = 0; j < suite.failed.length; j += 1) {
       const failure = suite.failed[j]
-      console.log('')
-      console.log(
+      logs.push('')
+      logs.push(
         await (failure.exec
           ? formatExecError(failure, {})
           : formatTestError(failure, {}))
       )
-      console.log('')
+      logs.push('')
     }
 
     suite.tests.forEach(test => {
-      console.log(indicators[test.type] + ' ' + chalk.dim(test.name))
+      logs.push(indicators[test.type] + ' ' + chalk.dim(test.name))
     })
   }
 
-  console.log('')
+  logs.push('')
   const passedSuites = suites.filter(s => !s.failed.length).length
   const skippedSuites = suites.filter(s => s.skipped === s.tests.length).length
   const failedSuites = suites.filter(s => s.failed.length).length
-  console.log(
+  logs.push(
     'Test Suites: ' +
       (passedSuites ? chalk.green(passedSuites + ' passed, ') : '') +
       (skippedSuites ? chalk.yellow(skippedSuites + ' skipped, ') : '') +
@@ -143,7 +144,7 @@ async function reportData() {
   )
   const skippedTests = suites.reduce((prev, s) => prev + s.skipped, 0)
   const failedTests = suites.reduce((prev, s) => prev + s.failed.length, 0)
-  console.log(
+  logs.push(
     'Tests: ' +
       (passedTests ? chalk.green(passedTests + ' passed, ') : '') +
       (skippedTests ? chalk.yellow(skippedTests + ' skipped, ') : '') +
@@ -151,9 +152,8 @@ async function reportData() {
       (passedTests + failedTests) +
       ' total'
   )
-}
+  logs.push('')
 
-stdin.on('data', chunk => {
-  data += chunk
-})
-stdin.on('end', reportData)
+  clearScreen(options)
+  console.log(logs.join('\n'))
+}

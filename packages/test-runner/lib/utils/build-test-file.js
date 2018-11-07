@@ -32,7 +32,8 @@ function findAllTestFiles(_inputDir, _dir, options) {
       }
       if (fs.statSync(fullPath).isDirectory()) {
         return prev.concat(recurse(inputDir, fullPath, options))
-      } else if (options.testRegex.test(relativePath)) {
+      }
+      if (options.testRegex.test(relativePath)) {
         let name = file.split('/')
         name = name[name.length - 1]
         name = name.replace('.js', '').replace('.test', '')

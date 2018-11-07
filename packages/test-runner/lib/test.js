@@ -70,6 +70,8 @@ const testFile = path.join(
 let latestLog = ''
 const RESULT_REGEX = /^Tests: ([0-9]+ passed, )?([0-9]+ skipped, )?([0-9]+ failed, )?[0-9]+ total/gm
 
+console.log(chalk.dim('Looking for the test files...'))
+
 // hook into process.stdout
 process.stdout.write = (stub => (...args) => {
   stub.apply(process.stdout, args)
@@ -127,8 +129,6 @@ function build() {
     isInteractive && process.stdout.write(CLEAR)
   }
 
-  console.log(chalk.dim('Building the test plugin...'))
-
   const testFiles = buildTestFile(process.cwd(), testFile, skpmConfig.test)
 
   if (!argv.buildOnly) {
@@ -142,7 +142,11 @@ function build() {
     testFiles.forEach(f =>
       console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
     )
+
+    console.log('')
   }
+
+  console.log(chalk.dim('Building the test plugin...'))
 
   generateWebpackConfig({}, '', '', skpmConfig)(testFile, [], ['onRun'])
     .then(updateWebpackConfig(skpmConfig, testFiles, argv))

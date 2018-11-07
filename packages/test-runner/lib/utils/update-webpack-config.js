@@ -2,9 +2,12 @@
 const path = require('path')
 const webpack = require('webpack')
 const chalk = require('chalk')
-const WebpackShellPlugin = require('@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin')
+const {
+  sketchtoolRunCommand,
+} = require('@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin')
 const { CLEAR } = require('./constants')
 const findLoader = require('./loader-hacks/find-loader')
+const WebpackTestRunner = require('./webpack-test-runner')
 
 const SUPPORTED_LOADERS = ['babel-loader', 'awesome-typescript-loader']
 
@@ -26,24 +29,18 @@ module.exports = (skpmConfig, testFiles, argv) => config => {
   if (!argv.buildOnly) {
     config.plugins.push(
       // eslint-disable-next-line
-      new WebpackShellPlugin.default({
-        script: WebpackShellPlugin.sketchtoolRunCommand(
+      new WebpackTestRunner({
+        script: sketchtoolRunCommand(
           path.resolve(__dirname, '../../test-runner.sketchplugin'),
           'plugin-tests',
           {
             app: argv.app,
             withoutActivating: true,
             handleError: false,
-            pre:
-              argv.watch && require('./is-interactive')
-                ? `printf "${CLEAR}" &&`
-                : '',
-            post: `| node "${path.join(
-              __dirname,
-              './report-test-results.js'
-            )}" --testFiles=${testFiles.length}${argv.watch ? ' --watch' : ''}`,
           }
         ),
+        watching: argv.watch,
+        testFiles: testFiles.length,
       })
     )
   }
@@ -55,6 +52,8 @@ module.exports = (skpmConfig, testFiles, argv) => config => {
         testFiles.forEach(f =>
           console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
         )
+        console.log('')
+        console.log(chalk.dim('Building the test plugin...'))
         return Promise.resolve()
       })
     },
