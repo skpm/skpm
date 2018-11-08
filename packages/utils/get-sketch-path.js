@@ -64,8 +64,8 @@ module.exports = function getSketchPath(app) {
   const useLatest = app === 'latest'
 
   // if .skpmrc specify a non-default path, use it
-  if (!app && getConfig().sketchApp !== '/Applications/Sketch.app') {
-    appPath = getConfig().sketchApp
+  if (!app && getConfig().sketchPath !== '/Applications/Sketch.app') {
+    appPath = getConfig().sketchPath
   }
 
   // start by trying to find a xcode build
@@ -88,7 +88,7 @@ module.exports = function getSketchPath(app) {
 
   // resort to use a hardcoded path
   if (!appPath) {
-    appPath = getConfig().sketchApp
+    appPath = getConfig().sketchPath
   }
 
   if (!fs.existsSync(appPath)) {
