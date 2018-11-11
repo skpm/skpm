@@ -11,11 +11,9 @@ function clearScreen(options) {
     return
   }
 
-  if (!options.watching) {
-    for (let i = 0; i < options.numberOfTestFiles; i += 1) {
-      readline.moveCursor(process.stdout, 0, -1)
-      readline.clearLine(process.stdout, 0)
-    }
+  for (let i = 0; i < options.numberOfTestFiles; i += 1) {
+    readline.moveCursor(process.stdout, 0, -1)
+    readline.clearLine(process.stdout, 0)
   }
 
   for (let i = 0; i < 2; i += 1) {
