@@ -17,8 +17,9 @@ checkVersion()
 
 updateNotifier({
   pkg,
+}).notify({
   isGlobal: true,
-}).notify()
+})
 
 yargs
   .command(create)

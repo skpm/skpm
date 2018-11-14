@@ -1,5 +1,5 @@
 {
-  "unreleased": [],
+  "unreleased": ["[Fixed] Update notification will now show the -g option"],
   "releases": {
     "1.1.9": ["[Fixed] Fix log tailing ending while it shouldn't (#187)"],
     "1.1.8": [
