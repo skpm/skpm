@@ -7,6 +7,7 @@ const webpack = require('webpack')
 const chokidar = require('chokidar')
 const stripAnsi = require('strip-ansi')
 const getSkpmConfigFromPackageJSON = require('@skpm/internal-utils/skpm-config')
+const replaceArraysByLastItem = require('@skpm/internal-utils/replace-arrays-by-last-item')
 const generateWebpackConfig = require('@skpm/builder/lib/utils/webpackConfig')
   .default
 const { buildTestFile } = require('./utils/build-test-file')
@@ -31,6 +32,8 @@ const { argv } = yargs
   })
   .help()
   .strict()
+
+replaceArraysByLastItem(argv, ['app', 'watch', 'build-only'])
 
 let packageJSON
 try {

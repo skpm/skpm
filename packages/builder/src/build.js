@@ -9,6 +9,7 @@ import chalk from 'chalk'
 import globby from 'globby'
 import { exec } from 'child_process'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
+import replaceArraysByLastItem from '@skpm/internal-utils/replace-arrays-by-last-item'
 import generateWebpackConfig from './utils/webpackConfig'
 
 const buildEmojis = ['🔧', '🔨', '⚒', '🛠', '⛏', '🔩']
@@ -44,6 +45,8 @@ const { argv } = yargs
   })
   .help()
   .strict()
+
+replaceArraysByLastItem(argv, ['watch', 'quiet', 'run', 'app', 'manifest'])
 
 let packageJSON
 try {

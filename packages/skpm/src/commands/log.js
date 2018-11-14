@@ -1,5 +1,6 @@
 import childProcess from 'child_process'
 import { exec } from '@skpm/internal-utils/exec'
+import replaceArraysByLastItem from '@skpm/internal-utils/replace-arrays-by-last-item'
 import asyncCommand from '../utils/async-command'
 import { error } from '../utils'
 
@@ -34,6 +35,8 @@ export default asyncCommand({
   },
 
   handler(argv, done) {
+    replaceArraysByLastItem(argv, ['f', 'number'])
+
     const args = []
 
     if (argv.f) {

@@ -6,6 +6,7 @@ import open from 'opn'
 import { exec } from '@skpm/internal-utils/exec'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import extractRepository from '@skpm/internal-utils/extract-repository'
+import replaceArraysByLastItem from '@skpm/internal-utils/replace-arrays-by-last-item'
 import auth from '../utils/auth'
 import github from '../utils/github'
 import asyncCommand from '../utils/async-command'
@@ -74,6 +75,14 @@ export default asyncCommand({
   },
 
   async handler(argv) {
+    replaceArraysByLastItem(argv, [
+      'repoUrl',
+      'skipRelease',
+      'openRelease',
+      'skipRegistry',
+      'downloadUrl',
+    ])
+
     let packageJSON
     try {
       packageJSON = require(path.join(process.cwd(), 'package.json'))

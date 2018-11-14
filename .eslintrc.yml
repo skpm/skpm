@@ -19,3 +19,4 @@ rules:
   global-require: 0
   no-console: 0
   no-not-accumulator-reassign/no-not-accumulator-reassign: [2, ['reduce'], {props: true}]
+  import/no-unresolved: [2, { ignore: ['^sketch$'] }]

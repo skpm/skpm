@@ -522,10 +522,10 @@ const matchers = {
           (hasEndProp
             ? `Received:\n  ${printReceived(result.value)}`
             : traversedPath
-              ? `Received:\n  ${RECEIVED_COLOR(
-                  'object'
-                )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
-              : '')
+            ? `Received:\n  ${RECEIVED_COLOR(
+                'object'
+              )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+            : '')
 
     if (pass === undefined) {
       throw new Error('pass must be initialized')

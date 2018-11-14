@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
-    "@skpm/internal-utils": "^0.1.12",
+    "@skpm/internal-utils": "^0.1.13",
     "chalk": "^2.4.1",
     "cross-spawn-promise": "^0.10.1",
     "fs.promised": "^3.0.0",

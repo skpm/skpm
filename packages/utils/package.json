@@ -1,6 +1,6 @@
 {
   "name": "@skpm/internal-utils",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "A set of functions used across skpm",
   "main": "index.js",
   "publishConfig": {

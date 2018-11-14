@@ -6,6 +6,7 @@ import { green } from 'chalk'
 import { resolve } from 'path'
 import { prompt } from 'inquirer'
 import checkDevMode from '@skpm/internal-utils/check-dev-mode'
+import replaceArraysByLastItem from '@skpm/internal-utils/replace-arrays-by-last-item'
 import asyncCommand from '../utils/async-command'
 import getGitUser from '../utils/get-git-user'
 import { info, isDir, error, warn } from '../utils'
@@ -53,6 +54,15 @@ export default asyncCommand({
   },
 
   async handler(argv) {
+    replaceArraysByLastItem(argv, [
+      'cwd',
+      'name',
+      'template',
+      'force',
+      'git',
+      'install',
+    ])
+
     // Prompt if incomplete data
     if (!argv.dest) {
       warn('Insufficient command arguments! Prompting...')
