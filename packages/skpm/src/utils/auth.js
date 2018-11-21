@@ -1,7 +1,8 @@
-import keytar from 'keytar'
+import keychain from 'keychain'
 import { error } from '.'
 
-const tokenName = 'Github.com API Token'
+const service = 'Github.com API Token'
+const account = 'github.com'
 
 export default {
   // Get the Github API token from the keychain.
@@ -9,7 +10,19 @@ export default {
     if (process.env.GITHUB_ACCESS_TOKEN) {
       return Promise.resolve(process.env.GITHUB_ACCESS_TOKEN)
     }
-    return keytar.findPassword(tokenName).then(token => {
+    return new Promise((resolve, reject) => {
+      keychain.getPassword({ service, account }, (err, token) => {
+        if (err) {
+          if (err.type === 'PasswordNotFoundError') {
+            resolve()
+          } else {
+            reject(err)
+          }
+        } else {
+          resolve(token)
+        }
+      })
+    }).then(token => {
       if (!token) {
         error(
           'No Github API token found in keychain\n' +
@@ -25,11 +38,31 @@ export default {
   // Save the given token to the keychain.
   //
   // token - A string token to save.
-  saveToken(token) {
-    keytar.setPassword(tokenName, 'github.com', token)
+  saveToken(password) {
+    return new Promise((resolve, reject) => {
+      keychain.setPassword({ service, account, password }, err => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
   },
 
   deleteToken() {
-    keytar.deletePassword(tokenName, 'github.com')
+    return new Promise((resolve, reject) => {
+      keychain.deletePassword({ service, account }, err => {
+        if (err) {
+          if (err.type === 'PasswordNotFoundError') {
+            resolve()
+          } else {
+            reject(err)
+          }
+        } else {
+          resolve()
+        }
+      })
+    })
   },
 }
