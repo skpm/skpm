@@ -1,6 +1,10 @@
 {
-  "unreleased": ["[Fixed] Update notification will now show the -g option"],
+  "unreleased": [],
   "releases": {
+    "1.1.10": [
+      "[Improved] Use keychain instead of keytar (#192)",
+      "[Fixed] Update notification will now show the -g option"
+    ],
     "1.1.9": ["[Fixed] Fix log tailing ending while it shouldn't (#187)"],
     "1.1.8": [
       "[Improved] `skpm log` will now print logs from all the Sketch variants (normal, beta, xcode)",
