@@ -55,18 +55,19 @@ export default asyncCommand({
       })
     }
 
-    let count = 0
-    function checkEnd() {
-      count += 1
-      if (count >= logLocations.length) {
+    const count = logLocations.reduce((prev, logsLocation) => {
+      prev[logsLocation] = 1
+      return prev
+    }, {})
+    function checkEnd(logsLocation) {
+      count[logsLocation] -= 1
+      if (Object.keys(count).every(k => count[k] <= 0)) {
         killAll()
         done()
       }
     }
 
     function listenToLogs(logsLocation) {
-      let restarted = false
-
       const child = childProcess.spawn('tail', [...args, logsLocation], {
         cwd: process.cwd(),
       })
@@ -85,27 +86,29 @@ export default asyncCommand({
         child.stderr.on('data', data => {
           const dataString = String(data)
           if (dataString.indexOf('No such file or directory')) {
-            restarted = true
-            return exec(`touch "${logsLocation}"`)
-              .then(() => {
-                this.handler(argv, done)
-              })
-              .catch(err => {
-                if (err.message.indexOf('No such file or directory')) {
-                  return
-                }
-                error('while reading the logs')
-                done(err)
-              })
+            count[logsLocation] += 1
+            // touch the file so that we can listen to it
+            return (
+              exec(`touch "${logsLocation}"`)
+                // restart the listening for this log
+                .then(() => listenToLogs(logsLocation))
+                .catch(err => {
+                  // if we can't create the file it means that the variant is not present
+                  if (err.message.indexOf('No such file or directory')) {
+                    checkEnd(logsLocation)
+                    return
+                  }
+                  error('while reading the logs')
+                  done(err)
+                })
+            )
           }
           return console.error(String(data))
         })
       }
 
       child.on('exit', () => {
-        if (!restarted) {
-          checkEnd()
-        }
+        checkEnd(logsLocation)
       })
 
       child.on('error', err => {
