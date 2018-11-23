@@ -52,7 +52,6 @@ skpm create <plugin-name>
 > * [`skpm/with-prettier`](https://github.com/skpm/with-prettier) - A plugin setup featuring linting with ESLint and code formatting with Prettier.
 > * [`skpm/with-datasupplier`](https://github.com/skpm/with-datasupplier) - A template to create DataSupplier plugins (check [our blog](https://blog.sketchapp.com/do-more-with-data-2b765e870e4f) for more info)
 > * [`skpm/with-webview`](https://github.com/skpm/with-webview) - A template to create plugins displaying some rich UI in a WebView (check [sketch-module-web-view](https://github.com/skpm/sketch-module-web-view) for more info)
-
 >
 > > 💁 Tip: Any Github repo with a 'template' folder can be used as a custom template:
 > > `skpm create <project-name> --template=<username>/<repository>`
