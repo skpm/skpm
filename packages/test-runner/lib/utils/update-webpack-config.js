@@ -2,6 +2,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const chalk = require('chalk')
+const { logProgress } = require('progress-estimator')
 const {
   sketchtoolRunCommand,
 } = require('@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin')
@@ -11,7 +12,39 @@ const WebpackTestRunner = require('./webpack-test-runner')
 
 const SUPPORTED_LOADERS = ['babel-loader', 'awesome-typescript-loader']
 
-module.exports = (skpmConfig, testFiles, argv) => config => {
+function logCompilation(config) {
+  let resolveBuildingLog = null
+  function storePromiseResolve() {
+    if (resolveBuildingLog) {
+      resolveBuildingLog()
+    }
+    return new Promise(resolve => {
+      resolveBuildingLog = resolve
+    })
+  }
+
+  config.plugins.push({
+    apply(compiler) {
+      compiler.hooks.beforeCompile.tapPromise('start log building', () => {
+        logProgress(storePromiseResolve(), 'Compiling the test plugin')
+        return Promise.resolve()
+      })
+    },
+  })
+
+  config.plugins.push({
+    apply(compiler) {
+      compiler.hooks.afterCompile.tapPromise('finish log building', () => {
+        if (resolveBuildingLog) {
+          resolveBuildingLog()
+        }
+        return Promise.resolve()
+      })
+    },
+  })
+}
+
+module.exports = (skpmConfig, getTestFiles, argv) => config => {
   config.output.filename = 'compiled-tests.js'
   config.output.path = path.resolve(
     __dirname,
@@ -40,7 +73,7 @@ module.exports = (skpmConfig, testFiles, argv) => config => {
           }
         ),
         watching: argv.watch,
-        numberOfTestFiles: testFiles.length,
+        getTestFiles,
       })
     )
   }
@@ -49,15 +82,16 @@ module.exports = (skpmConfig, testFiles, argv) => config => {
     apply(compiler) {
       compiler.hooks.watchRun.tapPromise('Clean up screen', () => {
         process.stdout.write(CLEAR)
-        testFiles.forEach(f =>
+        getTestFiles().forEach(f =>
           console.log(`${chalk.bgYellow.white(' RUNS ')} ${chalk.dim(f.name)}`)
         )
         console.log('')
-        console.log(chalk.dim('Building the test plugin...'))
         return Promise.resolve()
       })
     },
   })
+
+  logCompilation(config)
 
   let hacked = false
 

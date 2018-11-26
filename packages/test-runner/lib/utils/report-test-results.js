@@ -2,29 +2,10 @@
 
 /* eslint-disable prefer-template, no-continue */
 process.env.FORCE_COLOR = true // forces chalk to output colors
-const readline = require('readline')
 const chalk = require('chalk')
 const { formatExecError, formatTestError } = require('./print-error')
 
-function clearScreen(options) {
-  if (!require('./is-interactive')) {
-    return
-  }
-
-  for (let i = 0; i < options.numberOfTestFiles; i += 1) {
-    readline.moveCursor(process.stdout, 0, -1)
-    readline.clearLine(process.stdout, 0)
-  }
-
-  for (let i = 0; i < 2; i += 1) {
-    readline.moveCursor(process.stdout, 0, -1)
-    readline.clearLine(process.stdout, 0)
-  }
-}
-
-module.exports = async function reportTestResults(err, data, options) {
-  require('./update-build-status')('Parsing test results...')
-
+module.exports = async function reportTestResults(err, data) {
   const indicators = {
     skipped: chalk.yellow('  \u25CB'),
     failed: chalk.red('  \u2715'),
@@ -37,10 +18,9 @@ module.exports = async function reportTestResults(err, data, options) {
 
   const raw = lines.find(l => JSON_RESULT_REGEX.test(l))
   if (!raw) {
-    clearScreen(options)
-    console.log(chalk.bgRed.white("Error: couldn't find the test results"))
-    console.log(data)
-    return
+    const error = new Error("Error: couldn't find the test results")
+    error.data = data
+    throw error
   }
 
   const logs = []
@@ -152,6 +132,5 @@ module.exports = async function reportTestResults(err, data, options) {
   )
   logs.push('')
 
-  clearScreen(options)
-  console.log(logs.join('\n'))
+  return logs.join('\n')
 }

@@ -1,6 +1,6 @@
 {
   "name": "@skpm/test-runner",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "A test runner for sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -18,7 +18,7 @@
     "expect"
   ],
   "scripts": {
-    "prepare": "./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js || true && rm ./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js.map || true && rm ./test-runner.sketchplugin/Contents/Sketch/generated-tests.js || true"
+    "prepare": "./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js || true && rm ./test-runner.sketchplugin/Contents/Sketch/compiled-tests.js.map || true && rm ./test-runner.sketchplugin/Contents/Sketch/generated-tests.js || true && rm -rf ./progress-estimator || true"
   },
   "repository": {
     "type": "git",
@@ -46,6 +46,7 @@
     "globby": "^8.0.1",
     "is-ci": "^1.0.10",
     "minimatch": "^3.0.4",
+    "progress-estimator": "^0.1.2",
     "sketch-utils": "^0.1.2",
     "source-map": "^0.7.2",
     "strip-ansi": "^4.0.0",

@@ -5,8 +5,7 @@ const yargs = require('yargs')
 const chalk = require('chalk')
 const webpack = require('webpack')
 const chokidar = require('chokidar')
-const stripAnsi = require('strip-ansi')
-const getSkpmConfigFromPackageJSON = require('@skpm/internal-utils/skpm-config')
+const { logProgress, configure } = require('progress-estimator')
 const replaceArraysByLastItem = require('@skpm/internal-utils/replace-arrays-by-last-item')
 const generateWebpackConfig = require('@skpm/builder/lib/utils/webpackConfig')
   .default
@@ -14,6 +13,12 @@ const { buildTestFile } = require('./utils/build-test-file')
 const updateWebpackConfig = require('./utils/update-webpack-config')
 const { CLEAR, KEYS } = require('./utils/constants')
 const isInteractive = require('./utils/is-interactive')
+const didTheLogFailed = require('./utils/hook-logs')
+const getSkpmConfig = require('./utils/get-skpm-config')
+
+configure({
+  storagePath: path.join(__dirname, '../.progress-estimator'),
+})
 
 const { argv } = yargs
   .option('app', {
@@ -35,104 +40,65 @@ const { argv } = yargs
 
 replaceArraysByLastItem(argv, ['app', 'watch', 'build-only'])
 
-let packageJSON
-try {
-  packageJSON = require(path.join(process.cwd(), 'package.json'))
-} catch (err) {
-  console.error(
-    `${chalk.red('error')} Error while reading the package.json file`
-  )
-  console.error(err)
-  process.exit(1)
-}
-
-const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
-
-if (!skpmConfig.test) {
-  skpmConfig.test = {}
-}
-
-if (!skpmConfig.test.testRegex) {
-  // https://facebook.github.io/jest/docs/en/configuration.html#testregex-string
-  skpmConfig.test.testRegex = '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$'
-}
-
-skpmConfig.test.testRegex = new RegExp(skpmConfig.test.testRegex)
-
-if (!skpmConfig.test.ignore) {
-  skpmConfig.test.ignore = []
-}
-
-skpmConfig.test.ignore.push('/.git')
+const skpmConfig = getSkpmConfig()
 
 const testFile = path.join(
   __dirname,
   '../test-runner.sketchplugin/Contents/Sketch/generated-tests.js'
 )
 
-let latestLog = ''
-const RESULT_REGEX = /^Tests: ([0-9]+ passed, )?([0-9]+ skipped, )?([0-9]+ failed, )?[0-9]+ total/gm
-
-console.log(chalk.dim('Looking for the test files...'))
-
-// hook into process.stdout
-process.stdout.write = (stub => (...args) => {
-  stub.apply(process.stdout, args)
-  latestLog += stripAnsi(args[0])
-})(process.stdout.write)
-
-function didTheLogFailed() {
-  const lines = latestLog.split('\n')
-  latestLog = ''
-
-  const result = lines.find(l => RESULT_REGEX.test(l))
-
-  if (result) {
-    return result.indexOf('failed') !== -1
-  }
-
-  if (lines.some(l => l === "Error: couldn't find the test results")) {
-    return true
-  }
-
-  // couldn't find the result /shrug
-  return false
-}
-
-function handleEndOfBuild(err, res) {
-  if (err) {
-    console.error(err)
-    if (!argv.watch) process.exit(1)
-  }
-  if (res.hasErrors()) {
-    res.toJson().errors.forEach(error => {
-      console.error(error)
-    })
-    if (!argv.watch) process.exit(1)
-  }
-
-  if (!argv.watch) {
-    // checking if the tests have failed
-    process.exit(didTheLogFailed() ? 1 : 0)
-  }
-}
-
 // building the test plugin, eg webpack is not started yet
-let building = false
-// we are closing the webpack watcher
-let closing = false
-// callback to run after building the plugin, just bail early
-let runAfterBuild = null
-// reference to the webpack watcher
-let webpackWatcher = null
+let buildTimestamp = null
+// the list of the test files
+let previousTestFiles = null
 
-function build() {
-  building = true
-  if (argv.watch && isInteractive) {
-    isInteractive && process.stdout.write(CLEAR)
+function getTestFiles() {
+  return previousTestFiles
+}
+
+const build = async () => {
+  buildTimestamp = Date.now()
+  const currentBuildTimestamp = buildTimestamp
+
+  const handleEndOfBuild = (err, res) => {
+    if (currentBuildTimestamp !== buildTimestamp) {
+      // if we restarted a build, just do nothing
+      return
+    }
+    if (err) {
+      console.error(err)
+      if (!argv.watch) process.exit(1)
+    }
+    if (res.hasErrors()) {
+      res.toJson().errors.forEach(error => {
+        console.error(error)
+      })
+      if (!argv.watch) process.exit(1)
+    }
+
+    if (!argv.watch) {
+      // checking if the tests have failed
+      process.exit(didTheLogFailed() ? 1 : 0)
+    }
   }
 
-  const testFiles = buildTestFile(process.cwd(), testFile, skpmConfig.test)
+  if (argv.watch && isInteractive) {
+    process.stdout.write(CLEAR)
+  }
+
+  let testFiles = await logProgress(
+    buildTestFile(process.cwd(), testFile, skpmConfig.test),
+    'Looking for the test files'
+  )
+
+  testFiles = testFiles.sort((a, b) => a.name > b.name)
+
+  if (currentBuildTimestamp !== buildTimestamp) {
+    // if we restarted a build, just do nothing
+    return
+  }
+
+  previousTestFiles = testFiles
 
   if (!argv.buildOnly) {
     if (isInteractive) {
@@ -149,54 +115,47 @@ function build() {
     console.log('')
   }
 
-  console.log(chalk.dim('Building the test plugin...'))
+  const buildPlugin = async () => {
+    let webpackConfig = await generateWebpackConfig({}, '', '', skpmConfig)(
+      testFile,
+      [],
+      ['onRun']
+    )
+    webpackConfig = updateWebpackConfig(skpmConfig, getTestFiles, argv)(
+      webpackConfig
+    )
 
-  generateWebpackConfig({}, '', '', skpmConfig)(testFile, [], ['onRun'])
-    .then(updateWebpackConfig(skpmConfig, testFiles, argv))
-    .then(webpackConfig => {
-      building = false
-      // bail early if we already have a change
-      if (runAfterBuild) {
-        const callback = runAfterBuild
-        runAfterBuild = null
-        callback()
-        return
-      }
+    if (currentBuildTimestamp !== buildTimestamp) {
+      // if we restarted a build, just do nothing
+      return
+    }
 
-      const compiler = webpack(webpackConfig)
+    const compiler = webpack(webpackConfig)
 
-      if (argv.watch) {
-        webpackWatcher = compiler.watch({}, handleEndOfBuild)
-      } else {
-        compiler.run(handleEndOfBuild)
-      }
-    })
-    .catch(err => {
-      console.error(err)
-      process.exit(1)
-    })
+    if (argv.watch) {
+      compiler.watch({}, handleEndOfBuild)
+    } else {
+      compiler.run(handleEndOfBuild)
+    }
+  }
+
+  try {
+    await logProgress(buildPlugin(), 'Building the test plugin source')
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
+  }
 }
 
+// called when we have a new file or a deleted file
+// we want to rebuild the test file
 function rebuild() {
-  if (closing) {
-    return
-  }
-  if (webpackWatcher) {
-    closing = true
-    // close the watcher and trigger a new build
-    webpackWatcher.close(() => {
-      closing = false
-      build()
-    })
-    return
-  }
-  if (building) {
-    // queue a new build to bail early
-    runAfterBuild = build
-    return
-  }
-  // we probably can't get in there but better safe than sorry
-  build()
+  logProgress(
+    buildTestFile(process.cwd(), testFile, skpmConfig.test),
+    'Looking for the test files'
+  ).then(testFiles => {
+    previousTestFiles = testFiles.sort((a, b) => a.name > b.name)
+  })
 }
 
 function reBuildIfNeeded(filePath) {
@@ -222,13 +181,11 @@ if (argv.watch) {
 
       // Abort test run
       if (
-        building &&
-        !runAfterBuild &&
         [KEYS.Q, KEYS.ENTER, KEYS.A, KEYS.O, KEYS.P, KEYS.T, KEYS.F].indexOf(
           key
         ) !== -1
       ) {
-        runAfterBuild = () => {}
+        buildTimestamp = null
         return
       }
 

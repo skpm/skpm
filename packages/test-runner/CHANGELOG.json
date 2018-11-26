@@ -1,6 +1,11 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.7": [
+      "[Improved] More async stuff",
+      "[Improved] Add time estimation for each steps",
+      "[Improved] Just create one instance of webpack instead of one everytime the test files change"
+    ],
     "0.3.6": ["[Fixed] Cleaning screen in watch mode"],
     "0.3.5": ["[Fixed] Cleaning screen"],
     "0.3.4": [
