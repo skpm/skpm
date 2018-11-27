@@ -5,7 +5,7 @@ const yargs = require('yargs')
 const chalk = require('chalk')
 const webpack = require('webpack')
 const chokidar = require('chokidar')
-const { logProgress, configure } = require('progress-estimator')
+const createLogger = require('progress-estimator')
 const replaceArraysByLastItem = require('@skpm/internal-utils/replace-arrays-by-last-item')
 const generateWebpackConfig = require('@skpm/builder/lib/utils/webpackConfig')
   .default
@@ -16,7 +16,7 @@ const isInteractive = require('./utils/is-interactive')
 const didTheLogFailed = require('./utils/hook-logs')
 const getSkpmConfig = require('./utils/get-skpm-config')
 
-configure({
+const logProgress = createLogger({
   storagePath: path.join(__dirname, '../.progress-estimator'),
 })
 
@@ -121,9 +121,12 @@ const build = async () => {
       [],
       ['onRun']
     )
-    webpackConfig = updateWebpackConfig(skpmConfig, getTestFiles, argv)(
-      webpackConfig
-    )
+    webpackConfig = updateWebpackConfig(
+      skpmConfig,
+      getTestFiles,
+      argv,
+      logProgress
+    )(webpackConfig)
 
     if (currentBuildTimestamp !== buildTimestamp) {
       // if we restarted a build, just do nothing

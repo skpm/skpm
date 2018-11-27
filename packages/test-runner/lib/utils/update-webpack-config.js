@@ -2,7 +2,6 @@
 const path = require('path')
 const webpack = require('webpack')
 const chalk = require('chalk')
-const { logProgress } = require('progress-estimator')
 const {
   sketchtoolRunCommand,
 } = require('@skpm/builder/lib/utils/webpackCommandPlugin/webpackShellPlugin')
@@ -12,7 +11,7 @@ const WebpackTestRunner = require('./webpack-test-runner')
 
 const SUPPORTED_LOADERS = ['babel-loader', 'awesome-typescript-loader']
 
-function logCompilation(config) {
+function logCompilation(config, logProgress) {
   let resolveBuildingLog = null
   function storePromiseResolve() {
     if (resolveBuildingLog) {
@@ -44,7 +43,7 @@ function logCompilation(config) {
   })
 }
 
-module.exports = (skpmConfig, getTestFiles, argv) => config => {
+module.exports = (skpmConfig, getTestFiles, argv, logProgress) => config => {
   config.output.filename = 'compiled-tests.js'
   config.output.path = path.resolve(
     __dirname,
@@ -74,6 +73,7 @@ module.exports = (skpmConfig, getTestFiles, argv) => config => {
         ),
         watching: argv.watch,
         getTestFiles,
+        logProgress,
       })
     )
   }
@@ -91,7 +91,7 @@ module.exports = (skpmConfig, getTestFiles, argv) => config => {
     },
   })
 
-  logCompilation(config)
+  logCompilation(config, logProgress)
 
   let hacked = false
 

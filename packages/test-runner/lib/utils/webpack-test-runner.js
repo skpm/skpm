@@ -1,7 +1,6 @@
 process.env.FORCE_COLOR = true // forces chalk to output colors
 const readline = require('readline')
 const chalk = require('chalk')
-const { logProgress } = require('progress-estimator')
 const { exec } = require('@skpm/internal-utils/exec')
 
 function clearScreen(numberOfTestFiles) {
@@ -35,12 +34,13 @@ module.exports = function WebpackShellPlugin(options) {
           return Promise.resolve()
         }
 
-        return logProgress(
-          exec(options.script, { shell: '/bin/bash' }),
-          'Running the tests'
-        )
+        return options
+          .logProgress(
+            exec(options.script, { shell: '/bin/bash' }),
+            'Running the tests'
+          )
           .then(res =>
-            logProgress(
+            options.logProgress(
               require('./report-test-results')(res.stderr, res.stdout),
               'Parsing the test results'
             )
