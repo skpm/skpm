@@ -133,6 +133,7 @@ export default function getWebpackConfig(
       },
       resolve: {
         mainFields: ['sketch', 'browser', 'module', 'main'],
+        aliasFields: ['sketch', 'browser'],
         extensions: ['.sketch.js', '.js'],
         modules: [
           'node_modules',
