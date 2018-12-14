@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.13": ["[Improved] The `sketch` field can be used to alias multiple files (Thanks @Andarist)"],
     "0.5.12": ["[New] Resolve the `sketch` field in priority (Thanks @Andarist)"],
     "0.5.11": ["[New] Add `process.type = 'sketch'`"],
     "0.5.10": [
