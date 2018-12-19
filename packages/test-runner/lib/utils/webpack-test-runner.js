@@ -36,7 +36,10 @@ module.exports = function WebpackShellPlugin(options) {
 
         return options
           .logProgress(
-            exec(options.script, { shell: '/bin/bash' }),
+            exec(options.script, {
+              shell: '/bin/bash',
+              maxBuffer: 1024 * 1000,
+            }),
             'Running the tests'
           )
           .then(res =>

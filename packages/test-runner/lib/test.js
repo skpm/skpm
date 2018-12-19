@@ -69,7 +69,7 @@ const build = async () => {
       console.error(err)
       if (!argv.watch) process.exit(1)
     }
-    if (res.hasErrors()) {
+    if (res && res.hasErrors()) {
       res.toJson().errors.forEach(error => {
         console.error(error)
       })

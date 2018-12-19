@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.8": [
+      "[Fixed] An unhandled promise rejection when the test failed",
+      "[Improved] Increase the buffer size for the tests"
+    ],
     "0.3.7": [
       "[Improved] More async stuff",
       "[Improved] Add time estimation for each steps",
