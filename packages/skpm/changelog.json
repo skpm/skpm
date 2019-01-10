@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.11": [
+      "[Improved] Ask to confirm before adding the plugin to the registry"
+    ],
     "1.1.10": [
       "[Improved] Use keychain instead of keytar (#192)",
       "[Fixed] Update notification will now show the -g option"
