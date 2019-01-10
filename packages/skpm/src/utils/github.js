@@ -15,6 +15,31 @@ function options(token, url, method) {
   }
 }
 
+function getRegistryRepo(token, skpmConfig, repo) {
+  const [, name] = repo.split('/')
+  return request(
+    options(
+      token,
+      'https://api.github.com/repos/sketchplugins/plugin-directory/contents/plugins.json'
+    )
+  )
+    .then(data => {
+      const file = JSON.parse(data)
+      const buf = Buffer.from(file.content, 'base64')
+      return {
+        plugins: JSON.parse(buf.toString('utf-8')),
+        file,
+      }
+    })
+    .then(res => ({
+      existingPlugin: res.plugins.find(
+        plugin => plugin.title === skpmConfig.name || name === plugin.name
+      ),
+      plugins: res.plugins,
+      file: res.file,
+    }))
+}
+
 export default {
   getUser(token) {
     return request(options(token, 'https://api.github.com/user'))
@@ -82,6 +107,9 @@ export default {
     }
     return request(opts)
   },
+
+  getRegistryRepo,
+
   // get the upstream plugins.json
   // if we haven't added the plugin yet
   // get or create a fork
@@ -90,33 +118,8 @@ export default {
   // branch
   // update origin plugins.json
   // open PR
-  addPluginToPluginsRegistryRepo(token, skpmConfig, repo) {
-    const owner = repo.split('/')[0]
-    const name = repo.split('/')[1]
-
-    function getCurrentUpstreamPluginJSON() {
-      return request(
-        options(
-          token,
-          'https://api.github.com/repos/sketchplugins/plugin-directory/contents/plugins.json'
-        )
-      )
-        .then(data => {
-          const file = JSON.parse(data)
-          const buf = Buffer.from(file.content, 'base64')
-          return {
-            plugins: JSON.parse(buf.toString('utf-8')),
-            file,
-          }
-        })
-        .then(res => ({
-          existingPlugin: res.plugins.find(
-            plugin => plugin.title === skpmConfig.name || name === plugin.name
-          ),
-          plugins: res.plugins,
-          file: res.file,
-        }))
-    }
+  addPluginToPluginsRegistryRepo(token, skpmConfig, repo, upstreamPluginJSON) {
+    const [owner, name] = repo.split('/')
 
     function deleteExistingBranch(fork) {
       const opts = options(
@@ -288,13 +291,8 @@ Hope you are having a great day :)
       return request(prOptions)
     }
 
-    return getCurrentUpstreamPluginJSON().then(res => {
-      if (!res.existingPlugin) {
-        return forkUpstream(res)
-          .then(updatePluginJSON)
-          .then(openPR)
-      }
-      return 'already added'
-    })
+    return forkUpstream(upstreamPluginJSON)
+      .then(updatePluginJSON)
+      .then(openPR)
   },
 }

@@ -3,6 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
 import open from 'opn'
+import { prompt } from 'inquirer'
 import { exec } from '@skpm/internal-utils/exec'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import extractRepository from '@skpm/internal-utils/extract-repository'
@@ -237,8 +238,29 @@ export default asyncCommand({
     }
 
     if (!argv.skipRegistry) {
-      print('Publishing the plugin on the official plugin directory')
-      await github.addPluginToPluginsRegistryRepo(token, skpmConfig, repo)
+      print('Checking if the plugin is on the official plugin directory')
+      const upstreamPluginJSON = await github.getRegistryRepo(
+        token,
+        skpmConfig,
+        repo
+      )
+      if (!upstreamPluginJSON.existingPlugin) {
+        const { addToRegistry } = await prompt({
+          type: 'confirm',
+          name: 'addToRegistry',
+          message: `The plugin is not on the plugins registry yet. Do you wish to add it?`,
+          default: true,
+        })
+        if (addToRegistry) {
+          print('Publishing the plugin on the official plugin directory')
+          await github.addPluginToPluginsRegistryRepo(
+            token,
+            skpmConfig,
+            repo,
+            upstreamPluginJSON
+          )
+        }
+      }
     }
 
     spinner.succeed('Plugin published!')

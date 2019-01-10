@@ -58,7 +58,10 @@ export default function WebpackShellPlugin(options) {
         if (!options.script) {
           return Promise.resolve()
         }
-        return exec(options.script, { shell: '/bin/bash' })
+        return exec(options.script, {
+          shell: '/bin/bash',
+          maxBuffer: 1024 * 1000, // 1mb
+        })
           .then(res => {
             if (res.stderr) {
               console.error(res.stderr)
