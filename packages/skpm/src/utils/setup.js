@@ -3,7 +3,7 @@ import { hasCommand, warn } from '.'
 import getGitUser from './get-git-user'
 
 export async function install(cwd) {
-  const child = spawn('npm', ['install'], {
+  const child = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['install'], {
     cwd,
   })
   child.stdin.setEncoding('utf-8')
