@@ -15,6 +15,7 @@ install:
   - cd packages/utils && npm prune && npm install && cd ../..
   - cd packages/test-runner && npm prune && npm install && cd ../..
   - cd packages/babel-preset && npm prune && npm install && cd ../..
+  - cd packages/create-sketch-plugin && npm prune && npm install && cd ../..
 
 cache:
   directories:
@@ -24,6 +25,7 @@ cache:
     - packages/utils/node_modules
     - packages/test-runner/node_modules
     - packages/babel-preset/node_modules
+    - packages/create-sketch-plugin/node_modules
 
 before_install:
   - npm set progress=false
