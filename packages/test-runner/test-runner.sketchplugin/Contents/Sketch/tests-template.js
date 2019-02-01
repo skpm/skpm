@@ -19,6 +19,10 @@ function getTestFailure(err) {
       testFailure.expected = err.expected
       testFailure.operator = err.operator
     }
+    if (err.nativeException) {
+      testFailure.message += ' '
+      testFailure.message += String(err.reason())
+    }
   } else if (err.reason && err.name) {
     testFailure = {
       message: String(err.reason()),

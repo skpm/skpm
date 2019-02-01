@@ -1,5 +1,5 @@
 {
-  "unreleased": [],
+  "unreleased": ["[Improved] Handle new format of Obj-C exception"],
   "releases": {
     "0.3.8": [
       "[Fixed] An unhandled promise rejection when the test failed",
