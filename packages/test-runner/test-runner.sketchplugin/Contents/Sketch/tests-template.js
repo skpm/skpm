@@ -63,6 +63,10 @@ module.exports = function runTests(context) {
       suites = {},
       logs = [],
       tests = {},
+      afterAlls = [],
+      beforeAlls = [],
+      afterEachs = [],
+      beforeEachs = [],
       skipped,
       only,
       ancestorSuites = [],
@@ -99,65 +103,81 @@ module.exports = function runTests(context) {
         const containsOnly = Object.keys(tests).some(name => tests[name].only)
 
         return SerialPromise(
-          Object.keys(tests).map((name, i) => {
-            const test = tests[name]
-            if (containsOnly && !test.only) {
-              // there are tests with `only` and it's not this one so skip
-              return () => Promise.resolve()
-            }
-            if (only) {
-              test.only = true
-            }
-            if (suiteName) {
-              test.ancestorSuites = ancestorSuites.concat([suiteName])
-            }
+          [() => Promise.all(beforeAlls.map(x => x()))]
+            .concat(
+              Object.keys(tests).map((name, i) => {
+                const test = tests[name]
+                if (containsOnly && !test.only) {
+                  // there are tests with `only` and it's not this one so skip
+                  return () => Promise.resolve()
+                }
+                if (only) {
+                  test.only = true
+                }
+                if (suiteName) {
+                  test.ancestorSuites = ancestorSuites.concat([suiteName])
+                }
 
-            if (skipped || test.skipped) {
-              testResults.push({
-                name,
-                type: 'skipped',
-                only: test.only,
-                ancestorSuites: test.ancestorSuites,
-                logs: i === 0 ? logs : [], // only push the logs once per suite
+                if (skipped || test.skipped) {
+                  testResults.push({
+                    name,
+                    type: 'skipped',
+                    only: test.only,
+                    ancestorSuites: test.ancestorSuites,
+                    logs: i === 0 ? logs : [], // only push the logs once per suite
+                  })
+                  return () => Promise.resolve()
+                }
+
+                return () =>
+                  Promise.all(beforeEachs.map(x => x()))
+                    .then(() => {
+                      expect.resetAssertionsLocalState()
+
+                      return test(
+                        context,
+                        sketch.fromNative(MSDocumentData.new())
+                      )
+                    })
+                    .then(() => {
+                      const assertionError = expect.extractExpectedAssertionsErrors()
+
+                      if (assertionError) {
+                        throw assertionError.error
+                      }
+                    })
+                    .then(() => {
+                      testResults.push({
+                        name,
+                        type: 'passed',
+                        only: test.only,
+                        ancestorSuites: test.ancestorSuites,
+                        logs: i === 0 ? logs : [],
+                      })
+                    })
+                    .catch(err => {
+                      testResults.push({
+                        name,
+                        only: test.only,
+                        type: 'failed',
+                        reason: getTestFailure(err),
+                        ancestorSuites: test.ancestorSuites,
+                        logs: i === 0 ? logs : [],
+                      })
+                    })
+                    .then(() => Promise.all(afterEachs.map(x => x())))
               })
-              return () => Promise.resolve()
-            }
-
-            return () =>
-              Promise.resolve()
-                .then(() => {
-                  expect.resetAssertionsLocalState()
-
-                  return test(context, sketch.fromNative(MSDocumentData.new()))
-                })
-                .then(() => {
-                  const assertionError = expect.extractExpectedAssertionsErrors()
-
-                  if (assertionError) {
-                    throw assertionError.error
-                  }
-                })
-                .then(() => {
-                  testResults.push({
-                    name,
-                    type: 'passed',
-                    only: test.only,
-                    ancestorSuites: test.ancestorSuites,
-                    logs: i === 0 ? logs : [],
-                  })
-                })
-                .catch(err => {
-                  testResults.push({
-                    name,
-                    only: test.only,
-                    type: 'failed',
-                    reason: getTestFailure(err),
-                    ancestorSuites: test.ancestorSuites,
-                    logs: i === 0 ? logs : [],
-                  })
-                })
+            )
+            .concat(() => Promise.all(afterAlls.map(x => x())))
+        ).catch(err => {
+          testResults.push({
+            name: suiteName,
+            type: 'failed',
+            reason: getTestFailure(err),
+            ancestorSuites,
+            logs: [],
           })
-        )
+        })
       })
       .then(() => testResults)
   }
