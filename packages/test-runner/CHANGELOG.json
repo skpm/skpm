@@ -1,9 +1,10 @@
 {
-  "unreleased": [
-    "[Improved] Handle new format of Obj-C exception",
-    "[New] Add support for `beforeAll`, `beforeEach`, `afterAll` and `afterEach`"
-  ],
+  "unreleased": [],
   "releases": {
+    "0.3.9": [
+      "[Improved] Handle new format of Obj-C exception",
+      "[New] Add support for `beforeAll`, `beforeEach`, `afterAll` and `afterEach`"
+    ],
     "0.3.8": [
       "[Fixed] An unhandled promise rejection when the test failed",
       "[Improved] Increase the buffer size for the tests"
