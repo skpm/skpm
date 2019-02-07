@@ -5,12 +5,12 @@
   "commands": [
     {
       "name": "my-command",
-      "identifier": "my-command-identifier",
+      "identifier": "{{ slug }}.my-command-identifier",
       "script": "./my-command.js"
     }
   ],
   "menu": {
-    "title": "foobar",
-    "items": ["my-command-identifier"]
+    "title": "{{ name }}",
+    "items": ["{{ slug }}.my-command-identifier"]
   }
 }

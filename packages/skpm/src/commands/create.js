@@ -77,6 +77,12 @@ export default asyncCommand({
       argv.name = argv.dest // eslint-disable-line
     }
 
+    if (!argv.name) {
+      return error('Need to specify a destination', 1)
+    }
+
+    argv.slug = argv.name.toLowerCase().replace(/\s+/g, '-') // eslint-disable-line
+
     const cwd = resolve(argv.cwd)
     const target = argv.dest && resolve(cwd, argv.dest)
     const exists = target && isDir(target)
@@ -155,7 +161,7 @@ export default asyncCommand({
       // eslint-disable-next-line
       let dict = new Map()
       // TODO: concat author-driven patterns
-      ;['name'].forEach(str => {
+      ;['name', 'slug'].forEach(str => {
         // if value is defined
         if (argv[str] !== undefined) {
           dict.set(new RegExp(`{{\\s?${str}\\s}}`, 'g'), argv[str])
@@ -193,28 +199,26 @@ export default asyncCommand({
       }
     }
 
-    if (argv.name) {
-      // Update `package.json` key
-      if (pkgData) {
-        print('Updating `name` within `package.json` file')
-        pkgData.name = argv.name.toLowerCase().replace(/\s+/g, '-')
-        if (!pkgData.skpm) {
-          pkgData.skpm = {}
-        }
-        pkgData.skpm.name = argv.name
-        if (!pkgData.skpm.main || pkgData.skpm.main === 'plugin.sketchplugin') {
-          pkgData.skpm.main = `${pkgData.name}.sketchplugin`
-        }
+    // Update `package.json` key
+    if (pkgData) {
+      print('Updating `name` within `package.json` file')
+      pkgData.name = argv.slug
+      if (!pkgData.skpm) {
+        pkgData.skpm = {}
       }
-      // Find a `manifest.json`; use the first match, if any
-      const files = await globby(`${target}/**/manifest.json`)
-      const manifest = files[0] && JSON.parse(await fs.readFile(files[0]))
-      if (manifest && manifest.menu) {
-        print('Updating `title` within `manifest.json` file')
-        manifest.menu.title = argv.name
-        // Write changes to `manifest.json`
-        await fs.writeFile(files[0], JSON.stringify(manifest, null, 2))
+      pkgData.skpm.name = argv.name
+      if (!pkgData.skpm.main || pkgData.skpm.main === 'plugin.sketchplugin') {
+        pkgData.skpm.main = `${argv.slug}.sketchplugin`
       }
+    }
+    // Find a `manifest.json`; use the first match, if any
+    const files = await globby(`${target}/**/manifest.json`)
+    const manifest = files[0] && JSON.parse(await fs.readFile(files[0]))
+    if (manifest && manifest.menu) {
+      print('Updating `title` within `manifest.json` file')
+      manifest.menu.title = argv.name
+      // Write changes to `manifest.json`
+      await fs.writeFile(files[0], JSON.stringify(manifest, null, 2))
     }
 
     if (pkgData) {

@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.12": ["[Improved] More personalization of the template"],
     "1.1.11": [
       "[Improved] Ask to confirm before adding the plugin to the registry"
     ],

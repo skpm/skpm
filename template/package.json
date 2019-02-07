@@ -1,13 +1,13 @@
 {
-  "name": "foobar",
+  "name": "{{ slug }}",
   "version": "0.1.0",
   "engines": {
     "sketch": ">=3.0"
   },
   "skpm": {
-    "name": "foobar",
+    "name": "{{ name }}",
     "manifest": "src/manifest.json",
-    "main": "plugin.sketchplugin",
+    "main": "{{ slug }}.sketchplugin",
     "assets": [
       "assets/**/*"
     ]
