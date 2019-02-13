@@ -87,9 +87,14 @@ if (!fs.existsSync(path.join(output, 'Contents', 'Sketch'))) {
 
 const manifestFolder = path.dirname(manifest)
 
-const defaultAppcastURL = `https://raw.githubusercontent.com/${
-  skpmConfig.repository
-}/master/.appcast.xml`
+const appcastURL = appcast => {
+  if (/^http/.test(appcast)) {
+    return appcast
+  }
+  return `https://raw.githubusercontent.com/${
+    skpmConfig.repository
+  }/master/${appcast.replace(/^\.\//g, '')}`
+}
 
 async function copyManifest(manifestJSON) {
   return new Promise((resolve, reject) => {
@@ -107,7 +112,7 @@ async function copyManifest(manifestJSON) {
 
     if (manifestJSON.appcast !== false && skpmConfig.appcast !== false) {
       copy.appcast =
-        manifestJSON.appcast || skpmConfig.appcast || defaultAppcastURL
+        manifestJSON.appcast || appcastURL(skpmConfig.appcast || '.appcast.xml')
     } else {
       delete copy.appcast
     }

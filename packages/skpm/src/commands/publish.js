@@ -142,14 +142,19 @@ export default asyncCommand({
     if (argv.bump) {
       print('Bumping package.json version and creating git tag')
       const { stdout } = await exec(
-        `npm version ${argv.bump} -m "Publish %s release :rocket:"`
+        `npm version ${
+          argv.bump
+        } -m "Publish %s release :rocket:" --allow-same-version`
       )
       tag = stdout.trim()
     }
 
     print('Updating the appcast file')
 
-    const appcast = path.join(process.cwd(), '.appcast.xml')
+    const appcast = path.join(
+      process.cwd(),
+      (skpmConfig.appcast || '.appcast.xml').replace(/^\.\//g, '')
+    )
     const appcastObj = await new Promise(resolve => {
       fs.readFile(appcast, (err, data) => {
         if (err) {

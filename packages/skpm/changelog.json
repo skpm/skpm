@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "1.1.13": [
+      "[Improved] Handle manifest path in skpm config",
+      "[Improved] Allow to publish without bumping the version (if it already was bumped manually in the package.json for example)"
+    ],
     "1.1.12": ["[Improved] More personalization of the template"],
     "1.1.11": [
       "[Improved] Ask to confirm before adding the plugin to the registry"
