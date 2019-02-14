@@ -11,7 +11,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skpm/skpm.git"
+    "url": "git+https://github.com/skpm/skpm.git",
+    "directory": "packages/utils"
   },
   "keywords": [
     "sketch",

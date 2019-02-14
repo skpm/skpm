@@ -22,7 +22,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/skpm/skpm.git"
+    "url": "git+https://github.com/skpm/skpm.git",
+    "directory": "packages/test-runner"
   },
   "keywords": [
     "sketch",
