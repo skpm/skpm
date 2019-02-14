@@ -1,6 +1,7 @@
 /* globals MSDocumentData, log, expect, coscript */
 const prepareStackTrace = require('sketch-utils/prepare-stack-trace')
-var sketch = require('sketch') // eslint-disable-line
+const sketch = require('sketch')
+const util = require('util')
 
 function SerialPromise(promises) {
   return promises.reduce((prev, p) => prev.then(() => p()), Promise.resolve())
@@ -21,7 +22,7 @@ function getTestFailure(err) {
     }
     if (err.nativeException) {
       testFailure.message += ' '
-      testFailure.message += String(err.reason())
+      testFailure.message += String(err.nativeException.reason())
     }
   } else if (err.reason && err.name) {
     testFailure = {
@@ -101,11 +102,12 @@ module.exports = function runTests(context) {
       .then(() => {
         // if there are tests with `only`
         const containsOnly = Object.keys(tests).some(name => tests[name].only)
+        let alreadyPutLogs = false
 
         return SerialPromise(
           [() => Promise.all(beforeAlls.map(x => x()))]
             .concat(
-              Object.keys(tests).map((name, i) => {
+              Object.keys(tests).map(name => {
                 const test = tests[name]
                 if (containsOnly && !test.only) {
                   // there are tests with `only` and it's not this one so skip
@@ -119,12 +121,15 @@ module.exports = function runTests(context) {
                 }
 
                 if (skipped || test.skipped) {
+                  // only push the logs once per suite
+                  const logsToStore = !alreadyPutLogs ? logs : []
+                  alreadyPutLogs = true
                   testResults.push({
                     name,
                     type: 'skipped',
                     only: test.only,
                     ancestorSuites: test.ancestorSuites,
-                    logs: i === 0 ? logs : [], // only push the logs once per suite
+                    logs: logsToStore,
                   })
                   return () => Promise.resolve()
                 }
@@ -147,22 +152,26 @@ module.exports = function runTests(context) {
                       }
                     })
                     .then(() => {
+                      const logsToStore = !alreadyPutLogs ? logs : []
+                      alreadyPutLogs = true
                       testResults.push({
                         name,
                         type: 'passed',
                         only: test.only,
                         ancestorSuites: test.ancestorSuites,
-                        logs: i === 0 ? logs : [],
+                        logs: logsToStore,
                       })
                     })
                     .catch(err => {
+                      const logsToStore = !alreadyPutLogs ? logs : []
+                      alreadyPutLogs = true
                       testResults.push({
                         name,
                         only: test.only,
                         type: 'failed',
                         reason: getTestFailure(err),
                         ancestorSuites: test.ancestorSuites,
-                        logs: i === 0 ? logs : [],
+                        logs: logsToStore,
                       })
                     })
                     .then(() => Promise.all(afterEachs.map(x => x())))
@@ -170,12 +179,14 @@ module.exports = function runTests(context) {
             )
             .concat(() => Promise.all(afterAlls.map(x => x())))
         ).catch(err => {
+          const logsToStore = !alreadyPutLogs ? logs : []
+          alreadyPutLogs = true
           testResults.push({
             name: suiteName,
             type: 'failed',
             reason: getTestFailure(err),
             ancestorSuites,
-            logs: [],
+            logs: logsToStore,
           })
         })
       })
@@ -187,6 +198,12 @@ module.exports = function runTests(context) {
       if (results.some(t => t.only)) {
         results = results.filter(t => t.only) // eslint-disable-line
       }
+      results.forEach(result => {
+        if (result && result.logs && result.logs.length) {
+          // eslint-disable-next-line no-not-accumulator-reassign/no-not-accumulator-reassign
+          result.logs = result.logs.map(l => util.inspect(l))
+        }
+      })
       log(`${results.length} tests ran.`)
       log(`${results.filter(t => t.type === 'passed').length} tests succeeded.`)
       log(`${results.filter(t => t.type === 'failed').length} tests failed.`)

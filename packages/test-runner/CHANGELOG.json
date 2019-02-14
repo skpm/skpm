@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.10": ["[Improved] Inspect the logs"],
     "0.3.9": [
       "[Improved] Handle new format of Obj-C exception",
       "[New] Add support for `beforeAll`, `beforeEach`, `afterAll` and `afterEach`"

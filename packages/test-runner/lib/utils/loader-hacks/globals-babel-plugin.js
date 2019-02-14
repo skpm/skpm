@@ -486,7 +486,7 @@ module.exports = function babelPluginTestInjector({ types: t }) {
          * EXPORTS
          */
 
-        // export {__sketch_tests__ as tests, __sketch_logs__ as logs, __skpm_afterAlls__ as afterAlls, __skpm_beforeAlls__ as beforeAlls, __skpm_afterEachs__ as afterEachs, __skpm_beforeEachs__ as beforeEachs }
+        // export {__sketch_tests__ as tests, __skpm_logs__ as logs, __skpm_afterAlls__ as afterAlls, __skpm_beforeAlls__ as beforeAlls, __skpm_afterEachs__ as afterEachs, __skpm_beforeEachs__ as beforeEachs }
         programBody.insertBefore(
           t.exportNamedDeclaration(null, [
             t.exportSpecifier(
