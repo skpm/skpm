@@ -1,4 +1,4 @@
-import ora from 'ora'
+import Ora from 'ora'
 import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
@@ -124,19 +124,17 @@ export default asyncCommand({
 
     let tag = skpmConfig.version
 
-    let spinner = new ora()
+    let spinner = null
 
     function print(text) {
       if (process.env.CI) {
         console.log(text)
-      } else {
-        if (spinner) {
-          spinner.text = text
-          if (!spinner.isSpinning) {
-            spinner.start()
-          }
+      } else if (spinner) {
+        spinner.text = text
+        if (!spinner.isSpinning) {
+          spinner.start()
         } else {
-          spinner = new ora({
+          spinner = new Ora({
             text,
             color: 'magenta',
           }).start()
