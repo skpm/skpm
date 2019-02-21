@@ -255,7 +255,7 @@ export default asyncCommand({
         repo
       )
       if (!upstreamPluginJSON.existingPlugin) {
-        spinner.stop()
+        if (spinner) spinner.stop()
         const { addToRegistry } = await prompt({
           type: 'confirm',
           name: 'addToRegistry',
