@@ -124,16 +124,23 @@ export default asyncCommand({
 
     let tag = skpmConfig.version
 
-    const spinner = ora({
-      text: `Checking if \`${repo}\` is accessible`,
-      color: 'magenta',
-    }).start()
+    let spinner = new ora()
 
     function print(text) {
       if (process.env.CI) {
         console.log(text)
       } else {
-        spinner.text = text
+        if (spinner) {
+          spinner.text = text
+          if (!spinner.isSpinning) {
+            spinner.start()
+          }
+        } else {
+          spinner = new ora({
+            text,
+            color: 'magenta',
+          }).start()
+        }
       }
     }
 
@@ -250,6 +257,7 @@ export default asyncCommand({
         repo
       )
       if (!upstreamPluginJSON.existingPlugin) {
+        spinner.stop()
         const { addToRegistry } = await prompt({
           type: 'confirm',
           name: 'addToRegistry',
