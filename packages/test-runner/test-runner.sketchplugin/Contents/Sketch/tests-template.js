@@ -193,6 +193,8 @@ module.exports = function runTests(context) {
       .then(() => testResults)
   }
 
+  const fiber = sketch.Async.createFiber()
+
   runUnitTests(testSuites)
     .then(results => {
       if (results.some(t => t.only)) {
@@ -219,11 +221,15 @@ module.exports = function runTests(context) {
         })
       }
 
+      fiber.cleanup()
+
       // the tests could have finished but didn't properly clean up after them
       // so we need to do it by cleaning the fibers
       coscript.cleanupFibers()
     })
     .catch(err => {
+      fiber.cleanup()
+
       // the tests could have finished but didn't properly clean up after them
       // so we need to do it by cleaning the fibers
       coscript.cleanupFibers()

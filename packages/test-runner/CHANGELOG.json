@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.11": [
+      "[Fixed] Open a fiber before running the tests to make sure broken promises don't exit the tests too early",
+      "[New] Each test will timeout after 5s. This timeout can be defined as the 3rd argument of the `test` function"
+    ],
     "0.3.10": ["[Improved] Inspect the logs"],
     "0.3.9": [
       "[Improved] Handle new format of Obj-C exception",
