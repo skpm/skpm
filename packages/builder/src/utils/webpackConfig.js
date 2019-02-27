@@ -12,16 +12,17 @@ import nibLoader from './nibLoader'
 
 const CORE_MODULES = ['util', 'events', 'console', 'buffer', 'path', 'os']
 
-async function getCommands(output, commandIdentifiers) {
+async function getCommands(output, commandIdentifiers, options) {
   return Promise.all(
     commandIdentifiers.map(commandIdentifier =>
-      WebpackCommandPlugin(output, commandIdentifier)
+      WebpackCommandPlugin(output, commandIdentifier, options)
     )
   )
 }
 
 // avoid looking it up every time
-const isProd = process.env.NODE_ENV === 'production'
+const { NODE_ENV } = process.env
+const isProd = NODE_ENV === 'production'
 
 export default function getWebpackConfig(
   argv,
@@ -56,7 +57,7 @@ export default function getWebpackConfig(
 
     let plugins = [
       new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development', // default to 'development'
+        NODE_ENV: NODE_ENV || 'development', // default to 'development'
       }),
       new webpack.DefinePlugin({
         'process.type': JSON.stringify('sketch'),
@@ -108,7 +109,9 @@ export default function getWebpackConfig(
     }
 
     if (argv.run && commandIdentifiers) {
-      plugins = plugins.concat(await getCommands(output, commandIdentifiers))
+      plugins = plugins.concat(
+        await getCommands(output, commandIdentifiers, argv)
+      )
     }
 
     if (isProd) {
