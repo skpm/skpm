@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.15": [
+      "[Fixed] Use `app` option to run a plugin's command",
+      "[Fixed] Pass down the value of process.env.NODE_ENV"
+    ],
     "0.5.14": ["[Improved] Handle manifest path in skpm config"],
     "0.5.13": [
       "[Improved] The `sketch` field can be used to alias multiple files (Thanks @Andarist)"
