@@ -3,7 +3,7 @@ import getSketchVersion from '@skpm/internal-utils/getSketchVersion'
 import WebpackShellPlugin, { sketchtoolRunCommand } from './webpackShellPlugin'
 import SketchCommandPlugin from './sketchCommandPlugin'
 
-export default async function(output, commandIdentifier) {
+export default async function(output, commandIdentifier, options) {
   const sketchVersion = await getSketchVersion()
 
   let command
@@ -17,7 +17,7 @@ export default async function(output, commandIdentifier) {
 
   if (!sketchVersion || semver.satisfies(sketchVersion, '^44.0.0')) {
     command = new WebpackShellPlugin({
-      script: sketchtoolRunCommand(output, commandIdentifier),
+      script: sketchtoolRunCommand(output, commandIdentifier, options),
     })
   }
 
@@ -25,6 +25,7 @@ export default async function(output, commandIdentifier) {
     command = new WebpackShellPlugin({
       script: sketchtoolRunCommand(output, commandIdentifier, {
         withoutActivating: true,
+        ...(options || {}),
       }),
     })
   }
