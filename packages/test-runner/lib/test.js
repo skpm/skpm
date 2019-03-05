@@ -16,9 +16,14 @@ const isInteractive = require('./utils/is-interactive')
 const didTheLogFailed = require('./utils/hook-logs')
 const getSkpmConfig = require('./utils/get-skpm-config')
 
-const logProgress = createLogger({
-  storagePath: path.join(__dirname, '../.progress-estimator'),
-})
+const logProgress = isInteractive
+  ? createLogger({
+      storagePath: path.join(__dirname, '../.progress-estimator'),
+    })
+  : (promise, log) => {
+      console.log(log)
+      return promise
+    }
 
 const { argv } = yargs
   .option('app', {
