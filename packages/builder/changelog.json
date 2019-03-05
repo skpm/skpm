@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.5.16": ["[Fixed] Only mess with externals for the plugin commands"],
     "0.5.15": [
       "[Fixed] Use `app` option to run a plugin's command",
       "[Fixed] Pass down the value of process.env.NODE_ENV"

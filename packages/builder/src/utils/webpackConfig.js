@@ -54,6 +54,7 @@ export default function getWebpackConfig(
     commandHandlers
   ) {
     const basename = path.basename(file)
+    const isPluginCommand = !!commandIdentifiers
 
     let plugins = [
       new webpack.EnvironmentPlugin({
@@ -65,7 +66,7 @@ export default function getWebpackConfig(
     ]
     const rules = [babelLoader]
 
-    if (commandIdentifiers) {
+    if (isPluginCommand) {
       if (commandHandlers.find(k => k === '__skpm_run')) {
         console.error(
           `${chalk.red(
@@ -108,7 +109,7 @@ export default function getWebpackConfig(
       rules.push(nibLoader)
     }
 
-    if (argv.run && commandIdentifiers) {
+    if (argv.run && isPluginCommand) {
       plugins = plugins.concat(
         await getCommands(output, commandIdentifiers, argv)
       )
@@ -149,12 +150,14 @@ export default function getWebpackConfig(
           'node_modules',
         ],
       },
-      entry: path.join(
-        commandIdentifiers ? manifestFolder : process.cwd(),
-        file
-      ),
+      entry: path.join(isPluginCommand ? manifestFolder : process.cwd(), file),
       externals: [
         (context, request, callback) => {
+          // we only want to mess with pluginCommands
+          if (!isPluginCommand) {
+            return callback()
+          }
+
           // sketch API
           if (/^sketch\//.test(request) || request === 'sketch') {
             return callback(null, `commonjs ${request}`)
@@ -168,8 +171,8 @@ export default function getWebpackConfig(
       ],
       output: {
         filename: basename,
-        library: commandIdentifiers ? 'exports' : undefined,
-        path: commandIdentifiers
+        library: isPluginCommand ? 'exports' : undefined,
+        path: isPluginCommand
           ? path.join(output, 'Contents', 'Sketch')
           : path.join(output, 'Contents', 'Resources'),
       },
@@ -179,7 +182,7 @@ export default function getWebpackConfig(
     if (userDefinedWebpackConfig) {
       const resolvedUserDefinedConfig = await userDefinedWebpackConfig(
         webpackConfig,
-        !!commandIdentifiers
+        isPluginCommand
       )
       if (resolvedUserDefinedConfig) {
         webpackConfig = merge.smart(webpackConfig, resolvedUserDefinedConfig)
