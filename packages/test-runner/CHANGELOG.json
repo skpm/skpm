@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.3.13": ["[New] Allow passing a string to narrow down tests"],
     "0.3.12": ["[Improved] Disabled log progress on CI"],
     "0.3.11": [
       "[Fixed] Open a fiber before running the tests to make sure broken promises don't exit the tests too early",
