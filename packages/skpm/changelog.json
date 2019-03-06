@@ -1,5 +1,8 @@
 {
-  "unreleased": [],
+  "unreleased": [
+    "[Improved] Link to changelog in update message",
+    "[Improved] Only prompt to update when not running on CI"
+  ],
   "releases": {
     "1.1.13": [
       "[Improved] Handle manifest path in skpm config",
