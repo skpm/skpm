@@ -18,6 +18,7 @@ function randomBuildEmoji() {
 }
 
 const { argv } = yargs
+  .scriptName('skpm-build')
   .option('watch', {
     alias: 'w',
     describe: 'Watch and rebuild automatically',

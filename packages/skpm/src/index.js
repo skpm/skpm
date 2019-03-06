@@ -22,6 +22,7 @@ updateNotifier({
 })
 
 yargs
+  .scriptName('skpm')
   .command(create)
   .command(publish)
   .command(log)

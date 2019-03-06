@@ -6,6 +6,7 @@ import create from './commands/create'
 create.builder(yargs)
 
 const { argv } = yargs
+  .scriptName('create-sketch-plugin')
   .help()
   .alias('h', 'help')
   .demandCommand()

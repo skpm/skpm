@@ -13,6 +13,7 @@ import checkDevMode from '@skpm/internal-utils/check-dev-mode'
 const { pluginDirectory } = getConfig()
 
 const { argv } = yargs
+  .scriptName('skpm-link')
   .help()
   .strict()
   .usage('Usage: cd path/to/my/plugin && skpm-link')
