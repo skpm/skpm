@@ -2,7 +2,7 @@ const path = require('path')
 const chalk = require('chalk')
 const getSkpmConfigFromPackageJSON = require('@skpm/internal-utils/skpm-config')
 
-module.exports = function getSkpmConfig() {
+module.exports = function getSkpmConfig(argv) {
   let packageJSON
   try {
     packageJSON = require(path.join(process.cwd(), 'package.json'))
@@ -32,6 +32,11 @@ module.exports = function getSkpmConfig() {
   }
 
   skpmConfig.test.ignore.push('/.git')
+  skpmConfig.test.ignore.push('/node_modules')
+
+  if (argv._ && argv._.length) {
+    skpmConfig.test.manualMatches = argv._
+  }
 
   return skpmConfig
 }

@@ -26,6 +26,7 @@ const logProgress = isInteractive
     }
 
 const { argv } = yargs
+  .scriptName('skpm-test')
   .option('app', {
     describe:
       "The path to the copy of Sketch to run the tests with. If this isn't supplied, we try to run the latest Xcode build. If there is none, we try to find a normal Sketch.",
@@ -45,7 +46,7 @@ const { argv } = yargs
 
 replaceArraysByLastItem(argv, ['app', 'watch', 'build-only'])
 
-const skpmConfig = getSkpmConfig()
+const skpmConfig = getSkpmConfig(argv)
 
 const testFile = path.join(
   __dirname,

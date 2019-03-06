@@ -82,15 +82,24 @@ function findAllTestFiles(_inputDir, _dir, options) {
             if ((await stat(fullPath)).isDirectory()) {
               await recurse(inputDir, fullPath)
             }
-            if (options.testRegex.test(relativePath)) {
-              let name = file.split('/')
-              name = name[name.length - 1]
-              name = name.replace('.js', '').replace('.test', '')
-              testFiles.push({
-                name,
-                path: fullPath,
-              })
+            if (!options.testRegex.test(relativePath)) {
+              return
             }
+            if (
+              options.manualMatches &&
+              options.manualMatches.every(
+                match => relativePath.indexOf(match) === -1
+              )
+            ) {
+              return
+            }
+            let name = file.split('/')
+            name = name[name.length - 1]
+            name = name.replace('.js', '').replace('.test', '')
+            testFiles.push({
+              name,
+              path: fullPath,
+            })
           })()
         )
         return prev
