@@ -9,7 +9,7 @@ const createLogger = require('progress-estimator')
 const replaceArraysByLastItem = require('@skpm/internal-utils/replace-arrays-by-last-item')
 const generateWebpackConfig = require('@skpm/builder/lib/utils/webpackConfig')
   .default
-const { buildTestFile } = require('./utils/build-test-file')
+const { buildTestFile, isTestFile } = require('./utils/build-test-file')
 const updateWebpackConfig = require('./utils/update-webpack-config')
 const { CLEAR, KEYS } = require('./utils/constants')
 const isInteractive = require('./utils/is-interactive')
@@ -44,7 +44,7 @@ const { argv } = yargs
   .help()
   .strict()
 
-replaceArraysByLastItem(argv, ['app', 'watch', 'build-only'])
+replaceArraysByLastItem(argv, ['app', 'watch', 'buildOnly'])
 
 const skpmConfig = getSkpmConfig(argv)
 
@@ -167,19 +167,14 @@ function rebuild() {
   })
 }
 
-function reBuildIfNeeded(filePath) {
-  if (skpmConfig.test.testRegex.test(filePath)) {
-    rebuild()
-  }
-}
-
 if (argv.watch) {
   chokidar
-    .watch(['.'].concat(skpmConfig.test.ignore.map(l => `!${l}`)), {
+    .watch('.', {
+      ignored: isTestFile(skpmConfig.test).bind(this, process.cwd()),
       ignoreInitial: true,
     })
-    .on('add', reBuildIfNeeded)
-    .on('unlink', reBuildIfNeeded)
+    .on('add', rebuild)
+    .on('unlink', rebuild)
 
   if (isInteractive && typeof process.stdin.setRawMode === 'function') {
     const onKeypress = key => {
@@ -195,7 +190,6 @@ if (argv.watch) {
         ) !== -1
       ) {
         buildTimestamp = null
-        return
       }
 
       switch (key) {
@@ -212,6 +206,7 @@ if (argv.watch) {
           rebuild()
           break
         case KEYS.QUESTION_MARK:
+          yargs.showHelp('log')
           break
         default:
           break

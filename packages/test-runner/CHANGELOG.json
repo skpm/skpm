@@ -1,5 +1,7 @@
 {
-  "unreleased": [],
+  "unreleased": [
+    "[Improved] Refactor watch mode to make it less memory intensive"
+  ],
   "releases": {
     "0.3.13": ["[New] Allow passing a string to narrow down tests"],
     "0.3.12": ["[Improved] Disabled log progress on CI"],

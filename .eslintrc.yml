@@ -1,4 +1,3 @@
----
 root: true
 extends:
   - airbnb-base
@@ -8,7 +7,7 @@ plugins:
   - no-not-accumulator-reassign
   - prettier
 env:
-    node: true
+  node: true
 rules:
   no-param-reassign: 0
   import/no-dynamic-require: 0
@@ -18,5 +17,7 @@ rules:
   no-loop-func: 0
   global-require: 0
   no-console: 0
-  no-not-accumulator-reassign/no-not-accumulator-reassign: [2, ['reduce'], {props: true}]
+  no-not-accumulator-reassign/no-not-accumulator-reassign:
+    [2, ['reduce'], { props: true }]
   import/no-unresolved: [2, { ignore: ['^sketch$'] }]
+  no-underscore-dangle: 0
