@@ -73,6 +73,11 @@ export default asyncCommand({
         "Specify the new version's download URL (default to the asset of the release created on GitHub.com).",
       type: 'string',
     },
+    appcast: {
+      description:
+        'Specify the local path to the appcast (default to .appcast.xml). If `false`, then the appcast update will be skipped',
+      type: 'string',
+    },
   },
 
   async handler(argv) {
@@ -82,6 +87,7 @@ export default asyncCommand({
       'openRelease',
       'skipRegistry',
       'downloadUrl',
+      'appcast',
     ])
 
     let packageJSON
@@ -154,47 +160,52 @@ export default asyncCommand({
       tag = stdout.trim()
     }
 
-    print('Updating the appcast file')
+    if (argv.appcast !== 'false') {
+      print('Updating the appcast file')
 
-    const appcast = path.join(
-      process.cwd(),
-      (skpmConfig.appcast || '.appcast.xml').replace(/^\.\//g, '')
-    )
-    const appcastObj = await new Promise(resolve => {
-      fs.readFile(appcast, (err, data) => {
-        if (err) {
-          return resolve(EMPTY_APPCAST)
-        }
-        return xml2js.parseString(data, (parseErr, result) => {
-          if (parseErr) {
+      const appcast = path.join(
+        process.cwd(),
+        (argv.appcast || skpmConfig.appcast || '.appcast.xml').replace(
+          /^\.\//g,
+          ''
+        )
+      )
+      const appcastObj = await new Promise(resolve => {
+        fs.readFile(appcast, (err, data) => {
+          if (err) {
             return resolve(EMPTY_APPCAST)
           }
-          return resolve(result)
+          return xml2js.parseString(data, (parseErr, result) => {
+            if (parseErr) {
+              return resolve(EMPTY_APPCAST)
+            }
+            return resolve(result)
+          })
         })
       })
-    })
 
-    appcastObj.rss.channel[0].item.unshift({
-      enclosure: [
-        {
-          $: {
-            url:
-              argv.downloadUrl ||
-              `https://github.com/${repo}/releases/download/${tag}/${path
-                .basename(skpmConfig.main)
-                .replace(/ /g, '.')}.zip`,
-            'sparkle:version': tag.replace('v', ''),
+      appcastObj.rss.channel[0].item.unshift({
+        enclosure: [
+          {
+            $: {
+              url:
+                argv.downloadUrl ||
+                `https://github.com/${repo}/releases/download/${tag}/${path
+                  .basename(skpmConfig.main)
+                  .replace(/ /g, '.')}.zip`,
+              'sparkle:version': tag.replace('v', ''),
+            },
           },
-        },
-      ],
-    })
-    const builder = new xml2js.Builder()
-    const xml = await builder.buildObject(appcastObj)
+        ],
+      })
+      const builder = new xml2js.Builder()
+      const xml = await builder.buildObject(appcastObj)
 
-    fs.writeFileSync(appcast, xml)
+      fs.writeFileSync(appcast, xml)
 
-    await exec(`git add "${appcast}"`)
-    await exec('git commit -m "Update .appcast with new tag :sparkles:"')
+      await exec(`git add "${appcast}"`)
+      await exec('git commit -m "Update .appcast with new tag :sparkles:"')
+    }
 
     print('Pushing the changes to Github')
 

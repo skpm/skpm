@@ -1,9 +1,11 @@
 {
-  "unreleased": [
-    "[Improved] Link to changelog in update message",
-    "[Improved] Only prompt to update when not running on CI"
-  ],
+  "unreleased": [],
   "releases": {
+    "1.1.14": [
+      "[Improved] Link to changelog in update message",
+      "[Improved] Only prompt to update when not running on CI",
+      "[New] Add a new `--appcast` option for the publish command to specify the local path to the appcast (or skip the appcast update)"
+    ],
     "1.1.13": [
       "[Improved] Handle manifest path in skpm config",
       "[Improved] Allow to publish without bumping the version (if it already was bumped manually in the package.json for example)"
