@@ -132,19 +132,23 @@ export default asyncCommand({
 
     let spinner = null
 
-    function print(text) {
+    function print(text, action) {
       if (process.env.CI) {
         console.log(text)
       } else if (spinner) {
-        spinner.text = text
-        if (!spinner.isSpinning) {
-          spinner.start()
+        if (action) {
+          spinner[action](text)
         } else {
-          spinner = new Ora({
-            text,
-            color: 'magenta',
-          }).start()
+          spinner.text = text
+          if (!spinner.isSpinning) {
+            spinner.start()
+          }
         }
+      } else {
+        spinner = new Ora({
+          text,
+          color: 'magenta',
+        }).start()
       }
     }
 
@@ -285,7 +289,7 @@ export default asyncCommand({
       }
     }
 
-    spinner.succeed('Plugin published!')
+    print('Plugin published!', 'succeed')
     console.log(`${skpmConfig.name}@${tag.replace('v', '')}`)
 
     if (argv.openRelease) {
