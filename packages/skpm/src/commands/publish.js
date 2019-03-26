@@ -262,7 +262,10 @@ export default asyncCommand({
       await exec(`rm -f ${tempZip}`)
     }
 
-    if (!argv.skipRegistry) {
+    if (
+      !argv.skipRegistry &&
+      (!packageJSON.skpm || !packageJSON.skpm.private)
+    ) {
       print('Checking if the plugin is on the official plugin directory')
       const upstreamPluginJSON = await github.getRegistryRepo(
         token,

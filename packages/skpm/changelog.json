@@ -1,5 +1,7 @@
 {
-  "unreleased": [],
+  "unreleased": [
+    "[New] Add support for setting `skpm.private` to `true` in the package.json to avoid publishing the plugin to the registry"
+  ],
   "releases": {
     "1.1.15": ["[Fixed] Printing during the publish command"],
     "1.1.14": [
