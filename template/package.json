@@ -1,8 +1,9 @@
 {
   "name": "{{ slug }}",
+  "description": "",
   "version": "0.1.0",
   "engines": {
-    "sketch": ">=3.0"
+    "sketch": ">=49.0"
   },
   "skpm": {
     "name": "{{ name }}",
