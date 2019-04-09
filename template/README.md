@@ -2,7 +2,7 @@
 
 ## Installation
 
-- [Download](./releases/download/latest/{{ slug }}.sketchplugin.zip) the latest release of the plugin
+- [Download](../../releases/latest/download/{{ slug }}.sketchplugin.zip) the latest release of the plugin
 - Un-zip
 - Double-click on {{ slug }}.sketchplugin
 
