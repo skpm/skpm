@@ -10,7 +10,19 @@ import BabelLoader from './babelLoader'
 import resourceLoader from './resourceLoader'
 import nibLoader from './nibLoader'
 
-const CORE_MODULES = ['util', 'events', 'console', 'buffer', 'path', 'os']
+const CORE_MODULES = [
+  'buffer',
+  'console',
+  'events',
+  'os',
+  'path',
+  'process',
+  'querystring',
+  'stream',
+  'string_decoder',
+  'timers',
+  'util',
+]
 
 async function getCommands(output, commandIdentifiers, options) {
   return Promise.all(
@@ -79,27 +91,7 @@ export default function getWebpackConfig(
       plugins.push(
         new webpack.ProvidePlugin({
           fetch: require.resolve('sketch-polyfill-fetch'),
-          setTimeout: [require.resolve('@skpm/timers/timeout'), 'setTimeout'],
-          clearTimeout: [
-            require.resolve('@skpm/timers/timeout'),
-            'clearTimeout',
-          ],
-          setImmediate: [
-            require.resolve('@skpm/timers/immediate'),
-            'setImmediate',
-          ],
-          clearImmediate: [
-            require.resolve('@skpm/timers/immediate'),
-            'clearImmediate',
-          ],
-          setInterval: [
-            require.resolve('@skpm/timers/interval'),
-            'setInterval',
-          ],
-          clearInterval: [
-            require.resolve('@skpm/timers/interval'),
-            'clearInterval',
-          ],
+          FormData: require.resolve('sketch-polyfill-fetch/lib/form-data'),
           Promise: require.resolve('promise-polyfill'),
         }),
         new WebpackHeaderFooterPlugin(commandHandlers)
