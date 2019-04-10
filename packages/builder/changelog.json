@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.6.0": ["[Improved] Only polyfill what's needed for Sketch 54", "[Improved] Use Terser instead of uglify-es (as it is now deprecated)"],
     "0.5.16": ["[Fixed] Only mess with externals for the plugin commands"],
     "0.5.15": [
       "[Fixed] Use `app` option to run a plugin's command",
