@@ -9,37 +9,33 @@ module.exports = function testDevMode() {
     .then(({ stdout }) => (stdout || '').trim() === '1')
     .catch(() => false) // if reading fails, assume that it's not enabled
     .then(enabled => {
-      if (!enabled) {
-        const yesno = require('yesno')
-        console.log(
-          `The Sketch developer mode is not enabled ${chalk.dim(
-            '(http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running)'
-          )}.`
-        )
-        return new Promise((resolve, reject) => {
-          yesno.ask('Do you want to enable it? (y/N)', false, ok => {
-            if (ok) {
-              exec(command('write', '-bool YES'))
-                .then(() =>
-                  exec(
-                    '/usr/bin/defaults write com.bohemiancoding.sketch3 WebKitDeveloperExtras -bool true'
-                  )
-                )
-                .then(() =>
-                  console.log(
-                    `${chalk.green('success')} Sketch developer mode enabled`
-                  )
-                )
-                .then(resolve)
-                .catch(reject)
-            } else {
-              resolve()
-            }
-          })
-        })
+      if (enabled) {
+        return 'Already enabled'
       }
-
-      return 'Already enabled'
+      const yesno = require('yesno')
+      console.log(
+        `The Sketch developer mode is not enabled ${chalk.dim(
+          '(http://developer.sketchapp.com/introduction/preferences/#always-reload-scripts-before-running)'
+        )}.`
+      )
+      return yesno
+        .askAsync('Do you want to enable it? (y/N)', false)
+        .then(ok => {
+          if (!ok) {
+            return 'do not want to enable'
+          }
+          return exec(command('write', '-bool YES'))
+            .then(() =>
+              exec(
+                '/usr/bin/defaults write com.bohemiancoding.sketch3 WebKitDeveloperExtras -bool true'
+              )
+            )
+            .then(() =>
+              console.log(
+                `${chalk.green('success')} Sketch developer mode enabled`
+              )
+            )
+        })
     })
     .catch(err => {
       console.log(

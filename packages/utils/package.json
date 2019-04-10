@@ -29,8 +29,8 @@
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
     "chalk": "^2.4.1",
-    "js-yaml": "^3.10.0",
+    "js-yaml": "^3.13.1",
     "object-assign": "*",
-    "yesno": "0.0.1"
+    "yesno": "0.2.0"
   }
 }
