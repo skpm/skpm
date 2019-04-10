@@ -31,6 +31,10 @@
       "npm run prettier:base",
       "eslint --quiet",
       "git add"
+    ],
+    "*.md": [
+      "npm run prettier:base",
+      "git add"
     ]
   }
 }
