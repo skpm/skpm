@@ -3,7 +3,7 @@ import path from 'path'
 import chalk from 'chalk'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
-import Uglify from 'uglifyjs-webpack-plugin'
+import TerserPlugin from 'terser-webpack-plugin'
 import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
 import BabelLoader from './babelLoader'
@@ -107,23 +107,25 @@ export default function getWebpackConfig(
       )
     }
 
-    if (isProd) {
-      plugins.push(
-        new Uglify({
-          uglifyOptions: {
-            mangle: {
-              // @see https://bugs.webkit.org/show_bug.cgi?id=171041
-              // @see https://github.com/mishoo/UglifyJS2/issues/1753#issuecomment-324814782
-              safari10: true,
-            },
-          },
-        })
-      )
-    }
-
     let webpackConfig = {
-      mode: 'development',
+      mode: isProd ? 'production' : 'development',
       devtool: isProd ? 'none' : 'source-map',
+      optimization: {
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              mangle: {
+                // @see https://bugs.webkit.org/show_bug.cgi?id=171041
+                // @see https://github.com/mishoo/UglifyJS2/issues/1753#issuecomment-324814782
+                safari10: true,
+              },
+              output: {
+                safari10: true,
+              },
+            },
+          }),
+        ],
+      },
       module: {
         rules,
       },
