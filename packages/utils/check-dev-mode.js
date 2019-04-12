@@ -27,7 +27,7 @@ module.exports = function testDevMode() {
           return exec(command('write', '-bool YES'))
             .then(() =>
               exec(
-                '/usr/bin/defaults write com.bohemiancoding.sketch3 WebKitDeveloperExtras -bool true'
+                '/usr/bin/defaults write com.bohemiancoding.sketch3 WebKitDeveloperExtras -bool YES'
               )
             )
             .then(() =>
