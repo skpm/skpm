@@ -3,8 +3,9 @@ import globby from 'globby'
 import gittar from 'gittar'
 import fs from 'fs.promised'
 import { green } from 'chalk'
-import { resolve } from 'path'
+import { resolve, extname } from 'path'
 import { prompt } from 'inquirer'
+import jszip from 'jszip'
 import checkDevMode from '@skpm/internal-utils/check-dev-mode'
 import replaceArraysByLastItem from '@skpm/internal-utils/replace-arrays-by-last-item'
 import asyncCommand from '../utils/async-command'
@@ -15,6 +16,25 @@ import { install, initGit, isMissing } from '../utils/setup'
 const TEMPLATE = 'skpm/skpm'
 const RGX = /\.(woff2?|ttf|eot|jpe?g|ico|png|gif|mp4|mov|ogg|webm)(\?.*)?$/i
 const isMedia = str => RGX.test(str)
+
+function buildStubs(argv) {
+  const stubs = new Map()
+  ;['name', 'slug'].forEach(str => {
+    // if value is defined
+    if (argv[str] !== undefined) {
+      stubs.set(new RegExp(`{{\\s?${str}\\s}}`, 'g'), argv[str])
+    }
+  })
+  return stubs
+}
+
+function replaceStubs(stubs, string) {
+  let result = string
+  stubs.forEach((v, k) => {
+    result = result.replace(k, v)
+  })
+  return result
+}
 
 export default asyncCommand({
   command: 'create <dest>',
@@ -140,7 +160,6 @@ export default asyncCommand({
     print('Extracting the template')
 
     // Extract files from `archive` to `target`
-    // TODO: read & respond to meta/hooks
     const keeps = []
     await gittar.extract(archive, target, {
       strip: 2,
@@ -157,27 +176,45 @@ export default asyncCommand({
       },
     })
 
-    if (keeps.length) {
-      // eslint-disable-next-line
-      let dict = new Map()
-      // TODO: concat author-driven patterns
-      ;['name', 'slug'].forEach(str => {
-        // if value is defined
-        if (argv[str] !== undefined) {
-          dict.set(new RegExp(`{{\\s?${str}\\s}}`, 'g'), argv[str])
-        }
-      })
-      // Update each file's contents
-      const enc = 'utf8'
-      for (const entry of keeps) {
-        let buf = await fs.readFile(entry, enc)
-        dict.forEach((v, k) => {
-          buf = buf.replace(k, v)
+    if (!keeps.length) {
+      return error(`No \`template\` directory found within ${repo}!`, 1)
+    }
+    const stubs = buildStubs(argv)
+
+    // Update each file's contents
+    const enc = 'utf8'
+    // eslint-disable-next-line no-restricted-syntax
+    for (const entry of keeps) {
+      if (extname(entry) === '.sketch') {
+        const data = await fs.readFile(entry)
+        const zip = await jszip.loadAsync(data)
+        const promises = []
+        // replace in all the pages
+        zip.folder('pages').forEach(relativePath => {
+          promises.push(async () => {
+            const pagePath = `pages/${relativePath}`
+            let buf = await zip.file(pagePath).async('string')
+            buf = replaceStubs(stubs, buf)
+            zip.file(pagePath, buf)
+          })
         })
+        await Promise.all(promises.map(x => x()))
+        await new Promise((resolvePromise, reject) => {
+          zip
+            .generateNodeStream({ type: 'nodebuffer', streamFiles: true })
+            .pipe(fs.createWriteStream(entry))
+            .on('finish', () => {
+              // JSZip generates a readable stream with a "end" event,
+              // but is piped here in a writable stream which emits a "finish" event.
+              resolvePromise()
+            })
+            .on('error', reject)
+        })
+      } else {
+        let buf = await fs.readFile(entry, enc)
+        buf = replaceStubs(stubs, buf)
         await fs.writeFile(entry, buf, enc)
       }
-    } else {
-      return error(`No \`template\` directory found within ${repo}!`, 1)
     }
 
     print('Parsing `package.json` file')

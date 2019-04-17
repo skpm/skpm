@@ -13,8 +13,6 @@ import pkg from '../package.json'
 import checkVersion from '../check'
 import logo from './utils/logo'
 
-global.Promise = require('bluebird')
-
 checkVersion()
 
 const notifier = updateNotifier({
