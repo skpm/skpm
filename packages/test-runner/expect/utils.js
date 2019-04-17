@@ -115,7 +115,7 @@ const printWithType = (name, received, print) => {
   )
 }
 
-module.exports.printWithType
+module.exports.printWithType = printWithType
 
 const matcherHint = (
   matcherName,

@@ -557,7 +557,7 @@ const matchers = {
 
     const pass = new RegExp(
       typeof expected === 'string' ? escapeStrForRegex(expected) : expected
-    ).test(received)
+    ).test(String(received))
     const message = pass
       ? () =>
           matcherHint('.not.toMatch') +
