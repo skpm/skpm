@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/BohemianCoding/SketchAPI/develop/docs/sketch-plugin-manifest-schema.json",
   "compatibleVersion": 3,
   "bundleVersion": 1,
   "icon": "icon.png",
