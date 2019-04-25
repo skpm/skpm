@@ -1,5 +1,5 @@
 {
-  "unreleased": [],
+  "unreleased": ["[New] Polyfill globalThis"],
   "releases": {
     "0.6.0": [
       "[Improved] Only polyfill what's needed for Sketch 54",
