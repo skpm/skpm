@@ -1,9 +1,10 @@
 {
-  "unreleased": [
-    "[New] Polyfill globalThis",
-    "[New] Make `--run` work for long running script (requires Sketch 56)"
-  ],
+  "unreleased": [],
   "releases": {
+    "0.7.0": [
+      "[New] Polyfill globalThis",
+      "[New] Make `--run` work for long running script (requires Sketch 56)"
+    ],
     "0.6.0": [
       "[Improved] Only polyfill what's needed for Sketch 54",
       "[Improved] Use Terser instead of uglify-es (as it is now deprecated)"
