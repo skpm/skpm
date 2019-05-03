@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/skpm/skpm/tree/master/packages/test-runner#readme",
   "dependencies": {
-    "@skpm/builder": "^0.6.0",
+    "@skpm/builder": "^0.7.0",
     "@skpm/internal-utils": "^0.1.14",
     "chalk": "^2.4.1",
     "chokidar": "^2.0.3",
