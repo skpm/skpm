@@ -23,7 +23,7 @@ export default skpmConfig => {
   try {
     if (fs.existsSync(babelrcPath)) {
       userDefinedBabelConfig = JSON.parse(fs.readFileSync(babelrcPath, 'utf8'))
-    } else if (skpmConfig.babel) {
+    } else if (skpmConfig && skpmConfig.babel) {
       userDefinedBabelConfig = skpmConfig.babel
     }
   } catch (err) {

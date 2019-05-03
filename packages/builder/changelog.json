@@ -1,5 +1,8 @@
 {
-  "unreleased": ["[New] Polyfill globalThis"],
+  "unreleased": [
+    "[New] Polyfill globalThis",
+    "[New] Make `--run` work for long running script (requires Sketch 56)"
+  ],
   "releases": {
     "0.6.0": [
       "[Improved] Only polyfill what's needed for Sketch 54",

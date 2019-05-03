@@ -14,7 +14,7 @@ const commandResourceLoader = {
         return path.posix.join('..', 'Resources', WEBPACK_DIRECTORY, url)
       },
       publicPath(url) {
-        return `"file://" + context.plugin.urlForResourceNamed("${WEBPACK_DIRECTORY}/${url}").path()`
+        return `"file://" + String(context.scriptPath).split(".sketchplugin/Contents/Sketch")[0] + ".sketchplugin/Contents/Resources/${WEBPACK_DIRECTORY}/${url}"`
       },
     },
   },
