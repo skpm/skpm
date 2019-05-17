@@ -104,8 +104,7 @@ async function copyManifest(manifestJSON) {
     copy.description = manifestJSON.description || skpmConfig.description
     copy.homepage = manifestJSON.homepage || skpmConfig.homepage
     copy.name = manifestJSON.name || skpmConfig.name
-    copy.identifier =
-      manifestJSON.identifier || skpmConfig.identifier || skpmConfig.name
+    copy.identifier = manifestJSON.identifier || skpmConfig.identifier
     copy.disableCocoaScriptPreprocessor =
       typeof manifestJSON.disableCocoaScriptPreprocessor === 'undefined'
         ? true
@@ -154,6 +153,8 @@ function getCommands(manifestJSON) {
   const commandsAndHandlers = manifestJSON.commands.reduce((prev, c) => {
     if (!prev[c.script]) {
       prev[c.script] = {
+        isPluginCommand: true,
+        absolutePath: path.join(manifestFolder, c.script),
         script: c.script,
         handlers: [],
         identifiers: [],
@@ -327,23 +328,28 @@ async function buildCommandsAndResources(commands, resources, watch) {
   )
 
   const compilers = []
+  const entries = commands.concat(
+    (resources || []).map(resource => ({
+      isPluginCommand: false,
+      script: resource,
+      absolutePath: path.join(process.cwd(), resource),
+    }))
+  )
 
-  for (const command of commands.concat(resources)) {
-    const file = command.script || command
-    const compiler = webpack(
-      await webpackConfig(file, command.identifiers, command.handlers)
-    )
+  // eslint-disable-next-line no-restricted-syntax
+  for (const entry of entries) {
+    const compiler = webpack(await webpackConfig(entry))
     if (watch) {
       // https://github.com/webpack/webpack.js.org/issues/125
       // watchOptions need to be manually passed to the watch() method.
       compilers.push(
         compiler.watch(
           compiler.options.watchOptions,
-          buildCallback(file, watch)
+          buildCallback(entry.script, watch)
         )
       )
     } else {
-      compiler.run(buildCallback(file))
+      compiler.run(buildCallback(entry.script))
     }
   }
 
@@ -356,6 +362,10 @@ async function buildPlugin() {
     // delete the require cache so that we can require it anew (when watching)
     delete require.cache[manifest]
     manifestJSON = require(manifest)
+
+    // set the identifier because we need it to reload the plugin
+    skpmConfig.identifier =
+      manifestJSON.identifier || skpmConfig.identifier || skpmConfig.name
   } catch (err) {
     console.error(err)
     process.exit(1)

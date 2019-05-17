@@ -24,9 +24,9 @@ const CORE_MODULES = [
   'util',
 ]
 
-async function getCommands(output, commandIdentifiers, options) {
+async function getCommands(output, entry, options) {
   return Promise.all(
-    commandIdentifiers.map(commandIdentifier =>
+    entry.identifiers.map(commandIdentifier =>
       WebpackCommandPlugin(output, commandIdentifier, options)
     )
   )
@@ -60,13 +60,8 @@ export default function getWebpackConfig(
 
   const babelLoader = BabelLoader(skpmConfig)
 
-  return async function webpackConfigGenerator(
-    file,
-    commandIdentifiers,
-    commandHandlers
-  ) {
-    const basename = path.basename(file)
-    const isPluginCommand = !!commandIdentifiers
+  return async function webpackConfigGenerator(entry) {
+    const basename = path.basename(entry.script)
 
     let plugins = [
       new webpack.EnvironmentPlugin({
@@ -78,8 +73,8 @@ export default function getWebpackConfig(
     ]
     const rules = [babelLoader]
 
-    if (isPluginCommand) {
-      if (commandHandlers.find(k => k === '__skpm_run')) {
+    if (entry.isPluginCommand) {
+      if (entry.handlers.find(k => k === '__skpm_run')) {
         console.error(
           `${chalk.red(
             'error'
@@ -94,16 +89,19 @@ export default function getWebpackConfig(
           FormData: require.resolve('sketch-polyfill-fetch/lib/form-data'),
           Promise: require.resolve('promise-polyfill'),
         }),
-        new WebpackHeaderFooterPlugin(commandHandlers)
+        new WebpackHeaderFooterPlugin(entry.handlers)
       )
 
       rules.push(resourceLoader)
       rules.push(nibLoader)
     }
 
-    if (argv.run && isPluginCommand) {
+    if (argv.run && entry.isPluginCommand) {
       plugins = plugins.concat(
-        await getCommands(output, commandIdentifiers, argv)
+        await getCommands(output, entry, {
+          ...argv,
+          pluginIdentifier: skpmConfig && skpmConfig.identifier,
+        })
       )
     }
 
@@ -144,11 +142,11 @@ export default function getWebpackConfig(
           'node_modules',
         ],
       },
-      entry: path.join(isPluginCommand ? manifestFolder : process.cwd(), file),
+      entry: entry.absolutePath,
       externals: [
         (context, request, callback) => {
           // we only want to mess with pluginCommands
-          if (!isPluginCommand) {
+          if (!entry.isPluginCommand) {
             return callback()
           }
 
@@ -165,8 +163,8 @@ export default function getWebpackConfig(
       ],
       output: {
         filename: basename,
-        library: isPluginCommand ? 'exports' : undefined,
-        path: isPluginCommand
+        library: entry.isPluginCommand ? 'exports' : undefined,
+        path: entry.isPluginCommand
           ? path.join(output, 'Contents', 'Sketch')
           : path.join(output, 'Contents', 'Resources'),
       },
@@ -176,7 +174,7 @@ export default function getWebpackConfig(
     if (userDefinedWebpackConfig) {
       const resolvedUserDefinedConfig = await userDefinedWebpackConfig(
         webpackConfig,
-        isPluginCommand
+        entry
       )
       if (resolvedUserDefinedConfig) {
         webpackConfig = merge.smart(webpackConfig, resolvedUserDefinedConfig)

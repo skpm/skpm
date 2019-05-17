@@ -3,7 +3,7 @@ import getSketchVersion from '@skpm/internal-utils/getSketchVersion'
 import WebpackShellPlugin, { sketchtoolRunCommand } from './webpackShellPlugin'
 import SketchCommandPlugin from './sketchCommandPlugin'
 
-export default async function(output, commandIdentifier, options) {
+export default async function(output, commandIdentifier, options = {}) {
   const sketchVersion = await getSketchVersion()
 
   let command
@@ -13,20 +13,19 @@ export default async function(output, commandIdentifier, options) {
       bundleURL: output,
       commandIdentifier,
     })
-  }
-
-  if (!sketchVersion || semver.satisfies(sketchVersion, '^44.0.0')) {
+  } else {
     command = new WebpackShellPlugin({
-      script: sketchtoolRunCommand(output, commandIdentifier, options),
-    })
-  }
-
-  if (sketchVersion && semver.satisfies(sketchVersion, '>= 45.0.0')) {
-    command = new WebpackShellPlugin({
+      sketchVersion,
       script: sketchtoolRunCommand(output, commandIdentifier, {
-        withoutActivating: true,
+        ...(sketchVersion && semver.satisfies(sketchVersion, '>= 45.0.0')
+          ? { withoutActivating: true }
+          : {}),
+        ...(sketchVersion && semver.satisfies(sketchVersion, '>= 56.0.0')
+          ? { withoutWaitingForPlugin: true }
+          : {}),
         ...(options || {}),
       }),
+      ...options,
     })
   }
 

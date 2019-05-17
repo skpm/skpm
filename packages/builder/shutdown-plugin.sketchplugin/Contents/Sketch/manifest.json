@@ -1,0 +1,13 @@
+{
+  "commands": [
+    {
+      "name": "shutdown-plugin",
+      "identifier": "shutdown-plugin",
+      "script": "shutdown-plugin.js"
+    }
+  ],
+  "version": "0.1.0",
+  "name": "shutdown-plugin",
+  "identifier": "io.skpm.shutdown-plugin",
+  "disableCocoaScriptPreprocessor": true
+}

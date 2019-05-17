@@ -4,9 +4,9 @@ const { ConcatSource } = require('webpack-sources')
 
 // expose the context as a global so that polyfills can use it
 // without passing it all the way down
-const header = `var that = this;
+const header = `var globalThis = this;
 function __skpm_run (key, context) {
-  that.context = context;
+  globalThis.context = context;
 `
 // exports is defined here by webpack
 const footer = definedKeys => `  if (key === 'default' && typeof exports === 'function') {
@@ -18,12 +18,12 @@ const footer = definedKeys => `  if (key === 'default' && typeof exports === 'fu
 ${definedKeys
   .map(k => {
     if (k === 'onRun') {
-      return `that['${k}'] = __skpm_run.bind(this, 'default')`
+      return `globalThis['${k}'] = __skpm_run.bind(this, 'default')`
     }
     if (k === 'run') {
-      return `that['${k}'] = __skpm_run.bind(this, 'default')`
+      return `globalThis['${k}'] = __skpm_run.bind(this, 'default')`
     }
-    return `that['${k}'] = __skpm_run.bind(this, '${k}')`
+    return `globalThis['${k}'] = __skpm_run.bind(this, '${k}')`
   })
   .join(';\n')}
 `

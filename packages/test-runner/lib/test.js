@@ -7,8 +7,7 @@ const webpack = require('webpack')
 const chokidar = require('chokidar')
 const createLogger = require('progress-estimator')
 const replaceArraysByLastItem = require('@skpm/internal-utils/replace-arrays-by-last-item')
-const generateWebpackConfig = require('@skpm/builder/lib/utils/webpackConfig')
-  .default
+const generateWebpackConfig = require('@skpm/builder').webpackConfig
 const { buildTestFile, isTestFile } = require('./utils/build-test-file')
 const updateWebpackConfig = require('./utils/update-webpack-config')
 const { CLEAR, KEYS } = require('./utils/constants')
@@ -122,11 +121,13 @@ const build = async () => {
   }
 
   const buildPlugin = async () => {
-    let webpackConfig = await generateWebpackConfig({}, '', '', skpmConfig)(
-      testFile,
-      [],
-      ['onRun']
-    )
+    let webpackConfig = await generateWebpackConfig({}, '', '', skpmConfig)({
+      isPluginCommand: true,
+      absolutePath: testFile,
+      script: testFile,
+      handlers: ['onRun'],
+      identifiers: [],
+    })
     webpackConfig = updateWebpackConfig(
       skpmConfig,
       getTestFiles,
