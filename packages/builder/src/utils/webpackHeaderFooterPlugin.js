@@ -11,6 +11,8 @@ function __skpm_run (key, context) {
 // exports is defined here by webpack
 const footer = definedKeys => `  if (key === 'default' && typeof exports === 'function') {
     exports(context);
+  } else if (typeof exports[key] !== 'function') {
+    throw new Error('Missing export named "' + key + '". Your command should contain something like \`export function " + key +"() {}\`.');
   } else {
     exports[key](context);
   }
