@@ -7,8 +7,11 @@ import TerserPlugin from 'terser-webpack-plugin'
 import WebpackCommandPlugin from './webpackCommandPlugin'
 import WebpackHeaderFooterPlugin from './webpackHeaderFooterPlugin'
 import BabelLoader from './babelLoader'
-import resourceLoader from './resourceLoader'
-import nibLoader from './nibLoader'
+import {
+  commandResourceLoader,
+  nibLoader,
+  xcodeprojLoader,
+} from './resourceLoader'
 
 const CORE_MODULES = [
   'buffer',
@@ -92,8 +95,9 @@ export default function getWebpackConfig(
         new WebpackHeaderFooterPlugin(entry.handlers)
       )
 
-      rules.push(resourceLoader)
+      rules.push(commandResourceLoader)
       rules.push(nibLoader)
+      rules.push(xcodeprojLoader)
     }
 
     if (argv.run && entry.isPluginCommand) {

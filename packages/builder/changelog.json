@@ -1,6 +1,7 @@
 {
   "unreleased": [
-    "[Improved] The error when trying to run a handler that doesn't exist will be clearer (hopefully)"
+    "[Improved] The error when trying to run a handler that doesn't exist will be clearer (hopefully)",
+    "[New] Add xcodeproj loader"
   ],
   "releases": {
     "0.7.0": [
