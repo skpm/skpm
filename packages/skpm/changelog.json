@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.2.1": ["[Fixed] Preserve symlink when zipping the plugin"],
     "1.2.0": [
       "[New] Add support for setting `skpm.private` to `true` in the package.json to avoid publishing the plugin to the registry",
       "[New] Add support for replacing stubs in Sketch files"

@@ -235,9 +235,12 @@ export default asyncCommand({
 
       print('Zipping the plugin')
       const tempZip = `${Date.now()}.zip`
-      await exec(`zip -r ${tempZip} '${skpmConfig.main}' -x '*.DS_Store'`, {
-        maxBuffer: 2000 * 1024,
-      })
+      await exec(
+        `zip --symlinks -r ${tempZip} '${skpmConfig.main}' -x '*.DS_Store'`,
+        {
+          maxBuffer: 2000 * 1024,
+        }
+      )
 
       print('Creating a draft release on GitHub')
       const { id: releaseId } = await github.createDraftRelease(
