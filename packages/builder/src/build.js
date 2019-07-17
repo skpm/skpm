@@ -44,10 +44,22 @@ const { argv } = yargs
       'The path to another manifest. Use this option if you need to build different version of your plugin.',
     type: 'string',
   })
+  .option('output', {
+    describe:
+      'The path to the final plugin. Use this option if you need to build different version of your plugin.',
+    type: 'string',
+  })
   .help()
   .strict()
 
-replaceArraysByLastItem(argv, ['watch', 'quiet', 'run', 'app', 'manifest'])
+replaceArraysByLastItem(argv, [
+  'watch',
+  'quiet',
+  'run',
+  'app',
+  'manifest',
+  'output',
+])
 
 let packageJSON
 try {
