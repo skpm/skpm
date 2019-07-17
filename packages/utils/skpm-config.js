@@ -4,7 +4,7 @@ module.exports = function getSkpmConfig(packageJSON, argv) {
   const skpmConfig = packageJSON.skpm || {}
   argv = argv || {} // eslint-disable-line
   return {
-    main: skpmConfig.main || packageJSON.main,
+    main: argv.output || skpmConfig.main || packageJSON.main,
     manifest: argv.manifest || skpmConfig.manifest || packageJSON.manifest,
     version: skpmConfig.version || packageJSON.version,
     homepage: skpmConfig.homepage || packageJSON.homepage,
