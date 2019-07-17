@@ -1,6 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "0.7.2": [
+      "[New] Add `output` option to specify the path to the built plugin"
+    ],
     "0.7.1": [
       "[Improved] The error when trying to run a handler that doesn't exist will be clearer (hopefully)",
       "[New] Add xcodeproj loader"
