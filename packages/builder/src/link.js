@@ -17,6 +17,10 @@ const { argv } = yargs
   .help()
   .strict()
   .usage('Usage: cd path/to/my/plugin && skpm-link')
+  .option('output', {
+    describe: 'The path to the final plugin. Use this option if you need to link specific version of your plugin.',
+    type: 'string'
+  }).help().strict();
 
 const path = argv.$1 || '.'
 
@@ -49,12 +53,11 @@ try {
 const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
 
 if (!skpmConfig.main) {
-  console.error(
-    `${chalk.red(
-      'error'
+  console.warn(
+    `${chalk.yellow(
+      'warning'
     )} Missing "skpm.main" fields in the package.json. Should point to the ".sketchplugin" file`
   )
-  process.exit(1)
 }
 
 if (!skpmConfig.name) {
