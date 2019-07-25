@@ -50,14 +50,15 @@ try {
   process.exit(1)
 }
 
-const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
+const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON, argv)
 
 if (!skpmConfig.main) {
-  console.warn(
-    `${chalk.yellow(
-      'warning'
+  console.error(
+    `${chalk.red(
+      'error'
     )} Missing "skpm.main" fields in the package.json. Should point to the ".sketchplugin" file`
   )
+  process.exit(1)
 }
 
 if (!skpmConfig.name) {
