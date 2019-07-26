@@ -17,6 +17,10 @@ const { argv } = yargs
   .help()
   .strict()
   .usage('Usage: cd path/to/my/plugin && skpm-link')
+  .option('output', {
+    describe: 'The path to the final plugin. Use this option if you need to link specific version of your plugin.',
+    type: 'string'
+  }).help().strict();
 
 const path = argv.$1 || '.'
 
@@ -46,7 +50,7 @@ try {
   process.exit(1)
 }
 
-const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON)
+const skpmConfig = getSkpmConfigFromPackageJSON(packageJSON, argv)
 
 if (!skpmConfig.main) {
   console.error(
