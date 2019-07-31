@@ -4,24 +4,30 @@ const yaml = require('js-yaml')
 const objectAssign = require('object-assign')
 const homedir = require('os').homedir()
 
-const CONFIG_PATH = path.join(homedir, '.skpmrc')
+const CONFIG_FILE_NAME = '.skpmrc'
 const DEFAULT_CONFIG = {
   sketchPath: '/Applications/Sketch.app',
   pluginDirectory: `${homedir}/Library/Application Support/com.bohemiancoding.sketch3/Plugins/`,
   logsLocation: `${homedir}/Library/Logs/com.bohemiancoding.sketch3/Plugin Output.log`,
   plugins: {},
+  notarisation: undefined,
 }
 
 module.exports = {
   get() {
-    if (!fs.existsSync(CONFIG_PATH)) {
-      return DEFAULT_CONFIG
-    }
-    return objectAssign(
-      {},
-      DEFAULT_CONFIG,
-      yaml.safeLoad(fs.readFileSync(CONFIG_PATH, 'utf8'))
+    const homeConfig = fs.existsSync(path.join(homedir, CONFIG_FILE_NAME))
+      ? yaml.safeLoad(
+          fs.readFileSync(path.join(homedir, CONFIG_FILE_NAME), 'utf8')
+        )
+      : {}
+    const localConfig = fs.existsSync(
+      path.join(process.cwd(), CONFIG_FILE_NAME)
     )
+      ? yaml.safeLoad(
+          fs.readFileSync(path.join(process.cwd(), CONFIG_FILE_NAME), 'utf8')
+        )
+      : {}
+    return objectAssign({}, DEFAULT_CONFIG, homeConfig, localConfig)
   },
 
   save(config) {
@@ -35,10 +41,14 @@ module.exports = {
       },
       { plugins: config.plugins }
     )
-    fs.writeFileSync(CONFIG_PATH, yaml.safeDump(configToSave), 'utf8')
+    fs.writeFileSync(
+      path.join(homedir, CONFIG_FILE_NAME),
+      yaml.safeDump(configToSave),
+      'utf8'
+    )
   },
 
   delete() {
-    fs.unlinkSync(CONFIG_PATH)
+    fs.unlinkSync(path.join(homedir, CONFIG_FILE_NAME))
   },
 }
