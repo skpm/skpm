@@ -1,6 +1,6 @@
 {
   "name": "skpm",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "A utility to build, publish and install sketch plugins",
   "preferGlobal": true,
   "main": "lib/index.js",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
-    "@skpm/internal-utils": "^0.1.14",
+    "@skpm/internal-utils": "^0.1.16",
     "chalk": "^2.4.2",
     "cross-spawn-promise": "^0.10.1",
     "fs.promised": "^3.0.0",

@@ -8,6 +8,7 @@ import { exec } from '@skpm/internal-utils/exec'
 import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import extractRepository from '@skpm/internal-utils/extract-repository'
 import replaceArraysByLastItem from '@skpm/internal-utils/replace-arrays-by-last-item'
+import toolConfig from '@skpm/internal-utils/tool-config'
 import auth from '../utils/auth'
 import github from '../utils/github'
 import asyncCommand from '../utils/async-command'
@@ -241,6 +242,51 @@ export default asyncCommand({
           maxBuffer: 2000 * 1024,
         }
       )
+
+      const { notarisation } = toolConfig.get()
+      if (notarisation) {
+        if (notarisation.command) {
+          print('Running custom notarization command')
+          await exec(`${notarisation.command} ${tempZip}`)
+        } else {
+          print('Preparing the plugin to be notarized')
+          await exec(
+            `codesign -f -s "${
+              notarisation.authority
+            }" --timestamp --identifier "${skpmConfig.identifer}" ${tempZip}`
+          )
+
+          print('Sending the plugin to be notarized')
+          let requestId
+          try {
+            const { stderr } = await exec(
+              `xcrun altool --notarize-app -f ${tempZip} --primary-bundle-id "${
+                skpmConfig.identifer
+              }" -u "${notarisation.username}" -p "${notarisation.password}"`
+            )
+            ;[requestId] = stderr.split('RequestUUID = ')[1].split('\n')
+          } catch (err) {
+            if (err.message.indexOf('already been uploaded') !== -1) {
+              // we can handle that
+              ;[requestId] = err.message
+                .split('The upload ID is ')[1]
+                .split('"')
+            } else {
+              throw err
+            }
+          }
+
+          console.log(
+            `\n\nPlugin sent to the notarization server. To check the status of the request (which might take a few minutes), run:\nxcrun altool --notarization-info ${requestId.trim()} -u "${
+              notarisation.username
+            }" -p "${notarisation.password}"\n\n`
+          )
+        }
+      } else {
+        console.warn(
+          `\n\n⚠️ The plugin won't be notarized because the configuration is missing. It is a requirement if the plugin contains a native obj-c framework on macOS 10.15 and might become one for later version of macOS.\nFor more information about how to set up the notarization process and what it means, check https://github.com/skpm/skpm/blob/master/docs/notarization.md.\n\n`
+        )
+      }
 
       print('Creating a draft release on GitHub')
       const { id: releaseId } = await github.createDraftRelease(
