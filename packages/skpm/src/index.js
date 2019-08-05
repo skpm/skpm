@@ -64,5 +64,5 @@ For help with a specific command, enter:
   )
   .help()
   .alias('h', 'help')
-  .demandCommand()
+  .demandCommand(1,'')
   .strict().argv
