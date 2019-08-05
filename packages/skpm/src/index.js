@@ -59,7 +59,7 @@ yargs
     `${logo(`skpm ${pkg.version}`)}
 
 For help with a specific command, enter:
-  skpm help [command]
+  skpm [command] help
 `
   )
   .help()
