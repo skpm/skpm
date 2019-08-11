@@ -140,11 +140,6 @@ async function copyManifest(manifestJSON) {
       }
     }
 
-    copy.commands = manifestJSON.commands.map(command => {
-      const basename = path.basename(command.script)
-      return { ...command, script: basename }
-    })
-
     fs.writeFile(
       path.join(output, 'Contents', 'Sketch', 'manifest.json'),
       JSON.stringify(copy, null, 2),
