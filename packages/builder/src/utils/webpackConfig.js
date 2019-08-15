@@ -64,8 +64,6 @@ export default function getWebpackConfig(
   const babelLoader = BabelLoader(skpmConfig)
 
   return async function webpackConfigGenerator(entry) {
-    const basename = path.basename(entry.script)
-
     let plugins = [
       new webpack.EnvironmentPlugin({
         NODE_ENV: NODE_ENV || 'development', // default to 'development'
@@ -166,7 +164,7 @@ export default function getWebpackConfig(
         },
       ],
       output: {
-        filename: basename,
+        filename: entry.script.replace(/\.(?!js)|\//g, '_'),
         library: entry.isPluginCommand ? 'exports' : undefined,
         path: entry.isPluginCommand
           ? path.join(output, 'Contents', 'Sketch')

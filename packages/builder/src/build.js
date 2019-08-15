@@ -140,9 +140,19 @@ async function copyManifest(manifestJSON) {
       }
     }
 
+    const scripts = {}
     copy.commands = manifestJSON.commands.map(command => {
-      const basename = path.basename(command.script)
-      return { ...command, script: basename }
+      const script = command.script.replace(/\.(?!js)|\//g, '_')
+      if (scripts[script]) {
+        console.error(
+          `${chalk.red('error')} ${command.script} conflicts with ${
+            scripts[script]
+          } in the plugin bundle`
+        )
+        process.exit(1)
+      }
+      scripts[script] = command.script
+      return { ...command, script }
     })
 
     fs.writeFile(
