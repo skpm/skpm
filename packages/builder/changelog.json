@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.7.3": [
+      "[Fixed] Make `skpm-build` preserve relative paths in the built output so that there is no conflicting names (Thanks @yuanqing)",
+      "[New] emit `uncaughtException` event if available (Sketch >=58) instead of throwing an error if there is an event listener"
+    ],
     "0.7.2": [
       "[New] Add `output` option to specify the path to the built plugin"
     ],
