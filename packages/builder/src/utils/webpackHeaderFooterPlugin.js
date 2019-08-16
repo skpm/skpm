@@ -5,16 +5,25 @@ const { ConcatSource } = require('webpack-sources')
 // expose the context as a global so that polyfills can use it
 // without passing it all the way down
 const header = `var globalThis = this;
+var global = this;
 function __skpm_run (key, context) {
   globalThis.context = context;
+  try {
 `
 // exports is defined here by webpack
-const footer = definedKeys => `  if (key === 'default' && typeof exports === 'function') {
-    exports(context);
-  } else if (typeof exports[key] !== 'function') {
-    throw new Error('Missing export named "' + key + '". Your command should contain something like \`export function " + key +"() {}\`.');
-  } else {
-    exports[key](context);
+const footer = definedKeys => `    if (key === 'default' && typeof exports === 'function') {
+      exports(context);
+    } else if (typeof exports[key] !== 'function') {
+      throw new Error('Missing export named "' + key + '". Your command should contain something like \`export function " + key +"() {}\`.');
+    } else {
+      exports[key](context);
+    }
+  } catch (err) {
+    if (typeof process !== 'undefined' && process.listenerCount && process.listenerCount('uncaughtException')) {
+      process.emit("uncaughtException", err, "uncaughtException");
+    } else {
+      throw err
+    }
   }
 }
 ${definedKeys
