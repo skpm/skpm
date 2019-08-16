@@ -68,9 +68,6 @@ export default function getWebpackConfig(
       new webpack.EnvironmentPlugin({
         NODE_ENV: NODE_ENV || 'development', // default to 'development'
       }),
-      new webpack.DefinePlugin({
-        'process.type': JSON.stringify('sketch'),
-      }),
     ]
     const rules = [babelLoader]
 
@@ -88,7 +85,7 @@ export default function getWebpackConfig(
         new webpack.ProvidePlugin({
           fetch: require.resolve('sketch-polyfill-fetch'),
           FormData: require.resolve('sketch-polyfill-fetch/lib/form-data'),
-          Promise: require.resolve('promise-polyfill'),
+          Promise: require.resolve('@skpm/promise'),
         }),
         new WebpackHeaderFooterPlugin(entry.handlers)
       )
@@ -171,6 +168,7 @@ export default function getWebpackConfig(
           : path.join(output, 'Contents', 'Resources'),
       },
       plugins,
+      node: !entry.isPluginCommand,
     }
 
     if (userDefinedWebpackConfig) {
