@@ -168,6 +168,7 @@ export default function getWebpackConfig(
           : path.join(output, 'Contents', 'Resources'),
       },
       plugins,
+      ...(entry.isPluginCommand ? { node: false } : null),
     }
 
     if (userDefinedWebpackConfig) {
