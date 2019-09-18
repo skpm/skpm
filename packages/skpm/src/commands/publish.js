@@ -243,16 +243,21 @@ export default asyncCommand({
         }
       )
 
-      const { notarisation } = toolConfig.get()
-      if (notarisation) {
-        if (notarisation.command) {
+      // eslint-disable-next-line prefer-const
+      let { notarisation, notarization } = toolConfig.get()
+      if (!notarization) {
+        // suport both spelling
+        notarization = notarisation
+      }
+      if (notarization) {
+        if (notarization.command) {
           print('Running custom notarization command')
-          await exec(`${notarisation.command} ${tempZip}`)
+          await exec(`${notarization.command} ${tempZip}`)
         } else {
           print('Preparing the plugin to be notarized')
           await exec(
             `codesign -f -s "${
-              notarisation.authority
+              notarization.authority
             }" --timestamp --identifier "${skpmConfig.identifer}" ${tempZip}`
           )
 
@@ -262,7 +267,7 @@ export default asyncCommand({
             const { stderr } = await exec(
               `xcrun altool --notarize-app -f ${tempZip} --primary-bundle-id "${
                 skpmConfig.identifer
-              }" -u "${notarisation.username}" -p "${notarisation.password}"`
+              }" -u "${notarization.username}" -p "${notarization.password}"`
             )
             ;[requestId] = stderr.split('RequestUUID = ')[1].split('\n')
           } catch (err) {
@@ -278,8 +283,8 @@ export default asyncCommand({
 
           console.log(
             `\n\nPlugin sent to the notarization server. To check the status of the request (which might take a few minutes), run:\nxcrun altool --notarization-info ${requestId.trim()} -u "${
-              notarisation.username
-            }" -p "${notarisation.password}"\n\n`
+              notarization.username
+            }" -p "${notarization.password}"\n\n`
           )
         }
       } else {
