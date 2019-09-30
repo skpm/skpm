@@ -5,6 +5,7 @@ module.exports = function hackBabelConfig(skpmConfig, loader) {
     loader.options = {}
   }
   loader.options.plugins = [
+    '@babel/plugin-transform-modules-commonjs',
     [require('./globals-babel-plugin'), skpmConfig.test],
   ].concat(loader.options.plugins || [])
 }
