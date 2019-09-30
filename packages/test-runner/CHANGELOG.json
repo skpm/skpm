@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.4.1": ["[Improved] Allow stubbing (Thanks @FRSgit!)"],
     "0.4.0": [
       "[Improved] Refactor watch mode to make it less memory intensive",
       "[Improved] Update @skpm/builder to 0.6"
