@@ -53,6 +53,46 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that `skpm-test` can test, see [Using Matchers](https://facebook.github.io/jest/docs/en/using-matchers.html).
 
+## Spying, Stubbing & Mocking ES6 classes
+
+Install your favourite stubbing/mocking library (`skpm Test Runner` got battle tested using [Sinon.JS](https://sinonjs.org))
+```bash
+npm install --save-dev sinon
+```
+Write test using [spies](https://sinonjs.org/releases/latest/spies/) or [stubs](https://sinonjs.org/releases/latest/stubs/). See full example below showing how to properly stub and spy on ES6 classes:
+```javascript
+// tested class
+import { TestedCtrl } from './tested.ctrl';
+// whole class to be stubbed - in case like that use `import * as name` syntax!
+import * as RandomNumberModule from './randomNumber.model';
+// service, from which one static method will be stubbed
+import { RandomService } from './random.service';
+
+beforeEach(() => {
+    // this stub will return object with value 20, so we can run the test below
+    sinon.stub(RandomNumberModule, 'RandomNumber')
+         .returns({value: 20});
+
+    // spy on service method
+    sinon.spy(RandomService, 'generateRandomNumber');
+});
+
+test('should call `RandomService.generateRandomNumber` only once', () => {
+    const testedCtrl = new TestedCtrl();
+    testedCtrl.proposeDigit();
+
+    expect(RandomService.generateRandomNumber.calledOnce).toBe(true);
+});
+
+test('should call return false if generated number is bigger than 9', () => {
+    const testedCtrl = new TestedCtrl();
+    const proposedDigit = testedCtrl.proposeDigit();
+
+    expect(SomeService.generateRandomNumber.calledOnce).toBe(false);
+    expect(proposedDigit).toBe(false);
+});
+```
+
 ## Running the tests on TravisCI
 
 - Go to [Travis](https://travis-ci.org/profile)
