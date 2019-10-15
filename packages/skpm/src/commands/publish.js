@@ -289,7 +289,7 @@ export default asyncCommand({
         }
       } else {
         console.warn(
-          `\n\n⚠️ The plugin won't be notarized because the configuration is missing. It is a requirement if the plugin contains a native obj-c framework on macOS 10.15 and might become one for later version of macOS.\nFor more information about how to set up the notarization process and what it means, check https://github.com/skpm/skpm/blob/master/docs/notarization.md.\n\n`
+          `\n\n⚠️ The plugin won't be notarized because the configuration is missing. It is a requirement if the plugin contains a native obj-c framework or bundled binaries on macOS 10.15 and might become one for later version of macOS.\nFor more information about how to set up the notarization process and what it means, check https://developer.sketch.com/plugins/notarize-plugins.\n\n`
         )
       }
 
