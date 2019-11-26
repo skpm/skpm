@@ -10,6 +10,11 @@ import getSkpmConfigFromPackageJSON from '@skpm/internal-utils/skpm-config'
 import getSketchVersion from '@skpm/internal-utils/getSketchVersion'
 import checkDevMode from '@skpm/internal-utils/check-dev-mode'
 
+// Linking makes no sense for `npm ci`, so let's do nothing here
+if (process.env.CI) {
+  process.exit(0)
+}
+
 const { pluginDirectory } = getConfig()
 
 const { argv } = yargs
