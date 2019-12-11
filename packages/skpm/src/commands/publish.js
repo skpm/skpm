@@ -269,13 +269,21 @@ export default asyncCommand({
                 skpmConfig.identifer
               }" -u "${notarization.username}" -p "${notarization.password}"`
             )
-            ;[requestId] = stderr.split('RequestUUID = ')[1].split('\n')
+            ;[requestId] = (stderr.split('RequestUUID = ')[1] || '').split('\n')
+
+            if (!requestId) {
+              throw new Error(stderr)
+            }
           } catch (err) {
             if (err.message.indexOf('already been uploaded') !== -1) {
               // we can handle that
-              ;[requestId] = err.message
-                .split('The upload ID is ')[1]
-                .split('"')
+              ;[requestId] = (
+                err.message.split('The upload ID is ')[1] || ''
+              ).split('"')
+
+              if (!requestId) {
+                throw err
+              }
             } else {
               throw err
             }
