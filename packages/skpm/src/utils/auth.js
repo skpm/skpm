@@ -1,4 +1,4 @@
-import keychain from 'keychain'
+import keychain from 'xkeychain'
 import { error } from '.'
 
 const service = 'Github.com API Token'
