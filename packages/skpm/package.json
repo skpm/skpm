@@ -48,7 +48,6 @@
     "inquirer": "^6.2.0",
     "is-ci": "^2.0.0",
     "jszip": "^3.2.1",
-    "keychain": "^1.3.0",
     "log-symbols": "^2.2.0",
     "opn": "^5.4.0",
     "ora": "^1.4.0",
@@ -56,6 +55,7 @@
     "request": "^2.88.0",
     "update-notifier": "^2.5.0",
     "which": "^1.3.1",
+    "xkeychain": "0.0.6",
     "xml2js": "^0.4.17",
     "yargs": "^13.2.2"
   }
