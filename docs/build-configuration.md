@@ -20,7 +20,7 @@ To customize Webpack, create `webpack.skpm.config.js` file which exports a funct
  * Supports asynchronous changes when promise is returned.
  *
  * @param {object} config - original webpack config.
- * @param {boolean} isPluginCommand - wether the config is for a plugin command or an asset
+ * @param {boolean} isPluginCommand - whether the config is for a plugin command or an asset
  **/
 module.exports = function(config, isPluginCommand) {
   /** you can change config here **/
