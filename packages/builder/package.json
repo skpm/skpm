@@ -52,7 +52,6 @@
     "globby": "^9.2.0",
     "mkdirp": "^0.5.1",
     "parse-author": "2.0.0",
-    "run-sketch-plugin": "^1.0.0",
     "semver": "^6.0.0",
     "sketch-polyfill-fetch": "^0.4.3",
     "terser-webpack-plugin": "^1.2.3",

@@ -1,18 +1,14 @@
 import semver from 'semver'
 import getSketchVersion from '@skpm/internal-utils/getSketchVersion'
 import WebpackShellPlugin, { sketchtoolRunCommand } from './webpackShellPlugin'
-import SketchCommandPlugin from './sketchCommandPlugin'
 
 export default async function(output, commandIdentifier, options = {}) {
   const sketchVersion = await getSketchVersion()
 
   let command
 
-  if (sketchVersion && semver.satisfies(sketchVersion, '^43.0.0')) {
-    command = new SketchCommandPlugin({
-      bundleURL: output,
-      commandIdentifier,
-    })
+  if (sketchVersion && semver.lt(sketchVersion, '45.0.0')) {
+    console.warn('❗️ Cannot run the plugin automatically for Sketch < 45')
   } else {
     command = new WebpackShellPlugin({
       sketchVersion,
