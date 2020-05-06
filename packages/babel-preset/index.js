@@ -25,6 +25,7 @@ module.exports = function buildSkpmPreset(api, options) {
     plugins: [
       '@babel/plugin-syntax-async-generators',
       '@babel/plugin-proposal-object-rest-spread',
+      '@babel/plugin-proposal-export-namespace-from',
     ],
   }
 }
