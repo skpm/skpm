@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.7.6": [
+      "[Improved] Drop support for Sketch < 45. All dependencies now have proper licenses",
+      "[Improved] Add support for `export * as x from y`"
+    ],
     "0.7.5": [
       "[Fixed] Remove warning shown when building resources (Thanks @huw)",
       "[Improved] `skpm-link` won't fail on a CI anymore"
