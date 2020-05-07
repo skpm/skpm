@@ -41,7 +41,7 @@
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
     "@babel/core": "^7.4.3",
-    "@skpm/babel-preset": "0.2.1",
+    "@skpm/babel-preset": "^0.2.2",
     "@skpm/file-loader": "^2.0.1",
     "@skpm/internal-utils": "^0.1.15",
     "@skpm/nib-loader": "^0.1.2",
