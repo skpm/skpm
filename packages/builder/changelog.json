@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "0.7.7": ["[Fixed] A file path issue on Windows"],
     "0.7.6": [
       "[Improved] Drop support for Sketch < 45. All dependencies now have proper licenses",
       "[Improved] Add support for `export * as x from y`"
