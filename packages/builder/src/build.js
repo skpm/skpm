@@ -231,7 +231,7 @@ function checkEnd() {
 }
 
 async function copyAsset(asset) {
-  const dirWithoutFirst = asset
+  const dirWithoutFirst = path.normalize(asset)
     .split(path.sep)
     .splice(1)
     .join(path.sep)
