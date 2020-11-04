@@ -142,8 +142,8 @@ async function copyManifest(manifestJSON) {
 
     copy.commands = manifestJSON.commands.map(command => {
       const script = command.script
-        .replace(/\.(?!j|tsx?$)|\//g, '_')
-        .replace(/j|tsx?$/, 'js')
+        .replace(/\.(?![jt]sx?$)|\//g, '_')
+        .replace(/[jt]sx?$/, 'js')
       return { ...command, script }
     })
 
