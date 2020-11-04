@@ -141,7 +141,9 @@ async function copyManifest(manifestJSON) {
     }
 
     copy.commands = manifestJSON.commands.map(command => {
-      const script = command.script.replace(/\.(?!js)|\//g, '_')
+      const script = command.script
+        .replace(/\.(?!j|tsx?$)|\//g, '_')
+        .replace(/j|tsx?$/, 'js')
       return { ...command, script }
     })
 
@@ -231,7 +233,8 @@ function checkEnd() {
 }
 
 async function copyAsset(asset) {
-  const dirWithoutFirst = path.normalize(asset)
+  const dirWithoutFirst = path
+    .normalize(asset)
     .split(path.sep)
     .splice(1)
     .join(path.sep)
