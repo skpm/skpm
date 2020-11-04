@@ -1,9 +1,9 @@
 {
   "unreleased": [],
   "releases": {
+    "0.7.9": ["[Fixed] Transform `async/await` syntax"],
     "0.7.8": [
-      "[Fixed] Script destination for files with extensions .ts .tsx .jsx",
-      "[Fixed] Transform `async/await` syntax"
+      "[Fixed] Script destination for files with extensions .ts .tsx .jsx"
     ],
     "0.7.7": ["[Fixed] A file path issue on Windows"],
     "0.7.6": [

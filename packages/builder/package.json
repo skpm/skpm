@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -41,7 +41,7 @@
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
     "@babel/core": "^7.4.3",
-    "@skpm/babel-preset": "^0.2.2",
+    "@skpm/babel-preset": "^0.2.3",
     "@skpm/file-loader": "^2.0.1",
     "@skpm/internal-utils": "^0.1.15",
     "@skpm/nib-loader": "^0.1.2",
