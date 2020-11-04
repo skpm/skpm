@@ -1,6 +1,10 @@
 {
   "unreleased": [],
   "releases": {
+    "0.7.8": [
+      "[Fixed] Script destination for files with extensions .ts .tsx .jsx",
+      "[Fixed] Transform `async/await` syntax"
+    ],
     "0.7.7": ["[Fixed] A file path issue on Windows"],
     "0.7.6": [
       "[Improved] Drop support for Sketch < 45. All dependencies now have proper licenses",
