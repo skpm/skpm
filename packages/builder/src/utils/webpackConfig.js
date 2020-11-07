@@ -161,7 +161,7 @@ export default function getWebpackConfig(
         },
       ],
       output: {
-        filename: entry.script.replace(/\.(?!js)|\//g, '_'),
+        filename: entry.script.replace(/\.(?![jt]sx?$)|\//g, '_').replace(/[jt]sx?$/, 'js'),
         library: entry.isPluginCommand ? 'exports' : undefined,
         path: entry.isPluginCommand
           ? path.join(output, 'Contents', 'Sketch')
