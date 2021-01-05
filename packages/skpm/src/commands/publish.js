@@ -358,7 +358,7 @@ export default asyncCommand({
     console.log(`${skpmConfig.name}@${tag.replace('v', '')}`)
 
     if (argv.openRelease) {
-      open(`https://github.com/${repo}/tag/${tag.replace('v', '')}`)
+      open(`https://github.com/${repo}/releases/tag/${tag}`)
     }
   },
 })
