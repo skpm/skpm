@@ -163,6 +163,9 @@ export default asyncCommand({
         } -m "Publish %s release :rocket:" --allow-same-version`
       )
       tag = stdout.trim()
+      if (!tag.startsWith('v')) {
+        tag = `v${tag}`
+      }
     }
 
     if (argv.appcast !== 'false') {
