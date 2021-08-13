@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.7.11",
+  "version": "0.8.0",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -53,7 +53,7 @@
     "mkdirp": "^0.5.1",
     "parse-author": "2.0.0",
     "semver": "^6.0.0",
-    "sketch-polyfill-fetch": "^0.4.3",
+    "sketch-polyfill-fetch": "^0.5.2",
     "terser-webpack-plugin": "^1.2.3",
     "webpack": "^4.29.6",
     "webpack-merge": "^4.2.1",
