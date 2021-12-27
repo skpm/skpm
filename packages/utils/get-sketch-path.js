@@ -39,7 +39,7 @@ function pathToLatestApp() {
       // empty line so bail out
       return
     }
-    const version = appInfoForKey(app, 'CFBundleVersion')
+    const version = parseInt(appInfoForKey(app, 'CFBundleVersion'))
     if (version > latest.version) {
       latest = {
         version,
