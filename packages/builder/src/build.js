@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs'
-import mkdirp from 'mkdirp'
+import { mkdirp } from 'mkdirp'
 import path from 'path'
 import webpack from 'webpack'
 import yargs from 'yargs'
@@ -241,15 +241,7 @@ async function copyAsset(asset) {
 
   const destPath = path.join(output, 'Contents', 'Resources', dirWithoutFirst)
 
-  await new Promise((resolve, reject) => {
-    mkdirp(path.dirname(destPath), err => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
+  await mkdirp(path.dirname(destPath))
 
   return new Promise((resolve, reject) => {
     const callback = err => {

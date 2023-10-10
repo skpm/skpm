@@ -21,6 +21,6 @@
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.8.0"
+    "@skpm/builder": "^0.9.5"
   }
 }

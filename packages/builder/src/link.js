@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs'
-import mkdirp from 'mkdirp'
+import { mkdirp } from 'mkdirp'
 import { join, basename } from 'path'
 import yargs from 'yargs'
 import chalk from 'chalk'
@@ -23,9 +23,12 @@ const { argv } = yargs
   .strict()
   .usage('Usage: cd path/to/my/plugin && skpm-link')
   .option('output', {
-    describe: 'The path to the final plugin. Use this option if you need to link specific version of your plugin.',
-    type: 'string'
-  }).help().strict();
+    describe:
+      'The path to the final plugin. Use this option if you need to link specific version of your plugin.',
+    type: 'string',
+  })
+  .help()
+  .strict()
 
 const path = argv.$1 || '.'
 

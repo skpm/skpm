@@ -1,6 +1,7 @@
 {
   "unreleased": [],
   "releases": {
+    "1.3.2": ["[Improved] Update dependencies"],
     "1.3.2": [
       "[Fixed] Npm started to change the output of the `npm version` command and it broke the publishing process",
       "[Fixed] Link to the released version"

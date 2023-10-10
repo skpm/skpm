@@ -1,6 +1,6 @@
 {
   "name": "@skpm/internal-utils",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "A set of functions used across skpm",
   "main": "index.js",
   "publishConfig": {
@@ -28,9 +28,9 @@
   },
   "homepage": "https://github.com/skpm/skpm#readme",
   "dependencies": {
-    "chalk": "^2.4.1",
+    "chalk": "^4.1.2",
     "js-yaml": "^3.13.1",
-    "object-assign": "*",
+    "object-assign": "^4.1.1",
     "yesno": "0.2.0"
   }
 }

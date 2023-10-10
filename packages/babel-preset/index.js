@@ -23,9 +23,9 @@ module.exports = function buildSkpmPreset(api, options) {
       require('@babel/preset-react'),
     ],
     plugins: [
-      '@babel/plugin-syntax-async-generators',
-      '@babel/plugin-proposal-object-rest-spread',
-      '@babel/plugin-proposal-export-namespace-from',
+      '@babel/plugin-transform-async-generator-functions',
+      '@babel/plugin-transform-export-namespace-from',
+      '@babel/plugin-transform-object-rest-spread',
       [
         '@babel/plugin-transform-runtime',
         {

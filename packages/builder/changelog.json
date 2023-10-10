@@ -1,9 +1,8 @@
 {
   "unreleased": [],
   "releases": {
-    "0.8.0": [
-      "[Fixed] Update sketch-polyfill-fetch to 0.5"
-    ],
+    "0.9.5": ["[Improved] Update dependencies"],
+    "0.8.0": ["[Fixed] Update sketch-polyfill-fetch to 0.5"],
     "0.7.11": [
       "[Fixed] Script destination for files with extensions .ts .tsx .jsx"
     ],

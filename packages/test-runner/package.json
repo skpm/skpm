@@ -1,6 +1,6 @@
 {
   "name": "@skpm/test-runner",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A test runner for sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -40,19 +40,19 @@
   },
   "homepage": "https://github.com/skpm/skpm/tree/master/packages/test-runner#readme",
   "dependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.6.0",
-    "@skpm/builder": "^0.8.0",
-    "@skpm/internal-utils": "^0.1.14",
-    "chalk": "^2.4.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.0",
+    "@skpm/builder": "^0.9.5",
+    "@skpm/internal-utils": "^0.1.16",
+    "chalk": "^4.1.2",
     "chokidar": "^2.0.3",
-    "globby": "^9.2.0",
+    "globby": "^11.0.4",
     "is-ci": "^2.0.0",
     "minimatch": "^3.0.4",
-    "progress-estimator": "^0.2.2",
+    "progress-estimator": "^0.3.1",
     "sketch-utils": "^0.2.10",
-    "source-map": "^0.7.2",
+    "source-map": "^0.7.4",
     "strip-ansi": "^5.2.0",
-    "webpack": "^4.29.6",
-    "yargs": "^13.2.2"
+    "webpack": "^4.47.0",
+    "yargs": "^17.7.2"
   }
 }
