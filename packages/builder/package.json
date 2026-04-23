@@ -1,6 +1,6 @@
 {
   "name": "@skpm/builder",
-  "version": "0.9.5",
+  "version": "1.0.0",
   "description": "A script to build and link sketch plugins",
   "main": "lib/index.js",
   "publishConfig": {
@@ -42,11 +42,9 @@
   "dependencies": {
     "@babel/core": "^7.23.0",
     "@skpm/babel-preset": "^0.2.6",
-    "@skpm/file-loader": "^2.0.1",
+    "@skpm/file-loader": "^3.0.0",
     "@skpm/internal-utils": "^0.1.16",
-    "@skpm/nib-loader": "^0.1.2",
     "@skpm/promise": "^0.1.0",
-    "@skpm/xcodeproj-loader": "^0.1.12",
     "babel-loader": "^8.3.0",
     "chalk": "^4.1.2",
     "globby": "^11.0.4",
@@ -54,8 +52,8 @@
     "parse-author": "2.0.0",
     "semver": "^7.5.4",
     "sketch-polyfill-fetch": "^0.5.2",
-    "terser-webpack-plugin": "^4.2.3",
-    "webpack": "^4.47.0",
+    "terser-webpack-plugin": "^5.3.17",
+    "webpack": "^5.105.4",
     "webpack-merge": "^5.9.0",
     "webpack-sources": "^3.2.3",
     "yargs": "^17.7.2"
